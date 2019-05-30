@@ -4,6 +4,7 @@ debug/
 dist/
 build.log
 data/*
+thirdparty/data/*
 thirdparty/include/*
 thirdparty/lib/*
 thirdparty/bin/*
