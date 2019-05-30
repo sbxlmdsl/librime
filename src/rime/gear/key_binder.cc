@@ -23,6 +23,7 @@ enum KeyBindingCondition {
   kNever,
   kWhenPaging,     // user has changed page
   kWhenHasMenu,    // at least one candidate
+  kWhenHasMore,    // at least two candidates
   kWhenComposing,  // input string is not empty
   kAlways,
 };
@@ -33,6 +34,7 @@ static struct KeyBindingConditionDef {
 } condition_definitions[] = {
   { kWhenPaging,    "paging"    },
   { kWhenHasMenu,   "has_menu"  },
+  { kWhenHasMore,   "has_more"  },
   { kWhenComposing, "composing" },
   { kAlways,        "always"    },
   { kNever,         NULL        }
@@ -173,6 +175,10 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
     insert(kWhenHasMenu);
   }
 
+  if (ctx->HasMore() && !ctx->get_option("ascii_mode")) {
+    insert(kWhenHasMore);
+  }
+
   Composition& comp = ctx->composition();
   if (!comp.empty() && comp.back().HasTag("paging")) {
     insert(kWhenPaging);
@@ -219,7 +225,7 @@ void KeyBinder::LoadConfig() {
 bool KeyBinder::ReinterpretPagingKey(const KeyEvent& key_event) {
   if (key_event.release())
     return false;
-  bool ret = false;
+  bool ret = false; /*
   int ch = (key_event.modifier() == 0) ? key_event.keycode() : 0;
   // reinterpret period key followed by alphabetic keys
   // unless period/comma key has been used multiple times
@@ -237,7 +243,7 @@ bool KeyBinder::ReinterpretPagingKey(const KeyEvent& key_event) {
       ret = true;
     }
   }
-  last_key_ = ch;
+  last_key_ = ch; */
   return ret;
 }
 

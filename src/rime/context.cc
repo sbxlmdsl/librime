@@ -53,6 +53,13 @@ bool Context::HasMenu() const {
   return menu && !menu->empty();
 }
 
+bool Context::HasMore() const {
+  if (composition_.empty())
+    return false;
+  const auto& menu(composition_.back().menu);
+  return menu && menu->candidate_count() > 1;
+}
+
 an<Candidate> Context::GetSelectedCandidate() const {
   if (composition_.empty())
     return nullptr;

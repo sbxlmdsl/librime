@@ -183,7 +183,7 @@ bool Speller::AutoSelectPreviousMatch(Context* ctx,
                                       Segment* previous_segment) {
   if (!auto_select_)
     return false;
-  if (max_code_length_ > 0 || !auto_select_pattern_.empty())
+  if (!auto_select_pattern_.empty())
     return false;
   if (ctx->HasMenu())  // if and only if current conversion fails
     return false;
