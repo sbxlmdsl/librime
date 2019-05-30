@@ -225,7 +225,7 @@ void KeyBinder::LoadConfig() {
 bool KeyBinder::ReinterpretPagingKey(const KeyEvent& key_event) {
   if (key_event.release())
     return false;
-  bool ret = false; /*
+  bool ret = false; 
   int ch = (key_event.modifier() == 0) ? key_event.keycode() : 0;
   // reinterpret period key followed by alphabetic keys
   // unless period/comma key has been used multiple times
@@ -236,14 +236,14 @@ bool KeyBinder::ReinterpretPagingKey(const KeyEvent& key_event) {
   if (last_key_ == '.' && ch >= 'a' && ch <= 'z') {
     Context* ctx = engine_->context();
     const string& input(ctx->input());
-    if (!input.empty() && input[input.length() - 1] != '.') {
+    if (!input.empty() && input[input.length() - 1] != '.' && !ctx->HasMore()) {
       LOG(INFO) << "reinterpreted key: '" << last_key_
                 << "', successor: '" << (char)ch << "'";
       ctx->PushInput(last_key_);
       ret = true;
     }
   }
-  last_key_ = ch; */
+  last_key_ = ch; 
   return ret;
 }
 
