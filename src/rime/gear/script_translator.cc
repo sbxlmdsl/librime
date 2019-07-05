@@ -491,7 +491,7 @@ void ScriptTranslation::PrepareCandidate() {
     DLOG(INFO) << "user phrase '" << entry->text
                << "', code length: " << user_phrase_code_length;
     cand = New<Phrase>(translator_->language(),
-                       "phrase",
+                       "user_phrase",
                        start_,
                        start_ + user_phrase_code_length,
                        entry);
@@ -503,7 +503,7 @@ void ScriptTranslation::PrepareCandidate() {
     DictEntryIterator& iter(phrase_iter_->second);
     const auto& entry(iter.Peek());
     DLOG(INFO) << "phrase '" << entry->text
-               << "', code length: " << user_phrase_code_length;
+               << "', code length: " << phrase_code_length;
     cand = New<Phrase>(translator_->language(),
                        "phrase",
                        start_,

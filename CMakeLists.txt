@@ -4,7 +4,7 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cxx_fla
 project(rime)
 cmake_minimum_required(VERSION 2.8.11)
 
-set(rime_version 1.4.0)
+set(rime_version 1.5.3)
 set(rime_soversion 1)
 
 add_definitions(-DRIME_VERSION="${rime_version}")
@@ -20,6 +20,7 @@ option(ENABLE_LOGGING "Enable logging with google-glog library" ON)
 option(BOOST_USE_CXX11 "Boost has been built with C++11 support" OFF)
 option(BOOST_USE_SIGNALS2 "Boost use signals2 instead of signals" ON)
 option(ENABLE_ASAN "Enable Address Sanitizer (Unix Only)" OFF)
+option(BUILD_WITH_ICU "Build by explicitly linking to ICU libraries" OFF)
 
 set(rime_data_dir "/share/rime-data" CACHE STRING "Target directory for Rime data")
 
@@ -61,7 +62,7 @@ set(BOOST_COMPONENTS filesystem regex system locale)
 if(BOOST_USE_SIGNALS2)
   add_definitions("-DBOOST_SIGNALS2")
 else()
-  set(BOOST_COMPONENTS ${BOOST_COMPONENTS} singals)
+  set(BOOST_COMPONENTS ${BOOST_COMPONENTS} signals)
 endif()
 
 find_package(Boost 1.46.0 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
@@ -90,6 +91,10 @@ if(ENABLE_LOGGING)
 endif()
 
 find_package(Threads)
+
+if (BUILD_WITH_ICU)
+  find_package(ICU COMPONENTS uc)
+endif()
 
 find_package(Iconv)
 if (ICONV_FOUND)
