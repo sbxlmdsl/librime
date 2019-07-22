@@ -84,14 +84,9 @@ namespace rime {
         if (!select_keys.empty() &&
             !key_event.ctrl() &&
             ch >= 0x20 && ch < 0x7f) {
-            if (!(select_keys.compare(" aeiou") || ctx->HasMore())) {
-                ; // hack for sbxlm
-            }
-            else {
-                size_t pos = select_keys.find((char)ch);
-                if (pos != string::npos) {
-                    index = static_cast<int>(pos);
-                }
+            size_t pos = select_keys.find((char)ch);
+            if (pos != string::npos) {
+                index = static_cast<int>(pos);
             }
         }
         else if (ch >= XK_0 && ch <= XK_9)
