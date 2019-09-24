@@ -64,7 +64,9 @@ bool Context::IsSecond() const {
 	if (composition_.empty())
 		return false;
 	const auto& menu(composition_.back().menu);
-	return menu && menu->candidate_count() > 1 && caret_pos_ % 2 == 0;
+	return menu && menu->candidate_count() > 1 && input_.length() % 2 == 0 && input_.length() >= 2
+		&& (islower(input_[caret_pos_ - 1]) || input_[caret_pos_ - 1] == '_')
+		&& islower(input_[caret_pos_ - 2]) && string("aeiou").find(input_[caret_pos_ - 2]) == string::npos;
 }
 
 bool Context::IsThird() const {
@@ -74,7 +76,7 @@ bool Context::IsThird() const {
 	return menu && menu->candidate_count() > 1 && input_.length() >= 3 
 		&& string("aeiou").find(input_[caret_pos_ - 1]) != string::npos
 		&& string("aeiou").find(input_[caret_pos_ - 2]) != string::npos
-		&& string("aeiou").find(input_[caret_pos_ - 3]) == string::npos;
+		&& islower(input_[caret_pos_ - 3]) && string("aeiou").find(input_[caret_pos_ - 3]) == string::npos;
 }
 
 an<Candidate> Context::GetSelectedCandidate() const {
