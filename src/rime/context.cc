@@ -60,6 +60,23 @@ bool Context::HasMore() const {
   return menu && menu->candidate_count() > 1;
 }
 
+bool Context::IsSecond() const {
+	if (composition_.empty())
+		return false;
+	const auto& menu(composition_.back().menu);
+	return menu && menu->candidate_count() > 1 && caret_pos_ % 2 == 0;
+}
+
+bool Context::IsThird() const {
+	if (composition_.empty())
+		return false;
+	const auto& menu(composition_.back().menu);
+	return menu && menu->candidate_count() > 1 && input_.length() >= 3 
+		&& string("aeiou").find(input_[caret_pos_ - 1]) != string::npos
+		&& string("aeiou").find(input_[caret_pos_ - 2]) != string::npos
+		&& string("aeiou").find(input_[caret_pos_ - 3]) == string::npos;
+}
+
 an<Candidate> Context::GetSelectedCandidate() const {
   if (composition_.empty())
     return nullptr;
