@@ -345,6 +345,7 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
           if (it->type != "table" &&
               it->type != "user_table" &&
               it->type != "sentence" &&
+              it->type != "simplified" &&
               it->type != "uniquified")
             break;
           if (phrase.empty()) {
