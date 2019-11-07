@@ -60,6 +60,13 @@ bool Context::HasMore() const {
   return menu && menu->candidate_count() > 1;
 }
 
+bool Context::MorePage() const {
+	if (composition_.empty())
+		return false;
+	const auto& menu(composition_.back().menu);
+	return menu && menu->candidate_count() > 5;
+}
+
 bool Context::IsSecond() const {
 	if (composition_.empty())
 		return false;

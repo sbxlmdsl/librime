@@ -24,6 +24,7 @@ enum KeyBindingCondition {
   kWhenPaging,     // user has changed page
   kWhenHasMenu,    // at least one candidate
   kWhenHasMore,    // at least two candidates
+  kWhenMorePage,    // at least five candidates
   kWhenIsSecond,    // is the second code char
   kWhenIsThird,    // is the third code char
   kWhenComposing,  // input string is not empty
@@ -37,6 +38,7 @@ static struct KeyBindingConditionDef {
   { kWhenPaging,    "paging"    },
   { kWhenHasMenu,   "has_menu"  },
   { kWhenHasMore,   "has_more"  },
+  { kWhenMorePage,   "more_page"  },
   { kWhenIsSecond,   "is_second" },
   { kWhenIsThird,   "is_third" },
   { kWhenComposing, "composing" },
@@ -190,6 +192,10 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
 
   if (ctx->HasMore() && !ctx->get_option("ascii_mode")) {
     insert(kWhenHasMore);
+  }
+
+  if (ctx->MorePage() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenMorePage);
   }
 
   if (ctx->IsSecond() && !ctx->get_option("ascii_mode")) {
