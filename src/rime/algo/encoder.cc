@@ -266,6 +266,17 @@ bool TableEncoder::DfsEncode(const string& phrase,
     if (Encode(*code, &encoded)) {
       DLOG(INFO) << "encode '" << phrase << "': "
                  << "[" << code->ToString() << "] -> [" << encoded << "]";
+
+	  if (code->size() == 2/* && (dict_name.substr(0, 4)._Equal("sbfm")) || dict_name.substr(0, 4)._Equal("sbkm")*/) {
+		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou].*$"))
+			  && boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou].*$"))) {
+			  return false;
+		  }
+		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou].*$"))
+			  && boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))) {
+			  encoded.replace(2, 2, (*code)[1].substr(2, 2));
+		  }
+	  }
       collector_->CreateEntry(phrase, encoded, value);
       return true;
     }
