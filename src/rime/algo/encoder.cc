@@ -103,6 +103,8 @@ bool TableEncoder::LoadSettings(Config* config) {
     }
   }
   config->GetString("encoder/tail_anchor", &tail_anchor_);
+  
+  config->GetString("name", &dict_name_);
 
   loaded_ = !encoding_rules_.empty();
   return loaded_;
@@ -267,7 +269,7 @@ bool TableEncoder::DfsEncode(const string& phrase,
       DLOG(INFO) << "encode '" << phrase << "': "
                  << "[" << code->ToString() << "] -> [" << encoded << "]";
 
-	  if (code->size() == 2/* && (dict_name.substr(0, 4)._Equal("sbfm")) || dict_name.substr(0, 4)._Equal("sbkm")*/) {
+	  if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[kf]m.*$"))) {
 		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou].*$"))
 			  && boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou].*$"))) {
 			  return false;
