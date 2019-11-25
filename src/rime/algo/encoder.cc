@@ -270,11 +270,11 @@ bool TableEncoder::DfsEncode(const string& phrase,
                  << "[" << code->ToString() << "] -> [" << encoded << "]";
 
 	  if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[kf]m.*$"))) {
-		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou].*$"))
-			  && boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou].*$"))) {
+		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
+			  && boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))) {
 			  return false;
 		  }
-		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou].*$"))
+		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
 			  && boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))) {
 			  encoded.replace(2, 2, (*code)[1].substr(2, 2));
 		  }

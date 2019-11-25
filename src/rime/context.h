@@ -39,6 +39,8 @@ class Context {
   bool MorePage() const;
   bool IsSecond() const;
   bool IsThird() const;
+  bool OkFirst() const;
+  bool OkThird() const;
   an<Candidate> GetSelectedCandidate() const;
 
   bool PushInput(char ch);
