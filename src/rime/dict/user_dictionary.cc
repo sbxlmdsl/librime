@@ -298,7 +298,21 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   string key;
   string value;
   string full_code;
-  auto accessor = db_->Query(input);
+  an<DbAccessor> accessor;
+  
+  if (name_ == "sbjmk") {
+	  if (len < 3) {
+		  accessor = db_->Query(input);
+	  }
+	  else {
+		  accessor = db_->Query(input.substr(0, 3));
+	  }
+  }
+  else {
+	  accessor = db_->Query(input);
+  }
+
+
   if (!accessor || accessor->exhausted()) {
     if (resume_key)
       *resume_key = kEnd;

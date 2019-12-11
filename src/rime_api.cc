@@ -263,12 +263,18 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
   }
   if (ctx->HasMenu()) {
     Segment &seg(ctx->composition().back());
-    int page_size = 5;
+    int page_size = 5; 
     Schema *schema = session->schema();
     if (schema)
       page_size = schema->page_size();
-    int selected_index = seg.selected_index;
-    int page_no = selected_index / page_size;
+	int selected_index = seg.selected_index;
+	int page_no = selected_index / page_size;
+
+	//if (seg.HasTag("abc")) {
+	//	page_size = 1;
+	//	page_no = 0;
+	//}
+
     the<Page> page(seg.menu->CreatePage(page_size, page_no));
     if (page) {
       context->menu.page_size = page_size;
@@ -281,6 +287,9 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       for (const an<Candidate> &cand : page->candidates) {
         RimeCandidate* dest = &context->menu.candidates[i++];
         rime_candidate_copy(dest, cand);
+		if (schema->schema_id() == "sbjmk")
+			if (strchr(dest->text, ' '))
+				dest->text = strchr(dest->text, ' ') + 1;
       }
       if (schema) {
         const string& select_keys(schema->select_keys());
@@ -341,9 +350,17 @@ RIME_API Bool RimeGetCommit(RimeSessionId session_id, RimeCommit* commit) {
     return False;
   const string& commit_text(session->commit_text());
   if (!commit_text.empty()) {
-    commit->text = new char[commit_text.length() + 1];
-    std::strcpy(commit->text, commit_text.c_str());
-    session->ResetCommitText();
+	if (session->schema()->schema_id() == "sbjmk" && commit_text.find_first_of(' ') != string::npos) {
+		size_t pos = commit_text.find_first_of(' ');
+		commit->text = new char[commit_text.length() - pos];
+		std::strcpy(commit->text, commit_text.c_str() + pos + 1);
+	}
+	else {
+		commit->text = new char[commit_text.length() + 1];
+		std::strcpy(commit->text, commit_text.c_str());
+	}
+
+	session->ResetCommitText();
     return True;
   }
   return False;

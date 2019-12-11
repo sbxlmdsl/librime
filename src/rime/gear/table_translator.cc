@@ -64,6 +64,21 @@ bool TableTranslation::Next() {
 static bool is_constructed(const DictEntry* e) {
   return UnityTableEncoder::HasPrefix(e->custom_code);
 }
+//
+//static bool FilterByChar4(an<DictEntry> e) {
+//	e->text = e->custom_code;
+//	return true;
+//}
+//
+//static bool FilterByChar5(an<DictEntry> e) {
+//	e->text = e->comment;
+//	return true;
+//}
+//
+//static bool FilterByChar6(an<DictEntry> e) {
+//	e->text = e->preedit;
+//	return true;
+//}
 
 an<Candidate> TableTranslation::Peek() {
   if (exhausted())
@@ -263,12 +278,27 @@ an<Translation> TableTranslator::Query(const string& input,
         enable_user_dict);
   }
   else {
-    DictEntryIterator iter;
-    if (dict_ && dict_->loaded()) {
-      dict_->LookupWords(&iter, code, false);
+    DictEntryIterator iter; 	
+	UserDictEntryIterator uter;
+	//if (this->engine_->schema()->schema_id() == "sbjmk" && input.length() == 4) {
+	//	iter.AddFilter(FilterByChar4);
+	//	uter.AddFilter(FilterByChar4);
+	//	code.erase(3, 1);
+	//}
+	//else if (this->engine_->schema()->schema_id() == "sbjmk" && input.length() == 5) {
+	//	iter.AddFilter(FilterByChar5);
+	//	uter.AddFilter(FilterByChar5);
+	//	code.erase(3, 2);
+	//}
+	//else if (this->engine_->schema()->schema_id() == "sbjmk" && input.length() == 6) {
+	//	iter.AddFilter(FilterByChar6);
+	//	uter.AddFilter(FilterByChar6);
+	//	code.erase(3, 3);
+	//}
+	if (dict_ && dict_->loaded()) {
+		dict_->LookupWords(&iter, code, false);
     }
-    UserDictEntryIterator uter;
-    if (enable_user_dict) {
+	if (enable_user_dict) {
       user_dict_->LookupWords(&uter, code, false);
       if (encoder_ && encoder_->loaded()) {
         encoder_->LookupPhrases(&uter, code, false);
