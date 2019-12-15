@@ -279,26 +279,11 @@ an<Translation> TableTranslator::Query(const string& input,
   }
   else {
     DictEntryIterator iter; 	
-	UserDictEntryIterator uter;
-	//if (this->engine_->schema()->schema_id() == "sbjmk" && input.length() == 4) {
-	//	iter.AddFilter(FilterByChar4);
-	//	uter.AddFilter(FilterByChar4);
-	//	code.erase(3, 1);
-	//}
-	//else if (this->engine_->schema()->schema_id() == "sbjmk" && input.length() == 5) {
-	//	iter.AddFilter(FilterByChar5);
-	//	uter.AddFilter(FilterByChar5);
-	//	code.erase(3, 2);
-	//}
-	//else if (this->engine_->schema()->schema_id() == "sbjmk" && input.length() == 6) {
-	//	iter.AddFilter(FilterByChar6);
-	//	uter.AddFilter(FilterByChar6);
-	//	code.erase(3, 3);
-	//}
-	if (dict_ && dict_->loaded()) {
-		dict_->LookupWords(&iter, code, false);
+	  if (dict_ && dict_->loaded()) {
+		  dict_->LookupWords(&iter, code, false);
     }
-	if (enable_user_dict) {
+    UserDictEntryIterator uter;
+	  if (enable_user_dict) {
       user_dict_->LookupWords(&uter, code, false);
       if (encoder_ && encoder_->loaded()) {
         encoder_->LookupPhrases(&uter, code, false);

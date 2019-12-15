@@ -235,6 +235,28 @@ static void rime_candidate_copy(RimeCandidate* dest, const an<Candidate>& src) {
   dest->reserved = nullptr;
 }
 
+static void rime_candidate_copy2(RimeCandidate* dest, const an<Candidate>& src) {
+  size_t m = src->text().length();
+  size_t n = src->text().find_first_of(' ');
+  if (n != string::npos) {
+    dest->text = new char[m - n + 1];
+    // dest->text = strchr(dest->text, ' ') + 1;
+    std::strcpy(dest->text, src->text().substr(n + 1).c_str());
+  } else {
+    dest->text = new char[src->text().length() + 1];
+    std::strcpy(dest->text, src->text().c_str());
+  }
+  string comment(src->comment());
+  if (!comment.empty()) {
+    dest->comment = new char[comment.length() + 1];
+    std::strcpy(dest->comment, comment.c_str());
+  }
+  else {
+    dest->comment = nullptr;
+  }
+  dest->reserved = nullptr;
+}
+
 RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
   if (!context || context->data_size <= 0)
     return False;
@@ -286,10 +308,11 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       context->menu.candidates = new RimeCandidate[page->candidates.size()];
       for (const an<Candidate> &cand : page->candidates) {
         RimeCandidate* dest = &context->menu.candidates[i++];
-        rime_candidate_copy(dest, cand);
-		if (schema->schema_id() == "sbjmk")
-			if (strchr(dest->text, ' '))
-				dest->text = strchr(dest->text, ' ') + 1;
+        if (schema->schema_id() == "sbjmk") {
+          rime_candidate_copy2(dest, cand);
+        } else {
+          rime_candidate_copy(dest, cand);
+        }
       }
       if (schema) {
         const string& select_keys(schema->select_keys());

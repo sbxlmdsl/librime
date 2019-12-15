@@ -330,6 +330,15 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   while (accessor->GetNextRecord(&key, &value)) {
     DLOG(INFO) << "key : " << key << ", value: " << value;
     bool is_exact_match = (len < key.length() && key[len] == ' ');
+    if (!is_exact_match && len > 3 && name_ == "sbjmk") {
+      string r1 = input.substr(3, len - 3);
+      string r2 = key.substr(5, len - 3);
+      if (r1 == r2) {
+        is_exact_match = true;
+      } else {
+        continue;
+      }
+    }
     if (!is_exact_match && !predictive) {
       key = last_key;
       break;
