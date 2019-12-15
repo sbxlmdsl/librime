@@ -289,13 +289,8 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
     Schema *schema = session->schema();
     if (schema)
       page_size = schema->page_size();
-	int selected_index = seg.selected_index;
-	int page_no = selected_index / page_size;
-
-	//if (seg.HasTag("abc")) {
-	//	page_size = 1;
-	//	page_no = 0;
-	//}
+	  int selected_index = seg.selected_index;
+	  int page_no = selected_index / page_size;
 
     the<Page> page(seg.menu->CreatePage(page_size, page_no));
     if (page) {

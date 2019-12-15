@@ -327,6 +327,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
     DLOG(INFO) << "resume lookup after: " << key;
   }
   string last_key(key);
+  an<DictEntry> e_holder = nullptr;
   while (accessor->GetNextRecord(&key, &value)) {
     DLOG(INFO) << "key : " << key << ", value: " << value;
     bool is_exact_match = (len < key.length() && key[len] == ' ');
@@ -353,12 +354,26 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       e->comment = "~" + full_code.substr(len);
       e->remaining_code_length = full_code.length() - len;
     }
-    result->Add(e);
+    if (name_ == "sbjmk" && len == 3) {
+      if (!e_holder) {
+        e_holder = e;
+      } else if (e_holder->weight < e->weight){
+        e_holder = e;
+      }
+      continue;
+    } else {
+      result->Add(e);
+    }
     ++count;
     if (is_exact_match)
       ++exact_match_count;
     else if (limit && count >= limit)
       break;
+  }
+  if (e_holder) {
+    ++count;
+    ++exact_match_count;
+    result->Add(e_holder);
   }
   if (exact_match_count > 0) {
     result->SortRange(start, exact_match_count);
