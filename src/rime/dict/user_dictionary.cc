@@ -20,6 +20,7 @@
 #include <rime/dict/db.h>
 #include <rime/dict/table.h>
 #include <rime/dict/user_dictionary.h>
+#include <rime/gear/unity_table_encoder.h>
 
 namespace rime {
 
@@ -305,9 +306,11 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
 	  if (len < 3) {
 		  accessor = db_->Query(input);
 	  }
-	  else {
-		  accessor = db_->Query(input.substr(0, 3));
-	  }
+	  else if (boost::starts_with(input,"\x7f""enc\x1f")) {
+		  accessor = db_->Query(input.substr(0, 8));
+	  } else {
+      accessor = db_->Query(input.substr(0, 3));
+    }
   }
   else {
 	  accessor = db_->Query(input);
@@ -332,7 +335,16 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   while (accessor->GetNextRecord(&key, &value)) {
     DLOG(INFO) << "key : " << key << ", value: " << value;
     bool is_exact_match = (len < key.length() && key[len] == ' ');
-    if (!is_exact_match && len > 3 && name_ == "sbjmk") {
+    if (!is_exact_match && boost::starts_with(input,"\x7f""enc\x1f")
+        && len > 8 && name_ == "sbjmk") {
+      string r1 = input.substr(8, len - 8);
+      string r2 = key.substr(10, len - 8);
+      if (r1 == r2) {
+        is_exact_match = true;
+      } else {
+        continue;
+      }
+    } else if (!is_exact_match && len > 3 && name_ == "sbjmk") {
       string r1 = input.substr(3, len - 3);
       string r2 = key.substr(5, len - 3);
       if (r1 == r2) {
@@ -363,7 +375,10 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
 			e_holder = e;
 		}
 		continue;
-	} else if (name_ == "sbjmk" && len == 4 && e->text == string(words[0])) {
+    } else if (name_ == "sbjmk" && boost::starts_with(input,"\x7f""enc\x1f")
+        && len == 9 && e->text == string(words[0])) {
+          continue;
+    } else if (name_ == "sbjmk" && len == 4 && e->text == string(words[0])) {
 		continue;
     } else {
 		result->Add(e);

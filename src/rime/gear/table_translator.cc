@@ -341,6 +341,7 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
             ++it;
         }
         string phrase;
+        size_t pos;
         for (; it != history.rend(); ++it) {
           if (it->type != "table" &&
               it->type != "user_table" &&
@@ -350,9 +351,18 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
             break;
           if (phrase.empty()) {
             phrase = it->text;  // last word
+            pos = phrase.find_first_of(' ');
+            if (user_dict_->name() == "sbjmk" && pos != string::npos) {
+              phrase = phrase.substr(pos + 1);
+            }
             continue;
           }
-          phrase = it->text + phrase;  // prepend another word
+          pos = it->text.find_first_of(' ');
+          if (user_dict_->name() == "sbjmk" && pos != string::npos) {
+            phrase = it->text.substr(pos + 1) + phrase;
+          } else {
+            phrase = it->text + phrase;  // prepend another word
+          }
           size_t phrase_length = utf8::unchecked::distance(
               phrase.c_str(), phrase.c_str() + phrase.length());
           if (static_cast<int>(phrase_length) > max_phrase_length_)
