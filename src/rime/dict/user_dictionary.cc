@@ -299,6 +299,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   string value;
   string full_code;
   an<DbAccessor> accessor;
+  static char words[3][256];
   
   if (name_ == "sbjmk") {
 	  if (len < 3) {
@@ -354,15 +355,18 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       e->comment = "~" + full_code.substr(len);
       e->remaining_code_length = full_code.length() - len;
     }
-    if (name_ == "sbjmk" && len == 3) {
-      if (!e_holder) {
-        e_holder = e;
-      } else if (e_holder->weight < e->weight){
-        e_holder = e;
-      }
-      continue;
+	if (name_ == "sbjmk" && len == 3) {
+		if (!e_holder) {
+			e_holder = e;
+		}
+		else if (e_holder->weight < e->weight) {
+			e_holder = e;
+		}
+		continue;
+	} else if (name_ == "sbjmk" && len == 4 && e->text == string(words[0])) {
+		continue;
     } else {
-      result->Add(e);
+		result->Add(e);
     }
     ++count;
     if (is_exact_match)
@@ -373,6 +377,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   if (e_holder) {
     ++count;
     ++exact_match_count;
+	std::strcpy(words[0], e_holder->text.c_str());
     result->Add(e_holder);
   }
   if (exact_match_count > 0) {

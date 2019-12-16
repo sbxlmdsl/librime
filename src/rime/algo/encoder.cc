@@ -279,7 +279,13 @@ bool TableEncoder::DfsEncode(const string& phrase,
 			  encoded.replace(2, 2, (*code)[1].substr(2, 2));
 		  }
 	  }
-      collector_->CreateEntry(phrase, encoded, value);
+	  if (dict_name_ == "sbjmk") {
+		collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
+	  }
+	  else {
+		collector_->CreateEntry(phrase, encoded, value);
+	  }
+      
       return true;
     }
     else {

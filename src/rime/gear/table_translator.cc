@@ -64,21 +64,6 @@ bool TableTranslation::Next() {
 static bool is_constructed(const DictEntry* e) {
   return UnityTableEncoder::HasPrefix(e->custom_code);
 }
-//
-//static bool FilterByChar4(an<DictEntry> e) {
-//	e->text = e->custom_code;
-//	return true;
-//}
-//
-//static bool FilterByChar5(an<DictEntry> e) {
-//	e->text = e->comment;
-//	return true;
-//}
-//
-//static bool FilterByChar6(an<DictEntry> e) {
-//	e->text = e->preedit;
-//	return true;
-//}
 
 an<Candidate> TableTranslation::Peek() {
   if (exhausted())
@@ -279,7 +264,7 @@ an<Translation> TableTranslator::Query(const string& input,
   }
   else {
     DictEntryIterator iter; 	
-	  if (dict_ && dict_->loaded()) {
+	  if (dict_ && dict_->loaded() && dict_->name() != "sbjmk") {
 		  dict_->LookupWords(&iter, code, false);
     }
     UserDictEntryIterator uter;
