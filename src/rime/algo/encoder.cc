@@ -279,6 +279,12 @@ bool TableEncoder::DfsEncode(const string& phrase,
 			  encoded.replace(2, 2, (*code)[1].substr(2, 2));
 		  }
 	  }
+	  else if (code->size() == 2 && dict_name_ == "sbjmk") {
+		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou]?$"))
+			  && boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou]?$"))) {
+			  return false;
+		  }
+	  }
 	  if (dict_name_ == "sbjmk") {
 		collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
 	  }

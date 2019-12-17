@@ -300,13 +300,14 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   string value;
   string full_code;
   an<DbAccessor> accessor;
-  static char words[3][256];
+  static char words[7][256];
+  
+  const bool prefixed = boost::starts_with(input, "\x7f""enc\x1f");
   
   if (name_ == "sbjmk") {
 	  if (len < 3) {
 		  accessor = db_->Query(input);
-	  }
-	  else if (boost::starts_with(input,"\x7f""enc\x1f")) {
+	  } else if (prefixed) {
 		  accessor = db_->Query(input.substr(0, 8));
 	  } else {
       accessor = db_->Query(input.substr(0, 3));
@@ -335,8 +336,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   while (accessor->GetNextRecord(&key, &value)) {
     DLOG(INFO) << "key : " << key << ", value: " << value;
     bool is_exact_match = (len < key.length() && key[len] == ' ');
-    if (!is_exact_match && boost::starts_with(input,"\x7f""enc\x1f")
-        && len > 8 && name_ == "sbjmk") {
+    if (!is_exact_match && prefixed && len > 8 && name_ == "sbjmk") {
       string r1 = input.substr(8, len - 8);
       string r2 = key.substr(10, len - 8);
       if (r1 == r2) {
@@ -367,7 +367,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       e->comment = "~" + full_code.substr(len);
       e->remaining_code_length = full_code.length() - len;
     }
-	if (name_ == "sbjmk" && len == 3) {
+	if (name_ == "sbjmk" && (len == 3 || prefixed && len == 8)) {
 		if (!e_holder) {
 			e_holder = e;
 		}
@@ -375,11 +375,8 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
 			e_holder = e;
 		}
 		continue;
-    } else if (name_ == "sbjmk" && boost::starts_with(input,"\x7f""enc\x1f")
-        && len == 9 && e->text == string(words[0])) {
+    } else if (name_ == "sbjmk" && (len == 4 || prefixed && len == 9) && e->text == string(words[0])) {
           continue;
-    } else if (name_ == "sbjmk" && len == 4 && e->text == string(words[0])) {
-		continue;
     } else {
 		result->Add(e);
     }
@@ -389,7 +386,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
     else if (limit && count >= limit)
       break;
   }
-  if (e_holder) {
+  if (e_holder) {	// found one most used entry
     ++count;
     ++exact_match_count;
 	std::strcpy(words[0], e_holder->text.c_str());

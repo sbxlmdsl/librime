@@ -264,14 +264,18 @@ an<Translation> TableTranslator::Query(const string& input,
   }
   else {
     DictEntryIterator iter; 	
-	  if (dict_ && dict_->loaded() && dict_->name() != "sbjmk") {
+	if (dict_ && dict_->loaded() && dict_->name() != "sbjmk") {
 		  dict_->LookupWords(&iter, code, false);
     }
     UserDictEntryIterator uter;
-	  if (enable_user_dict) {
-      user_dict_->LookupWords(&uter, code, false);
+	if (enable_user_dict) {
+	  size_t count = user_dict_->LookupWords(&uter, code, false);
       if (encoder_ && encoder_->loaded()) {
-        encoder_->LookupPhrases(&uter, code, false);
+		if (user_dict_->name() == "sbjmk" 
+			&& (code.length() < 3 || code.length() == 3 && count == 1))
+			;	// do nothing
+		else
+			 encoder_->LookupPhrases(&uter, code, false);
       }
     }
     if (!iter.exhausted() || !uter.exhausted())
