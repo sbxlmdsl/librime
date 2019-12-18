@@ -368,8 +368,8 @@ RIME_API Bool RimeGetCommit(RimeSessionId session_id, RimeCommit* commit) {
     return False;
   const string& commit_text(session->commit_text());
   if (!commit_text.empty()) {
-	if (session->schema()->schema_id() == "sbjmk" && commit_text.find_first_of(' ') != string::npos) {
-		size_t pos = commit_text.find_first_of(' ');
+	size_t pos = commit_text.find_first_of(' ');
+	if (session->schema()->schema_id() == "sbjmk" && pos != string::npos) {
 		commit->text = new char[commit_text.length() - pos];
 		std::strcpy(commit->text, commit_text.c_str() + pos + 1);
 	}

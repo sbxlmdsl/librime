@@ -74,7 +74,7 @@ size_t UnityTableEncoder::LookupPhrases(UserDictEntryIterator* result,
                                         string* resume_key) {
   if (!user_dict_)
     return 0;
-  if (user_dict_->name() == "sbjmk" && input.length() < 4) {
+  if (user_dict_->name() == "sbjmk" && input.length() < 3) {
     return 0;
   }
 
