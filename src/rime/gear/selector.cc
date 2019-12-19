@@ -100,6 +100,9 @@ namespace rime {
         else if (ch >= XK_KP_0 && ch <= XK_KP_9)
             index = ((ch - XK_KP_0) + 9) % 10;
         if (index >= 0) {
+			if (engine_->schema()->schema_id() ==  "sbjmk" 
+				&& !current_segment.HasTag("paging") && ctx->input().length() < 6)
+				return kNoop;
             SelectCandidateAt(ctx, index);
             return kAccepted;
         }

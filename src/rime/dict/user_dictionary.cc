@@ -301,6 +301,8 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   string full_code;
   an<DbAccessor> accessor;
   static char words[7][256];
+  static char keys[5][256];
+  static char values[5][256];
   
   const bool prefixed = boost::starts_with(input, "\x7f""enc\x1f");
   
@@ -331,6 +333,30 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
     }
     DLOG(INFO) << "resume lookup after: " << key;
   }
+  if (name_ == "sbjmk" && (len == 5 || prefixed && len == 10)) {
+	  int i = 0;
+	  int j = (len == 5) ? 4 : 9;
+	  switch (input[j]) {
+	  case 'a':
+		  i = 2; break;
+	  case 'e':
+		  i = 3; break;
+	  case 'i':
+		  i = 4; break;
+	  case 'o':
+		  i = 5; break;
+	  case 'u':
+		  i = 6; break;
+	  }
+	  if (i == 0 || words[i] == "")
+		  return 0;
+	  auto e = CreateDictEntry(keys[i -2], values[i - 2], present_tick, 1.0, &full_code);
+	  if (!e)
+		  return 0;
+	  result->Add(e);
+	  return 1;
+  }
+
   string last_key(key);
   an<DictEntry> e_holder = nullptr;
   while (accessor->GetNextRecord(&key, &value)) {
@@ -375,12 +401,37 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
 			e_holder = e;
 		}
 		continue;
-    } else if (name_ == "sbjmk" && (len == 4 || prefixed && len == 9) && e->text == string(words[0])) {
-          continue;
-    } else {
+    } else if (name_ == "sbjmk" && (len == 4 || prefixed && len == 9)) {
+		if (e->text == string(words[0]))
+			continue;
+		else if (count < 6) {
+			std::strcpy(words[count + 1], e->text.c_str());
+			if (count > 1) {
+				std::strcpy(keys[count - 2], key.c_str());
+				std::strcpy(values[count - 2], value.c_str());
+			}
+			result->Add(e);
+		}
+		else
+			result->Add(e);
+	}
+	else if (name_ == "sbjmk" && (len == 6 || prefixed && len == 11)) {
+		for (int i = 0; i < 7; i++) {
+			if (e->text == string(words[i]))
+				continue;
+		}
+		result->Add(e);
+	}
+	else {
 		result->Add(e);
     }
+
     ++count;
+	if (name_ == "sbjmk" && (len == 4 || prefixed && len == 9) && count < 6) {
+		for (int i = count; i < 6; i++)
+			std::strcpy(words[count + i], "");
+	}
+
     if (is_exact_match)
       ++exact_match_count;
     else if (limit && count >= limit)
