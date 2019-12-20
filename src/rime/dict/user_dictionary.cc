@@ -311,7 +311,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   
   const bool prefixed = boost::starts_with(input, "\x7f""enc\x1f");
   
-  if (name_ == "sbjmk") {
+  if (name_ == "sbjm") {
 	  if (len < 3) {
 		  accessor = db_->Query(input);
 	  } else if (prefixed) {
@@ -343,7 +343,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   while (accessor->GetNextRecord(&key, &value)) {
     DLOG(INFO) << "key : " << key << ", value: " << value;
     bool is_exact_match = (len < key.length() && key[len] == ' ');
-    if (!is_exact_match && prefixed && len > 8 && name_ == "sbjmk") {
+    if (!is_exact_match && prefixed && len > 8 && name_ == "sbjm") {
       string r1 = (len == 10) ? input.substr(8, 1) : input.substr(8, len - 8);
       string r2 = (len == 10) ? key.substr(10, 1) : key.substr(10, len - 8);
       if (r1 == r2) {
@@ -351,7 +351,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       } else {
         continue;
       }
-    } else if (!is_exact_match && len > 3 && name_ == "sbjmk") {
+    } else if (!is_exact_match && len > 3 && name_ == "sbjm") {
       string r1 = (len == 5) ? input.substr(3, 1) : input.substr(3, len - 3);
       string r2 = (len == 5) ? key.substr(5, 1) : key.substr(5, len - 3);
       if (r1 == r2) {
@@ -374,7 +374,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       e->comment = "~" + full_code.substr(len);
       e->remaining_code_length = full_code.length() - len;
     }
-    if (name_ == "sbjmk" && (len == 3 || (prefixed && len == 8))) {
+    if (name_ == "sbjm" && (len == 3 || (prefixed && len == 8))) {
 		if (!e_holder) {
 			e_holder = e;
 		}
@@ -383,13 +383,13 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
 		}
 		continue;
   }
-  else if (name_ == "sbjmk" && (len == 4 || (prefixed && len == 9))) {
+  else if (name_ == "sbjm" && (len == 4 || (prefixed && len == 9))) {
 		if (e->text == string(words[0]))
 			continue;
 		else
 			result->Add(e);
 	}
-  else if (name_ == "sbjmk" && (len == 5 || (prefixed && len == 10))) {
+  else if (name_ == "sbjm" && (len == 5 || (prefixed && len == 10))) {
     int i = 0;
     int j = (len == 5) ? 4 : 9;
     switch (input[j]) {
@@ -413,7 +413,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       return 1;
     }
   }
-  else if (name_ == "sbjmk" && (len == 6 || (prefixed && len == 11))) {
+  else if (name_ == "sbjm" && (len == 6 || (prefixed && len == 11))) {
     int i;
 		for (i = 0; i < 7; i++) {
 			if (e->text == string(words[i]))
@@ -433,7 +433,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
     else if (limit && count >= limit)
       break;
   }
-  if (name_ == "sbjmk" && (len == 4 || (prefixed && len == 9)) && count < 6) {
+  if (name_ == "sbjm" && (len == 4 || (prefixed && len == 9)) && count < 6) {
     for (int i = count; i < 6; i++)
       std::strcpy(words[count + i], "");
   }
@@ -445,7 +445,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   }
   if (exact_match_count > 0) {
     result->SortRange(start, exact_match_count);
-    if (name_ == "sbjmk" && (len == 4 || (prefixed && len == 9))) {
+    if (name_ == "sbjm" && (len == 4 || (prefixed && len == 9))) {
       for (int i = 1; i < 7; i++) {
         auto en = result->Peek();
         if (!en)

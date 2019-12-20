@@ -303,7 +303,7 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       context->menu.candidates = new RimeCandidate[page->candidates.size()];
       for (const an<Candidate> &cand : page->candidates) {
         RimeCandidate* dest = &context->menu.candidates[i++];
-        if (schema->schema_id() == "sbjmk") {
+        if (schema->schema_id() == "sbjm") {
           rime_candidate_copy2(dest, cand);
         } else {
           rime_candidate_copy(dest, cand);
@@ -369,7 +369,7 @@ RIME_API Bool RimeGetCommit(RimeSessionId session_id, RimeCommit* commit) {
   const string& commit_text(session->commit_text());
   if (!commit_text.empty()) {
 	size_t pos = commit_text.find_first_of(' ');
-	if (session->schema()->schema_id() == "sbjmk" && pos != string::npos) {
+	if (session->schema()->schema_id() == "sbjm" && pos != string::npos) {
 		commit->text = new char[commit_text.length() - pos];
 		std::strcpy(commit->text, commit_text.c_str() + pos + 1);
 	}

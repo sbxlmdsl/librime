@@ -264,14 +264,14 @@ an<Translation> TableTranslator::Query(const string& input,
   }
   else {
     DictEntryIterator iter; 	
-	if (dict_ && dict_->loaded() && dict_->name() != "sbjmk") {
+	if (dict_ && dict_->loaded() && dict_->name() != "sbjm") {
 		  dict_->LookupWords(&iter, code, false);
     }
     UserDictEntryIterator uter;
 	if (enable_user_dict) {
 	  size_t count = user_dict_->LookupWords(&uter, code, false);
       if (encoder_ && encoder_->loaded()) {
-		if (user_dict_->name() == "sbjmk" 
+		if (user_dict_->name() == "sbjm" 
 			&& (code.length() < 3 || code.length() == 3 && count == 1))
 			;	// do nothing
 		else
@@ -356,13 +356,13 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
           if (phrase.empty()) {
             phrase = it->text;  // last word
             pos = phrase.find_first_of(' ');
-            if (user_dict_->name() == "sbjmk" && pos != string::npos) {
+            if (user_dict_->name() == "sbjm" && pos != string::npos) {
               phrase = phrase.substr(pos + 1);
             }
             continue;
           }
           pos = it->text.find_first_of(' ');
-          if (user_dict_->name() == "sbjmk" && pos != string::npos) {
+          if (user_dict_->name() == "sbjm" && pos != string::npos) {
             phrase = it->text.substr(pos + 1) + phrase;
           } else {
             phrase = it->text + phrase;  // prepend another word
