@@ -15,6 +15,15 @@ namespace fs = boost::filesystem;
 
 namespace rime {
 
+static string remove_suffix(const string& input, const string& suffix) {
+  return boost::ends_with(input, suffix) ?
+      input.substr(0, input.length() - suffix.length()) : input;
+}
+
+static string custom_config_file(const string& config_id) {
+  return remove_suffix(config_id, ".schema") + ".custom.yaml";
+}
+
 CustomSettings::CustomSettings(Deployer* deployer,
                                const string& config_id,
                                const string& generator_id)
@@ -31,11 +40,12 @@ bool CustomSettings::Load() {
     config_path = shared_data_path / "build" / (config_id_ + ".yaml");
     if (!config_.LoadFromFile(config_path.string())) {
       LOG(WARNING) << "cannot find '" << config_id_ << ".yaml'.";
-      return false;
     }
   }
-  fs::path custom_config_path(user_data_path / (config_id_ + ".custom.yaml"));
-  custom_config_.LoadFromFile(custom_config_path.string());
+  fs::path custom_config_path(user_data_path / custom_config_file(config_id_));
+  if (!custom_config_.LoadFromFile(custom_config_path.string())) {
+    return false;
+  }
   modified_ = false;
   return true;
 }
@@ -46,7 +56,7 @@ bool CustomSettings::Save() {
   Signature signature(generator_id_, "customization");
   signature.Sign(&custom_config_, deployer_);
   fs::path custom_config_path(deployer_->user_data_dir);
-  custom_config_path /= config_id_ + ".custom.yaml";
+  custom_config_path /= custom_config_file(config_id_);
   custom_config_.SaveToFile(custom_config_path.string());
   modified_ = false;
   return true;
@@ -80,7 +90,7 @@ bool CustomSettings::Customize(const string& key,
 
 bool CustomSettings::IsFirstRun() {
   fs::path custom_config_path(deployer_->user_data_dir);
-  custom_config_path /= config_id_ + ".custom.yaml";
+  custom_config_path /= custom_config_file(config_id_);
   Config config;
   if (!config.LoadFromFile(custom_config_path.string()))
     return true;
