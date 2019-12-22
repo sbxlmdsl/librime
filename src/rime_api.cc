@@ -278,8 +278,15 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
     if (RIME_STRUCT_HAS_MEMBER(*context, context->commit_text_preview)) {
       string commit_text(ctx->GetCommitText());
       if (!commit_text.empty()) {
-        context->commit_text_preview = new char[commit_text.length() + 1];
-        std::strcpy(context->commit_text_preview, commit_text.c_str());
+        size_t pos = commit_text.find_first_of(' ');
+        if (session->schema()->schema_id() == "sbjm" && pos != string::npos) {
+          context->commit_text_preview = new char[commit_text.length() - pos];
+          std::strcpy(context->commit_text_preview, commit_text.c_str() + pos + 1);
+        }
+        else {
+          context->commit_text_preview = new char[commit_text.length() + 1];
+          std::strcpy(context->commit_text_preview, commit_text.c_str());
+        }
       }
     }
   }
