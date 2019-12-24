@@ -433,10 +433,6 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
     else if (limit && count >= limit)
       break;
   }
-  if (name_ == "sbjm" && (len == 4 || (prefixed && len == 9)) && count < 6) {
-    for (int i = count; i < 6; i++)
-      std::strcpy(words[count + i], "");
-  }
   if (e_holder) {	// found one most used entry
     ++count;
     ++exact_match_count;
@@ -445,16 +441,43 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   }
   if (exact_match_count > 0) {
     result->SortRange(start, exact_match_count);
-    if (name_ == "sbjm" && (len == 4 || (prefixed && len == 9))) {
-      for (int i = 1; i < 7; i++) {
+  }
+  if (name_ == "sbjm" && prefixed && len == 9 && result->size() > 0) {
+    int i = 1;
+    while (words[i] != string("")) {
+      result->Next();
+      i++;
+    }
+    if (i < 7 && result->size() >= i) {
+      while (i < 7) {
         auto en = result->Peek();
         if (!en)
           break;
         std::strcpy(words[i], en->text.c_str());
         result->Next();
+        i++;
       }
-      result->SetIndex(start);
+      /*while (i < 7) {
+        std::strcpy(words[i], "");
+        i++;
+      }*/
+      result->SetIndex(0);
     }
+  } else if (name_ == "sbjm" && len == 4 && result->size() > 0) {
+    int i = 1;
+    while (i < 7) {
+      auto en = result->Peek();
+      if (!en)
+        break;
+      std::strcpy(words[i], en->text.c_str());
+      result->Next();
+      i++;
+    }
+    /*while (i < 7) {
+      std::strcpy(words[i], "");
+      i++;
+    }*/
+    result->SetIndex(0);
   }
   if (resume_key) {
     *resume_key = key;

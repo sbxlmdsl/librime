@@ -269,14 +269,14 @@ an<Translation> TableTranslator::Query(const string& input,
     }
     UserDictEntryIterator uter;
 	if (enable_user_dict) {
-	  size_t count = user_dict_->LookupWords(&uter, code, false);
-      if (encoder_ && encoder_->loaded()) {
-		if (user_dict_->name() == "sbjm" 
-			&& (code.length() < 3 || code.length() == 3 && count == 1))
-			;	// do nothing
-		else
-			 encoder_->LookupPhrases(&uter, code, false);
-      }
+	  user_dict_->LookupWords(&uter, code, false);
+    if (encoder_ && encoder_->loaded()) {
+      if (user_dict_->name() == "sbjm"
+          && (code.length() < 3 || (code.length() == 3 && uter.size() == 1)))
+        ;	// do nothing
+      else
+         encoder_->LookupPhrases(&uter, code, false);
+        }
     }
     if (!iter.exhausted() || !uter.exhausted())
       translation = Cached<TableTranslation>(
