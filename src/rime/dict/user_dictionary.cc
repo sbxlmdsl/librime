@@ -480,6 +480,8 @@ bool UserDictionary::UpdateEntry(const DictEntry& entry, int commits,
     if (v.tick > tick_) {
       v.tick = tick_;  // fix abnormal timestamp
     }
+	if (v.commits < 0)
+		v.commits = -v.commits;
   }
   else if (!new_entry_prefix.empty()) {
     key.insert(0, new_entry_prefix);
