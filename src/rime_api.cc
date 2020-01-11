@@ -328,13 +328,22 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
         }
         Config* config = schema->config();
         an<ConfigList>  select_labels = config->GetList("menu/alternative_select_labels");
+		string labels[] = {"  ", "1a", "2e", "3i", "4o", "5u"};
         if (select_labels && (size_t)page_size <= select_labels->size()) {
           context->select_labels = new char*[page_size];
           for (size_t i = 0; i < (size_t)page_size; ++i) {
             an<ConfigValue> value = select_labels->GetValueAt(i);
             string label = value->str();
-            context->select_labels[i] = new char[label.length() + 1];
-            std::strcpy(context->select_labels[i], label.c_str());
+			if (schema->schema_id() == "sbzn" && (ctx->IsThird() || ctx->IsSixth())) {
+				context->select_labels[i] = new char[3];
+				std::strcpy(context->select_labels[i], labels[i].c_str());
+			}
+			else {
+				context->select_labels[i] = new char[label.length() + 1];
+				std::strcpy(context->select_labels[i], label.c_str());
+			}
+				
+            
           }
         }
       }
