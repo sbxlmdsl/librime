@@ -457,8 +457,17 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
         result->Next();
         i++;
       }
+<<<<<<< HEAD
     }
     result->SetIndex(0);
+=======
+      /*while (i < 7) {
+        std::strcpy(words[i], "");
+        i++;
+      }*/
+      result->SetIndex(0);
+    }
+>>>>>>> parent of 05f6e20... corrected a bug for finding words in sbjm
   } else if (name_ == "sbjm" && len == 4 && result->size() > 0) {
     int i = 1;
     while (i < 7) {
@@ -469,6 +478,13 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       result->Next();
       i++;
     }
+<<<<<<< HEAD
+=======
+    /*while (i < 7) {
+      std::strcpy(words[i], "");
+      i++;
+    }*/
+>>>>>>> parent of 05f6e20... corrected a bug for finding words in sbjm
     result->SetIndex(0);
   }
   if (resume_key) {
