@@ -27,7 +27,6 @@ enum KeyBindingCondition {
   kWhenMorePage,    // at least five candidates
   kWhenIsSecond,    // is the second code char
   kWhenIsThird,    // is the third code char
-  kWhenIsSixth,
   kWhenOkFirst,		// the first code char is ok for sb[kf]m*
   kWhenOkThird,		// the third code char is ok for sb[kf]k
   kWhenComposing,  // input string is not empty
@@ -44,7 +43,6 @@ static struct KeyBindingConditionDef {
   { kWhenMorePage,   "more_page"  },
   { kWhenIsSecond,   "is_second" },
   { kWhenIsThird,   "is_third" },
-  { kWhenIsSixth,	"is_sixth" },
   { kWhenOkFirst,   "ok_first" },
   { kWhenOkThird,   "ok_third" },
   { kWhenComposing, "composing" },
@@ -210,10 +208,6 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
 
   if (ctx->IsThird() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenIsThird);
-  }
-
-  if (ctx->IsSixth() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSixth);
   }
 
   if (ctx->OkFirst() && !ctx->get_option("ascii_mode")) {

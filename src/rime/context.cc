@@ -86,19 +86,6 @@ bool Context::IsThird() const {
 		&& islower(input_[caret_pos_ - 3]) && string("aeiou").find(input_[caret_pos_ - 3]) == string::npos;
 }
 
-bool Context::IsSixth() const {
-	if (composition_.empty())
-		return false;
-	const auto& menu(composition_.back().menu);
-	return menu && menu->candidate_count() > 1 && input_.length() >= 6
-		&& string("aeiou").find(input_[caret_pos_ - 1]) != string::npos
-		&& string("aeiou").find(input_[caret_pos_ - 2]) != string::npos
-		&& string("AEIOU").find(input_[caret_pos_ - 3]) != string::npos
-		&& string("aeiou").find(input_[caret_pos_ - 4]) != string::npos
-		&& string("aeiou").find(input_[caret_pos_ - 5]) != string::npos
-		&& islower(input_[caret_pos_ - 6]) && string("aeiou").find(input_[caret_pos_ - 6]) == string::npos;
-}
-
 bool Context::OkFirst() const {
 	if (composition_.empty())
 		return false;
