@@ -28,7 +28,8 @@ enum KeyBindingCondition {
   kWhenIsSecond,    // is the second code char
   kWhenIsThird,    // is the third code char
   kWhenOkFirst,		// the first code char is ok for sb[kf]m*
-  kWhenOkThird,		// the third code char is ok for sb[kf]k
+  kWhenOkSecond,    // the second code char is ok for sb[kf]m*
+  kWhenOkThird,		// the third code char is ok for sb[kf]m*
   kWhenComposing,  // input string is not empty
   kAlways,
 };
@@ -44,6 +45,7 @@ static struct KeyBindingConditionDef {
   { kWhenIsSecond,   "is_second" },
   { kWhenIsThird,   "is_third" },
   { kWhenOkFirst,   "ok_first" },
+  { kWhenOkSecond,   "ok_second" },
   { kWhenOkThird,   "ok_third" },
   { kWhenComposing, "composing" },
   { kAlways,        "always"    },
@@ -212,6 +214,10 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
 
   if (ctx->OkFirst() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenOkFirst);
+  }
+
+  if (ctx->OkSecond() && !ctx->get_option("ascii_mode")) {
+    insert(kWhenOkSecond);
   }
 
   if (ctx->OkThird() && !ctx->get_option("ascii_mode")) {

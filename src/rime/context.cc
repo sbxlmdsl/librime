@@ -92,6 +92,12 @@ bool Context::OkFirst() const {
 	return input_.length() == 1 && string("aeiou").find(input_[0]) == string::npos; 
 }
 
+bool Context::OkSecond() const {
+  if (composition_.empty())
+    return false;
+  return input_.length() == 2 && string("aeiou").find(input_[1]) == string::npos;
+}
+
 bool Context::OkThird() const {
 	if (composition_.empty())
 		return false;

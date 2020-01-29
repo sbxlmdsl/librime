@@ -40,6 +40,7 @@ class Context {
   bool IsSecond() const;
   bool IsThird() const;
   bool OkFirst() const;
+  bool OkSecond() const;
   bool OkThird() const;
   an<Candidate> GetSelectedCandidate() const;
 
