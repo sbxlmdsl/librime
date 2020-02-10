@@ -415,11 +415,11 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   }
   else if (name_ == "sbjm" && (len == 6 || (prefixed && len == 11))) {
     int i;
-		for (i = 0; i < 7; i++) {
+		for (i = 0; i < 2; i++) {
 			if (e->text == string(words[i]))
 				break;
 		}
-    if (i < 7)
+    if (i < 2)
       continue;
 		result->Add(e);
 	}
