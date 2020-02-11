@@ -14,6 +14,7 @@
 #include <rime/schema.h>
 #include <rime/gear/selector.h>
 
+
 namespace rime {
     
     Selector::Selector(const Ticket& ticket) : Processor(ticket) {
@@ -101,7 +102,7 @@ namespace rime {
             index = ((ch - XK_KP_0) + 9) % 10;
         if (index >= 0) {
 			if (engine_->schema()->schema_id() ==  "sbjm" 
-				&& !current_segment.HasTag("paging") && ctx->input().length() < 6)
+				&& !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0]))
 				return kNoop;
             SelectCandidateAt(ctx, index);
             return kAccepted;
