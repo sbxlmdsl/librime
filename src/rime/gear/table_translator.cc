@@ -264,14 +264,14 @@ an<Translation> TableTranslator::Query(const string& input,
   }
   else {
     DictEntryIterator iter; 	
-	if (dict_ && dict_->loaded() && dict_->name() != "sbjm") {
+	if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sb[kf]m[ks]$"))) {
 		  dict_->LookupWords(&iter, code, false);
     }
     UserDictEntryIterator uter;
 	if (enable_user_dict) {
 	  user_dict_->LookupWords(&uter, code, false);
     if (encoder_ && encoder_->loaded()) {
-      if (user_dict_->name() == "sbjm"
+      if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[kf]m[ks]$"))
           && (code.length() < 3 || (code.length() == 3 && uter.size() == 1)))
         ;	// do nothing
       else
@@ -356,13 +356,13 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
           if (phrase.empty()) {
             phrase = it->text;  // last word
             pos = phrase.find_first_of(' ');
-            if (user_dict_->name() == "sbjm" && pos != string::npos) {
+            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[kf]m[ks]$")) && pos != string::npos) {
               phrase = phrase.substr(pos + 1);
             }
             continue;
           }
           pos = it->text.find_first_of(' ');
-          if (user_dict_->name() == "sbjm" && pos != string::npos) {
+          if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[kf]m[ks]$")) && pos != string::npos) {
             phrase = it->text.substr(pos + 1) + phrase;
           } else {
             phrase = it->text + phrase;  // prepend another word

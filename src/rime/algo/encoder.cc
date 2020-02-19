@@ -269,27 +269,26 @@ bool TableEncoder::DfsEncode(const string& phrase,
       DLOG(INFO) << "encode '" << phrase << "': "
                  << "[" << code->ToString() << "] -> [" << encoded << "]";
 
-	  if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[kf]m.*$"))) {
+	  if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[kf]m[ks]?$"))) {
 		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
 			  && boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))) {
 			  return false;
 		  }
 		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
-			  && boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))) {
+			  && boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
+        && boost::regex_match(dict_name_, boost::regex("^sb[kf]m$"))) {
 			  encoded.replace(2, 2, (*code)[1].substr(2, 2));
-		  }
+		  } else if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
+        && boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
+        && boost::regex_match(dict_name_, boost::regex("^sb[kf]m[ks]$"))) {
+        encoded.replace(2, 2, (*code)[1].substr(2, 4));
+      }
 	  }
-	  else if (code->size() == 2 && dict_name_ == "sbjm") {
-		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou]?$"))
-			  && boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou]?$"))) {
-			  return false;
-		  }
-	  }
-	  if (dict_name_ == "sbjm") {
-		collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
+	  if (boost::regex_match(dict_name_, boost::regex("^sbjm|sb[kf]m[ks]$"))) {
+		  collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
 	  }
 	  else {
-		collector_->CreateEntry(phrase, encoded, value);
+		  collector_->CreateEntry(phrase, encoded, value);
 	  }
       
       return true;

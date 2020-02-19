@@ -74,7 +74,7 @@ size_t UnityTableEncoder::LookupPhrases(UserDictEntryIterator* result,
                                         string* resume_key) {
   if (!user_dict_)
     return 0;
-  if (user_dict_->name() == "sbjm" && input.length() < 3) {
+  if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[kf]m[ks]$")) && input.length() < 3) {
     return 0;
   }
 
