@@ -352,8 +352,8 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
         continue;
       }
     } else if (!is_exact_match && len > 3 && boost::regex_match(name_, boost::regex("^sbjm|sb[kf]m[ks]$"))) {
-      string r1 = (len == 5) ? input.substr(3, 1) : input.substr(3, len - 3);
-      string r2 = (len == 5) ? key.substr(5, 1) : key.substr(5, len - 3);
+      string r1 = (len == 5 && name_ == "sbjm") ? input.substr(3, 1) : input.substr(3, len - 3);
+      string r2 = (len == 5 && name_ == "sbjm") ? key.substr(5, 1) : key.substr(5, len - 3);
       if (r1 == r2) {
         is_exact_match = true;
       } else {
@@ -386,11 +386,20 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   else if (boost::regex_match(name_, boost::regex("^sbjm|sb[kf]m[ks]$")) && (len == 4 || (prefixed && len == 9))) {
 		if (e->text == string(words[0]))
 			continue;
-		else
+		else if (name_ == "sbjm")
 			result->Add(e);
+		else {
+			if (!e_holder) {
+				e_holder = e;
+			}
+			else if (e_holder->weight < e->weight) {
+				e_holder = e;
+			}
+			continue;
+		}
 	}
   else if (boost::regex_match(name_, boost::regex("^sbjm|sb[kf]m[ks]$")) && (len == 5 || (prefixed && len == 10))) {
-    //if (name_ == "sbjm") {
+    if (name_ == "sbjm") {
       int i = 0;
       int j = (len == 5) ? 4 : 9;
       switch (input[j]) {
@@ -413,7 +422,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
         result->Add(e);
         return 1;
       }
-    /*} else {
+    } else {
       int i;
       for (i = 0; i < 2; i++) {
         if (e->text == string(words[i]))
@@ -421,23 +430,28 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       }
       if (i < 2)
         continue;
-      result->Add(e);
-    }*/
+	  if (!e_holder) {
+		  e_holder = e;
+	  }
+	  else if (e_holder->weight < e->weight) {
+		  e_holder = e;
+	  }
+	  continue;
+	}
   }
   else if (boost::regex_match(name_, boost::regex("^sbjm|sb[kf]m[ks]$")) && (len == 6 || (prefixed && len == 11))) {
-    int i;
-    //int j = (name_ == "sbjm") ? 2 : 3;
-    int j = 2;
+		int i;
+		int j = (name_ == "sbjm") ? 2 : 3;
 		for (i = 0; i < j; i++) {
 			if (e->text == string(words[i]))
 				break;
 		}
-    if (i < j)
-      continue;
+		if (i < j)
+		  continue;
 		result->Add(e);
 	} else {
 		result->Add(e);
-  }
+	}
 
     ++count;
     if (is_exact_match)
@@ -445,16 +459,21 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
     else if (limit && count >= limit)
       break;
   }
-  if (e_holder) {	// found one most used entry
+  if (e_holder && result->size() < 1) {	// found one most used entry
     ++count;
     ++exact_match_count;
-	  std::strcpy(words[0], e_holder->text.c_str());
-    result->Add(e_holder);
+	if (len == 3 || (prefixed && len == 8))
+		std::strcpy(words[0], e_holder->text.c_str());
+	else if (len == 4 || (prefixed && len == 9))
+		std::strcpy(words[1], e_holder->text.c_str());
+	else if (len == 5 || (prefixed && len == 10))
+		std::strcpy(words[2], e_holder->text.c_str());
+	result->Add(e_holder);
   }
   if (exact_match_count > 0) {
     result->SortRange(start, exact_match_count);
   }
-  if (boost::regex_match(name_, boost::regex("^sbjm|sb[kf]m[ks]$")) && prefixed && len == 9 && result->size() > 0) {
+  if (boost::regex_match(name_, boost::regex("^sbjm$")) && prefixed && len == 9 && result->size() > 0) {
     int i = 1;
     while (words[i] != string("")) {
       result->Next();
@@ -475,7 +494,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       }
     }
 	result->SetIndex(0);
-  } else if (boost::regex_match(name_, boost::regex("^sbjm|sb[kf]m[ks]$")) && len == 4 && result->size() > 0) {
+  } else if (boost::regex_match(name_, boost::regex("^sbjm$")) && len == 4 && result->size() > 0) {
     int i = 1;
     while (i < 7) {
       auto en = result->Peek();
@@ -490,9 +509,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       i++;
     }
     result->SetIndex(0);
-  } /*else if (boost::regex_match(name_, boost::regex("^sb[kf]m[ks]$")) && prefixed && len == 9 && result->size() > 0) {
-    
-  }*/
+  }
   if (resume_key) {
     *resume_key = key;
     DLOG(INFO) << "resume key reset to: " << *resume_key;
