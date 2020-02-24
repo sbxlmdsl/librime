@@ -271,9 +271,12 @@ an<Translation> TableTranslator::Query(const string& input,
 	if (enable_user_dict) {
 	  user_dict_->LookupWords(&uter, code, false);
     if (encoder_ && encoder_->loaded()) {
-      if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[kf]m[ks]$"))
+      if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[kf]mk]$"))
           && (code.length() < 3 || (code.length() == 3 && uter.size() == 1)))
         ;	// do nothing
+      else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[kf]ms]$"))
+          && (code.length() < 4 || (code.length() == 4 && uter.size() == 1)))
+        ;  // do nothing
       else
          encoder_->LookupPhrases(&uter, code, false);
         }

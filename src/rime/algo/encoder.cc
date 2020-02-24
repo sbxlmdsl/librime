@@ -274,7 +274,12 @@ bool TableEncoder::DfsEncode(const string& phrase,
 			  && boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))) {
 			  return false;
 		  }
-		  if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
+      if (boost::regex_match(dict_name_, boost::regex("^sb[kf]ms$"))
+        && boost::regex_match((*code)[0], boost::regex("^.+2$"))
+        && boost::regex_match((*code)[1], boost::regex("^.+2$"))) {
+        return false;
+      }
+      if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
 			  && boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
         && boost::regex_match(dict_name_, boost::regex("^sb[kf]m$"))) {
 			  encoded.replace(2, 2, (*code)[1].substr(2, 2));
@@ -284,10 +289,11 @@ bool TableEncoder::DfsEncode(const string& phrase,
         encoded.replace(2, 2, (*code)[1].substr(2, 4));
       }
 	  }
-	  if (boost::regex_match(dict_name_, boost::regex("^sbjm|sb[kf]m[ks]$"))) {
+	  if (boost::regex_match(dict_name_, boost::regex("^sbjm|sb[kf]mk]$"))) {
 		  collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
-	  }
-	  else {
+	  } else if (boost::regex_match(dict_name_, boost::regex("^sb[kf]ms]$"))) {
+      collector_->CreateEntry(encoded.substr(4) + " " + phrase, encoded.substr(0, 4), value);
+    }	  else {
 		  collector_->CreateEntry(phrase, encoded, value);
 	  }
       
