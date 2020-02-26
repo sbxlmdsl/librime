@@ -286,14 +286,14 @@ bool TableEncoder::DfsEncode(const string& phrase,
 		  } else if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
         && boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
         && boost::regex_match(dict_name_, boost::regex("^sb[kf]m[ks]$"))) {
-        encoded.replace(2, 2, (*code)[1].substr(2, 4));
+        encoded.replace(2, 4, (*code)[1].substr(2, 4));
       }
 	  }
 	  if (boost::regex_match(dict_name_, boost::regex("^sbjm|sb[kf]mk]$"))) {
 		  collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
 	  } else if (boost::regex_match(dict_name_, boost::regex("^sb[kf]ms]$"))) {
       collector_->CreateEntry(encoded.substr(4) + " " + phrase, encoded.substr(0, 4), value);
-    }	  else {
+    }	else {
 		  collector_->CreateEntry(phrase, encoded, value);
 	  }
       
