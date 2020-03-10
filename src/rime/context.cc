@@ -95,13 +95,13 @@ bool Context::OkFirst() const {
 bool Context::OkSecond() const {
   if (composition_.empty())
     return false;
-  return input_.length() == 2 && string("aeiou").find(input_[1]) == string::npos;
+  return input_.length() == 2 && string("aeiou23789").find(input_[1]) == string::npos;
 }
 
 bool Context::OkThird() const {
 	if (composition_.empty())
 		return false;
-	return input_.length() == 3 && string("aeiou").find(input_[2]) == string::npos;
+	return input_.length() == 3 && string("aeiou23789").find(input_[2]) == string::npos;
 }
 
 an<Candidate> Context::GetSelectedCandidate() const {
