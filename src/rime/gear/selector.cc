@@ -102,9 +102,12 @@ namespace rime {
         else if (ch >= XK_KP_0 && ch <= XK_KP_9)
             index = ((ch - XK_KP_0) + 9) % 10;
         if (index >= 0) {
-        if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sb[kf]m[ks]$"))
-				&& !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0]))
-				return kNoop;
+            if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sb[kf]m[ks]$"))
+            && !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0]))
+              return kNoop;
+            if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf]m$"))
+            && !current_segment.HasTag("paging") && ctx->input().length() < 4 && islower(ctx->input()[0]))
+              return kNoop;
             SelectCandidateAt(ctx, index);
             return kAccepted;
         }

@@ -431,11 +431,11 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
           i = 2; break;
         case 'e':
           i = 3; break;
-        case 'i':
-          i = 4; break;
-        case 'o':
-          i = 5; break;
         case 'u':
+          i = 4; break;
+        case 'i':
+          i = 5; break;
+        case 'o':
           i = 6; break;
       }
       if (i == 0 || words[i] == string(""))
