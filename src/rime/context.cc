@@ -70,20 +70,19 @@ bool Context::MorePage() const {
 bool Context::IsSecond() const {
 	if (composition_.empty())
 		return false;
-	const auto& menu(composition_.back().menu);
-	return menu && menu->candidate_count() > 1 && input_.length() % 2 == 0 && input_.length() >= 2
-		&& (islower(input_[caret_pos_ - 1]) || input_[caret_pos_ - 1] == '_')
-		&& islower(input_[caret_pos_ - 2]) && string("aeiou").find(input_[caret_pos_ - 2]) == string::npos;
+	return input_.length() == 2;
 }
 
 bool Context::IsThird() const {
 	if (composition_.empty())
 		return false;
-	const auto& menu(composition_.back().menu);
-	return menu && menu->candidate_count() > 1 && input_.length() >= 3 
-		&& string("aeiou").find(input_[caret_pos_ - 1]) != string::npos
-		&& string("aeiou").find(input_[caret_pos_ - 2]) != string::npos
-		&& islower(input_[caret_pos_ - 3]) && string("aeiou").find(input_[caret_pos_ - 3]) == string::npos;
+	return input_.length() == 3;
+}
+
+bool Context::IsFourth() const {
+	if (composition_.empty())
+		return false;
+	return input_.length() == 4;
 }
 
 bool Context::OkFirst() const {
@@ -102,6 +101,12 @@ bool Context::OkThird() const {
 	if (composition_.empty())
 		return false;
 	return input_.length() == 3 && string("aeiou23789").find(input_[2]) == string::npos;
+}
+
+bool Context::OkFourth() const {
+	if (composition_.empty())
+		return false;
+	return input_.length() == 4 && string("aeiou23789").find(input_[3]) == string::npos;
 }
 
 an<Candidate> Context::GetSelectedCandidate() const {

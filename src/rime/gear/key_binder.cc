@@ -26,10 +26,12 @@ enum KeyBindingCondition {
   kWhenHasMore,    // at least two candidates
   kWhenMorePage,    // at least five candidates
   kWhenIsSecond,    // is the second code char
-  kWhenIsThird,    // is the third code char
+  kWhenIsThird,
+  kWhenIsFourth,
   kWhenOkFirst,		// the first code char is ok for sb[kf]m*
-  kWhenOkSecond,    // the second code char is ok for sb[kf]m*
-  kWhenOkThird,		// the third code char is ok for sb[kf]m*
+  kWhenOkSecond, 
+  kWhenOkThird,
+  kWhenOkFourth,
   kWhenComposing,  // input string is not empty
   kAlways,
 };
@@ -44,9 +46,11 @@ static struct KeyBindingConditionDef {
   { kWhenMorePage,   "more_page"  },
   { kWhenIsSecond,   "is_second" },
   { kWhenIsThird,   "is_third" },
+  { kWhenIsFourth,   "is_fourth" },
   { kWhenOkFirst,   "ok_first" },
   { kWhenOkSecond,   "ok_second" },
   { kWhenOkThird,   "ok_third" },
+  { kWhenOkFourth,   "ok_fourth" },
   { kWhenComposing, "composing" },
   { kAlways,        "always"    },
   { kNever,         NULL        }
@@ -212,6 +216,10 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
 	  insert(kWhenIsThird);
   }
 
+  if (ctx->IsFourth() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenIsFourth);
+  }
+
   if (ctx->OkFirst() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenOkFirst);
   }
@@ -222,6 +230,10 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
 
   if (ctx->OkThird() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenOkThird);
+  }
+
+  if (ctx->OkFourth() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkFourth);
   }
 
   Composition& comp = ctx->composition();
