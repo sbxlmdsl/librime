@@ -40,6 +40,8 @@ class Context {
   bool IsSecond() const;
   bool IsThird() const;
   bool IsFourth() const;
+  bool IsFifth() const;
+  bool IsSixth() const;
   bool OkFirst() const;
   bool OkSecond() const;
   bool OkThird() const;

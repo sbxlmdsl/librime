@@ -270,8 +270,8 @@ namespace rime {
 					<< "[" << code->ToString() << "] -> [" << encoded << "]";
 
 				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[kf]m[ks]?$"))) {
-					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
-						&& boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))) {
+					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
+						&& boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))) {
 						return false;
 					}
 					if (boost::regex_match(dict_name_, boost::regex("^sb[kf]ms$"))
@@ -279,12 +279,12 @@ namespace rime {
 						&& boost::regex_match((*code)[1], boost::regex("^.+2$"))) {
 						return false;
 					}
-					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
+					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
 						&& boost::regex_match(dict_name_, boost::regex("^sb[kf]m$"))) {
 						encoded.replace(2, 2, (*code)[1].substr(2, 2));
 					}
-					else if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeiou_].*$"))
+					else if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
 						&& boost::regex_match(dict_name_, boost::regex("^sb[kf]m[ks]$"))) {
 						encoded.replace(2, 4, (*code)[1].substr(2, 4));
