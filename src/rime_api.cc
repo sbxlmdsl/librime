@@ -321,8 +321,8 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
         const string& select_keys(schema->select_keys());
         if (!select_keys.empty()) {
           context->menu.select_keys = new char[select_keys.length() + 1];
-		  if (!select_keys.compare(" aeuio") && 
-			  (ctx->input().length() <= 2 || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || !islower(ctx->input()[0])))
+		  if (!select_keys.compare(" aeuio") &&
+			  ( !islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || ctx->input().length() <= 3))
 			    std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
 		  else
 			std::strcpy(context->menu.select_keys, select_keys.c_str());
