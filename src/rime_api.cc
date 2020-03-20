@@ -335,7 +335,11 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
             an<ConfigValue> value = select_labels->GetValueAt(i);
             string label = value->str();
             context->select_labels[i] = new char[label.length() + 1];
-            std::strcpy(context->select_labels[i], label.c_str());
+			if (!select_keys.compare(" aeuio") &&
+				(!islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || ctx->input().length() <= 3))
+				std::strcpy(context->select_labels[i], " "); // hack for sbxlm
+			else
+				std::strcpy(context->select_labels[i], label.c_str());
           }
         }
       }
