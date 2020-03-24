@@ -106,19 +106,19 @@ bool Context::OkFirst() const {
 bool Context::OkSecond() const {
   if (composition_.empty())
     return false;
-  return islower(input_[0]) && input_.length() == 2 && string("aeuio23789").find(input_[1]) == string::npos;
+  return islower(input_[0]) && input_.length() == 2 && string("aeuio_23789").find(input_[1]) == string::npos;
 }
 
 bool Context::OkThird() const {
 	if (composition_.empty())
 		return false;
-	return islower(input_[0]) && input_.length() == 3 && string("aeuio23789").find(input_[2]) == string::npos;
+	return islower(input_[0]) && input_.length() == 3 && string("aeuio_23789").find(input_[2]) == string::npos;
 }
 
 bool Context::OkFourth() const {
 	if (composition_.empty())
 		return false;
-	return islower(input_[0]) && input_.length() == 4 && string("aeuio23789").find(input_[3]) == string::npos;
+	return islower(input_[0]) && input_.length() == 4 && string("aeuio_23789").find(input_[3]) == string::npos;
 }
 
 an<Candidate> Context::GetSelectedCandidate() const {

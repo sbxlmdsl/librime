@@ -331,7 +331,7 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
       UnityTableEncoder::RemovePrefix(&blessed.custom_code);
       user_dict_->UpdateEntry(blessed, 1);
     }
-    else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[kf]m$"))
+    else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[kf][md]$"))
       && 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
       ;
     }

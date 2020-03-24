@@ -269,13 +269,23 @@ namespace rime {
 				DLOG(INFO) << "encode '" << phrase << "': "
 					<< "[" << code->ToString() << "] -> [" << encoded << "]";
 
-				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[kf]m[ks]?$"))) {
+				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[kf][md][ks]?$"))) {
 					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))) {
 						return false;
 					}
-					if (boost::regex_match(dict_name_, boost::regex("^sb[kf]ms$"))
+					if (boost::regex_match(dict_name_, boost::regex("^sb[kf]ms|sb[kf]d$"))
 						&& boost::regex_match((*code)[0], boost::regex("^.+2$"))
+						&& boost::regex_match((*code)[1], boost::regex("^.+2$"))) {
+						return false;
+					}
+					if (boost::regex_match(dict_name_, boost::regex("^sb[kf]d$"))
+						&& boost::regex_match((*code)[0], boost::regex("^.+2$"))
+						&& boost::regex_match((*code)[1], boost::regex("^.+3$"))) {
+						return false;
+					}
+					if (boost::regex_match(dict_name_, boost::regex("^sb[kf]d$"))
+						&& boost::regex_match((*code)[0], boost::regex("^.+3$"))
 						&& boost::regex_match((*code)[1], boost::regex("^.+2$"))) {
 						return false;
 					}
@@ -283,6 +293,11 @@ namespace rime {
 						&& boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
 						&& boost::regex_match(dict_name_, boost::regex("^sb[kf]m$"))) {
 						encoded.replace(2, 2, (*code)[1].substr(2, 2));
+					}
+					else if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
+						&& boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
+						&& boost::regex_match(dict_name_, boost::regex("^sb[kf]d$"))) {
+						encoded.replace(2, 3, (*code)[1].substr(3, 2));
 					}
 					else if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
