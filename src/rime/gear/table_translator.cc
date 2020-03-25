@@ -177,6 +177,9 @@ bool LazyTableTranslation::FetchMoreUserPhrases() {
 bool LazyTableTranslation::FetchMoreTableEntries() {
   if (!dict_ || limit_ == 0)
     return false;
+  if (boost::regex_match(dict_->name(), boost::regex("^sb[kf]dgd$")) && (input_.length() == 1
+	  || input_.length() == 2 && string("_aeuio").find(input_[1]) == string::npos))
+	  return false;
   size_t previous_entry_count = iter_.entry_count();
   DLOG(INFO) << "fetching more table entries: limit = " << limit_
              << ", count = " << previous_entry_count;
