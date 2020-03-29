@@ -307,11 +307,26 @@ namespace rime {
 						encoded.replace(2, 4, (*code)[1].substr(2, 4));
 					}
 				}
+        else if (boost::regex_match(dict_name_, boost::regex("^sbdp$"))) {
+            if (boost::regex_match((*code)[0], boost::regex("^.+2$"))
+              && boost::regex_match((*code)[1], boost::regex("^.+2$"))) {
+              return false;
+            }
+            int len0 = (*code)[0].length() - 4;
+            int len1 = (*code)[1].length() - 4;
+            if (code->size() == 2) {
+              string tmp = (*code)[1].substr(0, len1) + (*code)[0].substr(len0, 3);
+              encoded.replace(1, 1, tmp.substr(0, 6));
+            }
+            else {
+              encoded.replace(4, 0, (*code)[0].substr(len0, 2));
+            }
+        }
 
 				if (boost::regex_match(dict_name_, boost::regex("^sbjm|sb[kf]mk$"))) {
 					collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
 				}
-				else if (boost::regex_match(dict_name_, boost::regex("^sb[kf]ms$"))) {
+				else if (boost::regex_match(dict_name_, boost::regex("^sbdp|sb[kf]ms$"))) {
 					collector_->CreateEntry(encoded.substr(4) + " " + phrase, encoded.substr(0, 4), value);
 				}
 				else {
