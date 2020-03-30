@@ -316,7 +316,7 @@ namespace rime {
             int len1 = (*code)[1].length() - 4;
             if (code->size() == 2) {
               string tmp = (*code)[1].substr(0, len1) + (*code)[0].substr(len0, 3);
-              encoded.replace(1, 1, tmp.substr(0, 6));
+              encoded.replace(1, 1, tmp.substr(0, 5));
             }
             else {
               encoded.replace(4, 0, (*code)[0].substr(len0, 2));
