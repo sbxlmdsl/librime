@@ -308,7 +308,7 @@ namespace rime {
 					}
 				}
         else if (boost::regex_match(dict_name_, boost::regex("^sbdp$"))) {
-            if (boost::regex_match((*code)[0], boost::regex("^.+2$"))
+            if (code->size() == 2 && boost::regex_match((*code)[0], boost::regex("^.+2$"))
               && boost::regex_match((*code)[1], boost::regex("^.+2$"))) {
               return false;
             }
