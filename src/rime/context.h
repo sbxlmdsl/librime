@@ -37,6 +37,8 @@ class Context {
   bool HasMenu() const;
   bool HasMore() const;
   bool MorePage() const;
+  bool IsEven() const;
+  bool IsOdd() const;
   bool IsSecond() const;
   bool IsThird() const;
   bool IsFourth() const;

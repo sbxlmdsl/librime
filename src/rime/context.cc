@@ -67,58 +67,81 @@ bool Context::MorePage() const {
 	return menu && menu->candidate_count() > 5;
 }
 
+bool Context::IsEven() const {
+	if (composition_.empty())
+		return false;
+	auto seg = composition_.back();
+	return seg.length % 2 == 0;
+}
+
+bool Context::IsOdd() const {
+	if (composition_.empty())
+		return false;
+	auto seg = composition_.back();
+	return seg.length % 2 == 1;
+}
+
 bool Context::IsSecond() const {
 	if (composition_.empty())
 		return false;
-	return input_.length() == 2;
+	auto seg = composition_.back();
+	return seg.length == 2;
 }
 
 bool Context::IsThird() const {
 	if (composition_.empty())
 		return false;
-	return input_.length() == 3;
+	auto seg = composition_.back();
+	return seg.length == 3;
 }
 
 bool Context::IsFourth() const {
 	if (composition_.empty())
 		return false;
-	return input_.length() == 4;
+	auto seg = composition_.back();
+	return seg.length == 4;
 }
 
 bool Context::IsFifth() const {
 	if (composition_.empty())
 		return false;
-	return input_.length() == 5;
+	auto seg = composition_.back();
+	return seg.length == 5;
 }
 
 bool Context::IsSixth() const {
 	if (composition_.empty())
 		return false;
-	return input_.length() == 6;
+	auto seg = composition_.back();
+	return seg.length == 6;
 }
 
 bool Context::OkFirst() const {
 	if (composition_.empty())
 		return false;
-	return islower(input_[0]) && input_.length() == 1 && string("aeuio").find(input_[0]) == string::npos;
+	auto seg = composition_.back();
+	return islower(input_[seg.start]) && seg.length == 1 && string("aeuio").find(input_[seg.start]) == string::npos;
 }
 
 bool Context::OkSecond() const {
   if (composition_.empty())
     return false;
-  return islower(input_[0]) && input_.length() == 2 && string("aeuio_23789").find(input_[1]) == string::npos;
+  auto seg = composition_.back();
+  return islower(input_[seg.start]) && seg.length == 2 && string("aeuio_23789").find(input_[seg.start+1]) == string::npos;
 }
 
 bool Context::OkThird() const {
 	if (composition_.empty())
 		return false;
-	return islower(input_[0]) && input_.length() == 3 && string("aeuio_23789").find(input_[2]) == string::npos;
+	auto seg = composition_.back();
+	return islower(input_[seg.start]) && seg.length == 3 && string("aeuio_23789").find(input_[seg.start+2]) == string::npos;
 }
 
 bool Context::OkFourth() const {
 	if (composition_.empty())
 		return false;
-	return islower(input_[0]) && input_.length() == 4 && string("aeuio_23789").find(input_[3]) == string::npos;
+	auto seg = composition_.back();
+	return islower(input_[seg.start]) && seg.length == 4 && string("aeuio_23789").find(input_[seg.start + 3]) == string::npos;
 }
 
 an<Candidate> Context::GetSelectedCandidate() const {
