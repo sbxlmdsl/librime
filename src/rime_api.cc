@@ -329,7 +329,7 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
         }
         Config* config = schema->config();
         an<ConfigList>  select_labels = config->GetList("menu/alternative_select_labels");
-        string labels[] = {"ａ","ｅ","ｕ","ｉ","ｏ"};
+        string labels[] = {"6 ","7 ","8 ","9 ","0 "};
         if (select_labels && (size_t)page_size <= select_labels->size()) {
           context->select_labels = new char*[page_size];
           for (size_t i = 0; i < (size_t)page_size; ++i) {
@@ -339,7 +339,7 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
             if (!select_keys.compare(" aeuio") &&
                 (!islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || ctx->input().length() <= 3))
               std::strcpy(context->select_labels[i], " "); // hack for sbxlm
-            else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]z$")) && ctx->IsEven())
+            else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]z$")) && ctx->IsOdd())
               std::strcpy(context->select_labels[i], labels[i].c_str());
             else
               std::strcpy(context->select_labels[i], label.c_str());
