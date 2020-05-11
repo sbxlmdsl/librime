@@ -66,7 +66,7 @@ static void rime_declare_module_dependencies() {
 
 RIME_API void RimeSetup(RimeTraits *traits) {
   rime_declare_module_dependencies();
-
+  
   setup_deployer(traits);
   if (PROVIDED(traits, app_name)) {
     SetupLogging(traits->app_name, traits->min_log_level, traits->log_dir);
@@ -77,7 +77,7 @@ RIME_API void RimeSetNotificationHandler(RimeNotificationHandler handler,
                                          void* context_object) {
   if (handler) {
     Service::instance().SetNotificationHandler(
-        std::bind(handler, context_object, _1, _2, _3));
+                                               std::bind(handler, context_object, _1, _2, _3));
   }
   else {
     Service::instance().ClearNotificationHandler();
@@ -293,13 +293,13 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
   }
   if (ctx->HasMenu()) {
     Segment &seg(ctx->composition().back());
-    int page_size = 5; 
+    int page_size = 5;
     Schema *schema = session->schema();
     if (schema)
       page_size = schema->page_size();
-	  int selected_index = seg.selected_index;
-	  int page_no = selected_index / page_size;
-
+    int selected_index = seg.selected_index;
+    int page_no = selected_index / page_size;
+    
     the<Page> page(seg.menu->CreatePage(page_size, page_no));
     if (page) {
       context->menu.page_size = page_size;
@@ -321,25 +321,28 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
         const string& select_keys(schema->select_keys());
         if (!select_keys.empty()) {
           context->menu.select_keys = new char[select_keys.length() + 1];
-		  if (!select_keys.compare(" aeuio") &&
-			  ( !islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || ctx->input().length() <= 3))
-			    std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
-		  else
-			std::strcpy(context->menu.select_keys, select_keys.c_str());
+          if (!select_keys.compare(" aeuio") &&
+              ( !islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || ctx->input().length() <= 3))
+            std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
+          else
+            std::strcpy(context->menu.select_keys, select_keys.c_str());
         }
         Config* config = schema->config();
         an<ConfigList>  select_labels = config->GetList("menu/alternative_select_labels");
+        string labels[] = {"ａ","ｅ","ｕ","ｉ","ｏ"};
         if (select_labels && (size_t)page_size <= select_labels->size()) {
           context->select_labels = new char*[page_size];
           for (size_t i = 0; i < (size_t)page_size; ++i) {
             an<ConfigValue> value = select_labels->GetValueAt(i);
             string label = value->str();
             context->select_labels[i] = new char[label.length() + 1];
-			if (!select_keys.compare(" aeuio") &&
-				(!islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || ctx->input().length() <= 3))
-				std::strcpy(context->select_labels[i], " "); // hack for sbxlm
-			else
-				std::strcpy(context->select_labels[i], label.c_str());
+            if (!select_keys.compare(" aeuio") &&
+                (!islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || ctx->input().length() <= 3))
+              std::strcpy(context->select_labels[i], " "); // hack for sbxlm
+            else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]z$")) && ctx->IsEven())
+              std::strcpy(context->select_labels[i], labels[i].c_str());
+            else
+              std::strcpy(context->select_labels[i], label.c_str());
           }
         }
       }
@@ -380,17 +383,17 @@ RIME_API Bool RimeGetCommit(RimeSessionId session_id, RimeCommit* commit) {
     return False;
   const string& commit_text(session->commit_text());
   if (!commit_text.empty()) {
-	size_t pos = commit_text.find_first_of(' ');
-	if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sbdp|sb[kf]m[ks]$")) && pos != string::npos) {
-		commit->text = new char[commit_text.length() - pos];
-		std::strcpy(commit->text, commit_text.c_str() + pos + 1);
-	}
-	else {
-		commit->text = new char[commit_text.length() + 1];
-		std::strcpy(commit->text, commit_text.c_str());
-	}
-
-	session->ResetCommitText();
+    size_t pos = commit_text.find_first_of(' ');
+    if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sbdp|sb[kf]m[ks]$")) && pos != string::npos) {
+      commit->text = new char[commit_text.length() - pos];
+      std::strcpy(commit->text, commit_text.c_str() + pos + 1);
+    }
+    else {
+      commit->text = new char[commit_text.length() + 1];
+      std::strcpy(commit->text, commit_text.c_str());
+    }
+    
+    session->ResetCommitText();
     return True;
   }
   return False;
@@ -693,8 +696,8 @@ struct RimeConfigIteratorImpl {
   string key;
   string path;
   RimeConfigIteratorImpl<T>(T& container, const string& root_path)
-      : iter(container.begin()),
-        end(container.end()) {
+  : iter(container.begin()),
+  end(container.end()) {
     if (root_path.empty() || root_path == "/") {
       // prefix is empty
     }
@@ -745,7 +748,7 @@ RIME_API Bool RimeConfigNext(RimeConfigIterator* iterator) {
     return False;
   if (iterator->list) {
     RimeConfigIteratorImpl<ConfigList>* p =
-        reinterpret_cast<RimeConfigIteratorImpl<ConfigList>*>(iterator->list);
+    reinterpret_cast<RimeConfigIteratorImpl<ConfigList>*>(iterator->list);
     if (!p) return False;
     if (++iterator->index > 0)
       ++p->iter;
@@ -759,7 +762,7 @@ RIME_API Bool RimeConfigNext(RimeConfigIterator* iterator) {
   }
   if (iterator->map) {
     RimeConfigIteratorImpl<ConfigMap>* p =
-        reinterpret_cast<RimeConfigIteratorImpl<ConfigMap>*>(iterator->map);
+    reinterpret_cast<RimeConfigIteratorImpl<ConfigMap>*>(iterator->map);
     if (!p) return False;
     if (++iterator->index > 0)
       ++p->iter;
