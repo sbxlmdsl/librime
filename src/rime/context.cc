@@ -67,6 +67,13 @@ bool Context::MorePage() const {
 	return menu && menu->candidate_count() > 5;
 }
 
+bool Context::EveryThird() const {
+	if (composition_.empty())
+		return false;
+	auto seg = composition_.back();
+	return seg.length % 3 == 0;
+}
+
 bool Context::IsEven() const {
 	if (composition_.empty())
 		return false;

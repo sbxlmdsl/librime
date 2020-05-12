@@ -27,6 +27,7 @@ enum KeyBindingCondition {
   kWhenMorePage,    // at least five candidates
   kWhenIsEven,    // is the even code char
   kWhenIsOdd,
+  kWhenEveryThird,
   kWhenIsSecond,    // is the second code char
   kWhenIsThird,
   kWhenIsFourth,
@@ -50,6 +51,7 @@ static struct KeyBindingConditionDef {
   { kWhenMorePage,   "more_page"  },
   { kWhenIsEven,   "is_even" },
   { kWhenIsOdd,   "is_odd" },
+  { kWhenEveryThird,   "every_third" },
   { kWhenIsSecond,   "is_second" },
   { kWhenIsThird,   "is_third" },
   { kWhenIsFourth,   "is_fourth" },
@@ -214,6 +216,10 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
 
   if (ctx->MorePage() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenMorePage);
+  }
+
+  if (ctx->EveryThird() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenEveryThird);
   }
 
   if (ctx->IsEven() && !ctx->get_option("ascii_mode")) {

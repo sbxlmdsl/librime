@@ -39,6 +39,7 @@ class Context {
   bool MorePage() const;
   bool IsEven() const;
   bool IsOdd() const;
+  bool EveryThird() const;
   bool IsSecond() const;
   bool IsThird() const;
   bool IsFourth() const;
