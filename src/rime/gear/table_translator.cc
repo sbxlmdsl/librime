@@ -361,8 +361,15 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
               it->type != "user_table" &&
               it->type != "sentence" &&
               it->type != "simplified" &&
-              it->type != "uniquified")
+              it->type != "uniquified" &&
+              it->type != "raw")
             break;
+          if (it->type == "raw") {
+            if (it->text.length() == 0)
+              continue;
+            else
+              break;
+          }
           if (phrase.empty()) {
             phrase = it->text;  // last word
             pos = phrase.find_first_of(' ');
