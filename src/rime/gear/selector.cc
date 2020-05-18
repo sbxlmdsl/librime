@@ -108,7 +108,10 @@ namespace rime {
             if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf][md]$"))
             && !current_segment.HasTag("paging") && ctx->input().length() < 4 && islower(ctx->input()[0]))
               return kNoop;
-            SelectCandidateAt(ctx, index);
+			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjx$"))
+				&& !current_segment.HasTag("paging") && ctx->input().length() < 3 && islower(ctx->input()[0]))
+				return kNoop;
+			SelectCandidateAt(ctx, index);
             return kAccepted;
         }
         // not handled

@@ -256,7 +256,7 @@ an<Translation> TableTranslator::Query(const string& input,
   boost::trim_right_if(code, boost::is_any_of(delimiters_));
 
   an<Translation> translation;
-  if (enable_completion_) {
+  if (enable_completion_ && !(boost::regex_match(dict_->name(), boost::regex("^sbjx$")) && segment.length <= 2)) {
     translation = Cached<LazyTableTranslation>(
         this,
         code,
