@@ -324,16 +324,13 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
           if (!select_keys.compare(" aeuio") &&
               ( !islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || ctx->input().length() <= 3))
             std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
-		  else if (!select_keys.compare(" 23789") && boost::regex_match(schema->schema_id(), boost::regex("^sbjx$")) &&
-			  (!islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || ctx->input().length() <= 2))
-			  std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbjx
-		  else
+          else
             std::strcpy(context->menu.select_keys, select_keys.c_str());
         }
         Config* config = schema->config();
         an<ConfigList>  select_labels = config->GetList("menu/alternative_select_labels");
         string labels[] = {"6 ","7 ","8 ","9 ","0 "};
-		if (select_labels && (size_t)page_size <= select_labels->size()) {
+        if (select_labels && (size_t)page_size <= select_labels->size()) {
           context->select_labels = new char*[page_size];
           for (size_t i = 0; i < (size_t)page_size; ++i) {
             an<ConfigValue> value = select_labels->GetValueAt(i);

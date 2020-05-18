@@ -197,9 +197,8 @@ bool Speller::AutoSelectPreviousMatch(Context* ctx,
   size_t end = previous_segment->end;
   string input = ctx->input();
   string converted = input.substr(0, end);
-  const an<Candidate>& cand = previous_segment->GetSelectedCandidate();
-  if (is_auto_selectable(cand, converted, delimiters_)
-	  || (Candidate::GetGenuineCandidate(cand)->type() == "completion") && this->engine_->schema()->schema_id() == "sbjx") {
+  if (is_auto_selectable(previous_segment->GetSelectedCandidate(),
+                         converted, delimiters_)) {
     // reuse previous match
     ctx->composition().pop_back();
     ctx->composition().push_back(std::move(*previous_segment));
