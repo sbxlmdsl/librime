@@ -267,7 +267,7 @@ an<Translation> TableTranslator::Query(const string& input,
   }
   else {
     DictEntryIterator iter; 	
-	if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbdp|sb[kf]m[ks]$"))) {
+	if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp|sb[kf]m[ks]$"))) {
 		  dict_->LookupWords(&iter, code, false);
     }
     UserDictEntryIterator uter;
