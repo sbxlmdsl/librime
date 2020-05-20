@@ -67,60 +67,70 @@ bool Context::MorePage() const {
 	return menu && menu->candidate_count() > 5;
 }
 
-bool Context::EveryThird() const {
-	if (composition_.empty())
-		return false;
-	auto seg = composition_.back();
-	return seg.length >= 3 && string("aeuio").find(input_[caret_pos_-1]) != string::npos && string("aeuio").find(input_[caret_pos_ - 2]) != string::npos;
+int Context::CountLength() const {
+  if (composition_.empty())
+    return false;
+  auto seg = composition_.back();
+  int j = 0;
+  for (int i = 0; i < caret_pos_; i++) {
+    if (j == 0 && string("aeuio").find(input_[seg.start + i]) == string::npos) {
+      j++;
+      continue;
+    }
+    if (j == 1) {
+      j++;
+      continue;
+    }
+    if (j >= 2 && string("aeuio").find(input_[seg.start + i]) == string::npos) {
+      j = 1;
+      continue;
+    }
+    j++;
+  }
+  return j;
 }
 
-bool Context::IsEven() const {
-	if (composition_.empty())
-		return false;
-	auto seg = composition_.back();
-	return seg.length % 2 == 0;
+int Context::CountLength2() const {
+  if (composition_.empty())
+    return false;
+  auto seg = composition_.back();
+  int j = 0;
+  for (int i = 0; i < caret_pos_; i++) {
+    if (j == 0 && string("aeuio").find(input_[seg.start + i]) == string::npos) {
+      j++;
+      continue;
+    }
+    if (j >= 1 && string("aeuio").find(input_[seg.start + i]) == string::npos) {
+      j = 1;
+      continue;
+    }
+    j++;
+  }
+  return j;
 }
 
-bool Context::IsOdd() const {
-	if (composition_.empty())
-		return false;
-	auto seg = composition_.back();
-	return seg.length % 2 == 1;
+bool Context::IsFirst() const {
+  return CountLength() == 1;
 }
 
 bool Context::IsSecond() const {
-	if (composition_.empty())
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 2;
+  return CountLength() == 2;
 }
 
 bool Context::IsThird() const {
-	if (composition_.empty())
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 3;
+  return CountLength() == 3;
 }
 
 bool Context::IsFourth() const {
-	if (composition_.empty())
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 4;
+  return CountLength() == 4;
 }
 
 bool Context::IsFifth() const {
-	if (composition_.empty())
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 5;
+  return CountLength2() == 5;
 }
 
 bool Context::IsSixth() const {
-	if (composition_.empty())
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 6;
+  return CountLength2() == 6;
 }
 
 bool Context::OkFirst() const {

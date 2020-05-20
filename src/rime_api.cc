@@ -339,9 +339,9 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
             if (!select_keys.compare(" aeuio") &&
                 (!islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos || ctx->input().length() <= 3))
               std::strcpy(context->select_labels[i], " "); // hack for sbxlm
-            else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]z$")) && ctx->IsOdd())
+            else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]z$")) && ctx->IsFourth())
               std::strcpy(context->select_labels[i], labels[i].c_str());
-			else if (boost::regex_match(schema->schema_id(), boost::regex("^sbjz$")) && !ctx->EveryThird())
+			else if (boost::regex_match(schema->schema_id(), boost::regex("^sbjz$")) && !ctx->IsSixth())
 				std::strcpy(context->select_labels[i], labels[i].c_str());
 			else
               std::strcpy(context->select_labels[i], label.c_str());

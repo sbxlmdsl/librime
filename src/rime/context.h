@@ -37,9 +37,7 @@ class Context {
   bool HasMenu() const;
   bool HasMore() const;
   bool MorePage() const;
-  bool IsEven() const;
-  bool IsOdd() const;
-  bool EveryThird() const;
+  bool IsFirst() const;
   bool IsSecond() const;
   bool IsThird() const;
   bool IsFourth() const;
@@ -49,6 +47,9 @@ class Context {
   bool OkSecond() const;
   bool OkThird() const;
   bool OkFourth() const;
+  int CountLength() const;
+  int CountLength2() const;
+
   an<Candidate> GetSelectedCandidate() const;
 
   bool PushInput(char ch);

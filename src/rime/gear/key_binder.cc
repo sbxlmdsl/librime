@@ -25,14 +25,12 @@ enum KeyBindingCondition {
   kWhenHasMenu,    // at least one candidate
   kWhenHasMore,    // at least two candidates
   kWhenMorePage,    // at least five candidates
-  kWhenIsEven,    // is the even code char
-  kWhenIsOdd,
-  kWhenEveryThird,
-  kWhenIsSecond,    // is the second code char
-  kWhenIsThird,
-  kWhenIsFourth,
-  kWhenIsFifth,
-  kWhenIsSixth,
+  kWhenIsFirst,    // for sbkz and sbfz
+  kWhenIsSecond,    // for sbkz and sbfz
+  kWhenIsThird,    // for sbkz and sbfz
+  kWhenIsFourth,    // for sbkz and sbfz
+  kWhenIsFifth,    // for sbjz
+  kWhenIsSixth,    // for sbjz
   kWhenOkFirst,		// the first code char is ok for sb[kf]m*
   kWhenOkSecond, 
   kWhenOkThird,
@@ -49,9 +47,7 @@ static struct KeyBindingConditionDef {
   { kWhenHasMenu,   "has_menu"  },
   { kWhenHasMore,   "has_more"  },
   { kWhenMorePage,   "more_page"  },
-  { kWhenIsEven,   "is_even" },
-  { kWhenIsOdd,   "is_odd" },
-  { kWhenEveryThird,   "every_third" },
+  { kWhenIsFirst,   "is_first" },
   { kWhenIsSecond,   "is_second" },
   { kWhenIsThird,   "is_third" },
   { kWhenIsFourth,   "is_fourth" },
@@ -218,16 +214,8 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
 	  insert(kWhenMorePage);
   }
 
-  if (ctx->EveryThird() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenEveryThird);
-  }
-
-  if (ctx->IsEven() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsEven);
-  }
-
-  if (ctx->IsOdd() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsOdd);
+  if (ctx->IsFirst() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenIsFirst);
   }
 
   if (ctx->IsSecond() && !ctx->get_option("ascii_mode")) {
