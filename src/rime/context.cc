@@ -67,44 +67,49 @@ bool Context::MorePage() const {
 	return menu && menu->candidate_count() > 5;
 }
 
+// for sbkz and sbfz
 int Context::CountLength() const {
   if (composition_.empty())
     return false;
   auto seg = composition_.back();
   int j = 0;
-  for (int i = 0; i < caret_pos_; i++) {
-    if (j == 0 && string("aeuio").find(input_[seg.start + i]) == string::npos) {
+  for (int i = seg.start; i < caret_pos_; i++) {
+	if (j == 0) {
+		if (string("aeuio").find(input_[seg.start + i]) == string::npos) 
+			j++;
+		continue;
+	} else if (j == 1) {
       j++;
       continue;
-    }
-    if (j == 1) {
-      j++;
-      continue;
-    }
-    if (j >= 2 && string("aeuio").find(input_[seg.start + i]) == string::npos) {
-      j = 1;
-      continue;
-    }
-    j++;
+    } else if (j >= 2) {
+		if (string("aeuio").find(input_[seg.start + i]) == string::npos)
+			j = 1;
+		else
+			j++;
+		continue;
+	}
   }
   return j;
 }
 
+// for sbjz
 int Context::CountLength2() const {
   if (composition_.empty())
     return false;
   auto seg = composition_.back();
   int j = 0;
-  for (int i = 0; i < caret_pos_; i++) {
-    if (j == 0 && string("aeuio").find(input_[seg.start + i]) == string::npos) {
-      j++;
-      continue;
-    }
-    if (j >= 1 && string("aeuio").find(input_[seg.start + i]) == string::npos) {
-      j = 1;
-      continue;
-    }
-    j++;
+  for (int i = seg.start; i < caret_pos_; i++) {
+	  if (j == 0) {
+		  if (string("aeuio").find(input_[seg.start + i]) == string::npos)
+			  j++;
+		  continue;
+	  } else if (j >= 1) {
+		  if (string("aeuio").find(input_[seg.start + i]) == string::npos)
+			  j = 1;
+		  else
+			  j++;
+		  continue;
+	  }
   }
   return j;
 }
