@@ -75,14 +75,14 @@ int Context::CountLength() const {
   int j = 0;
   for (int i = seg.start; i < caret_pos_; i++) {
 	if (j == 0) {
-		if (string("aeuio").find(input_[seg.start + i]) == string::npos) 
+		if (string("aeuio").find(input_[i]) == string::npos)
 			j++;
 		continue;
 	} else if (j == 1) {
       j++;
       continue;
     } else if (j >= 2) {
-		if (string("aeuio").find(input_[seg.start + i]) == string::npos)
+		if (string("aeuio").find(input_[i]) == string::npos)
 			j = 1;
 		else
 			j++;
@@ -100,11 +100,11 @@ int Context::CountLength2() const {
   int j = 0;
   for (int i = seg.start; i < caret_pos_; i++) {
 	  if (j == 0) {
-		  if (string("aeuio").find(input_[seg.start + i]) == string::npos)
+		  if (string("aeuio").find(input_[i]) == string::npos)
 			  j++;
 		  continue;
 	  } else if (j >= 1) {
-		  if (string("aeuio").find(input_[seg.start + i]) == string::npos)
+		  if (string("aeuio").find(input_[i]) == string::npos)
 			  j = 1;
 		  else
 			  j++;
