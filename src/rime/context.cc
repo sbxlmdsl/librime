@@ -138,6 +138,13 @@ bool Context::IsSixth() const {
   return CountLength2() == 6;
 }
 
+bool Context::IsSelect() const {
+  if (composition_.empty())
+    return false;
+  auto seg = composition_.back();
+  return CountLength() == 4 || (CountLength() == 2 && string("_aeuio").find(input_[seg.start+1]));
+}
+
 bool Context::OkFirst() const {
 	if (composition_.empty())
 		return false;
