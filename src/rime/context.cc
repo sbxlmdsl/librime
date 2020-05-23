@@ -142,7 +142,7 @@ bool Context::IsSelect() const {
   if (composition_.empty())
     return false;
   auto seg = composition_.back();
-  return CountLength() == 4 || (CountLength() == 2 && string("_aeuio").find(input_[seg.start+1]) == string::npos);
+  return IsFourth() || (IsSecond() && string("_aeuio").find(input_[seg.start+1]) != string::npos);
 }
 
 bool Context::OkFirst() const {
