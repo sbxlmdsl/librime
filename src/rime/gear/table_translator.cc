@@ -267,7 +267,7 @@ an<Translation> TableTranslator::Query(const string& input,
   }
   else {
     DictEntryIterator iter; 	
-	if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp|sb[kf]m[ks]$"))) {
+	if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]$"))) {
 		  dict_->LookupWords(&iter, code, false);
     }
     UserDictEntryIterator uter;
@@ -277,7 +277,7 @@ an<Translation> TableTranslator::Query(const string& input,
       if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[kf]mk$"))
           && (code.length() < 3 || (code.length() == 3 && uter.size() == 1)))
         ;	// do nothing
-      else if (boost::regex_match(user_dict_->name(), boost::regex("^sbdp|sb[kf]ms$"))
+      else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjk|sbdp|sb[kf]ms$"))
           && (code.length() < 4 || (code.length() == 4 && uter.size() == 1)))
         ;  // do nothing
       else
@@ -373,13 +373,13 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
           if (phrase.empty()) {
             phrase = it->text;  // last word
             pos = phrase.find_first_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sb[kf]m[ks]$")) && pos != string::npos) {
+            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]$")) && pos != string::npos) {
               phrase = phrase.substr(pos + 1);
             }
             continue;
           }
           pos = it->text.find_first_of(' ');
-          if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sb[kf]m[ks]$")) && pos != string::npos) {
+          if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]$")) && pos != string::npos) {
             phrase = it->text.substr(pos + 1) + phrase;
           } else {
             phrase = it->text + phrase;  // prepend another word
