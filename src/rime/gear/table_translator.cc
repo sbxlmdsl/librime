@@ -278,7 +278,7 @@ an<Translation> TableTranslator::Query(const string& input,
           && (code.length() < 3 || (code.length() == 3 && uter.size() == 1)))
         ;	// do nothing
       else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjk|sbdp|sb[kf]ms$"))
-          && (code.length() < 4 || (code.length() == 4 && uter.size() == 1)))
+          && (code.length() < 4))
         ;  // do nothing
       else
          encoder_->LookupPhrases(&uter, code, false);
