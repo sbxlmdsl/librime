@@ -360,8 +360,8 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
         continue;
     }
     if (!is_exact_match && prefixed && len > 8 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk$"))) {
-      string r1 = (len == 10) ? input.substr(8, 1) : input.substr(8, len - 8);
-      string r2 = (len == 10) ? key.substr(10, 1) : key.substr(10, len - 8);
+      string r1 = (len == 10 && name_ == "sbjm") ? input.substr(8, 1) : input.substr(8, len - 8);
+      string r2 = (len == 10 && name_ == "sbjm") ? key.substr(10, 1) : key.substr(10, len - 8);
       if (r1 == r2) {
         is_exact_match = true;
       } else {
