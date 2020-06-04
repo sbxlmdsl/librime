@@ -150,7 +150,15 @@ void Editor::BackToPreviousSyllable(Context* ctx) {
 }
 
 void Editor::DeleteCandidate(Context* ctx) {
-  ctx->DeleteCurrentSelection();
+	string schema = engine_->schema()->schema_id();
+	if (schema == "sbjm" || schema == "sbdp") {
+		size_t len = ctx->input().length();
+		if (len <= 2)
+			return;
+		if (len == 3 && string("23789").find(ctx->input()[2]) != string::npos)
+			return;
+	}
+	ctx->DeleteCurrentSelection();
 }
 
 void Editor::DeleteChar(Context* ctx) {
