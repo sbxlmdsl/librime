@@ -1,4 +1,4 @@
-﻿// encoding: utf-8
+// encoding: utf-8
 //
 // Copyright RIME Developers
 // Distributed under the BSD License
@@ -71,6 +71,19 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   if (!use_space_ && ch == XK_space && ctx->IsComposing()) {
     return kNoop;
   }
+  string schema = engine_->schema()->schema_id();
+  if ((schema == "sbfm" || schema == "sbfd" || schema == "sbkm" || schema == "sbkd")
+    && ctx->OkFirst() && ctx->input().size() == 1) {
+    engine_->ProcessKey(KeyEvent(XK_space, 0));
+  }
+  if ((schema == "sbfm" || schema == "sbfd" || schema == "sbkm" || schema == "sbkd"
+    || schema == "sbjm" || schema == "sbdp") && ctx->HasMenu() && ch == XK_backslash) {
+    if ((schema == "sbfd" || schema == "sbkd") && ctx->OkSecond()) {
+      engine_->ProcessKey(KeyEvent(XK_space, 0));
+    }
+    engine_->ProcessKey(KeyEvent(XK_space, 0));
+  }
+
   if (ch == '.' || ch == ':') {  // 3.14, 12:30
     const CommitHistory& history(ctx->commit_history());
     if (!history.empty()) {
