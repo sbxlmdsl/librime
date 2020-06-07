@@ -13,6 +13,7 @@
 #include <rime/gear/editor.h>
 #include <rime/gear/key_binding_processor.h>
 #include <rime/gear/translator_commons.h>
+#include <utf8.h>
 
 namespace rime {
 
@@ -152,11 +153,13 @@ void Editor::BackToPreviousSyllable(Context* ctx) {
 void Editor::DeleteCandidate(Context* ctx) {
 	string schema = engine_->schema()->schema_id();
 	if (schema == "sbjm" || schema == "sbdp") {
-		size_t len = ctx->input().length();
+    size_t len = ctx->input().length();
 		if (len <= 2)
 			return;
 		if (len == 3 && string("23789").find(ctx->input()[2]) != string::npos)
 			return;
+    if (len >= 2 && string("aeuio").find(ctx->input()[1]) != string::npos)
+      return;
 	}
 	ctx->DeleteCurrentSelection();
 }
