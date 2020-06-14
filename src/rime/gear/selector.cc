@@ -87,7 +87,7 @@ namespace rime {
             !key_event.ctrl() &&
             ch >= 0x20 && ch < 0x7f) {
             if (!select_keys.compare(" aeuio") && 
-				      (!islower(ctx->input()[0]) || !ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos)) {
+				      (!ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos)) {
                 ; // hack for sbxlm
             }
             else {

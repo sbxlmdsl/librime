@@ -71,6 +71,7 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   if (!use_space_ && ch == XK_space && ctx->IsComposing()) {
     return kNoop;
   }
+  
   string schema = engine_->schema()->schema_id();
   if ((schema == "sbfm" || schema == "sbfd" || schema == "sbkm" || schema == "sbkd")
     && ctx->OkFirst() && ctx->input().size() == 1) {
@@ -83,7 +84,8 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
     }
     engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
-
+  
+/**
   if (ch == '.' || ch == ':') {  // 3.14, 12:30
     const CommitHistory& history(ctx->commit_history());
     if (!history.empty()) {
@@ -93,13 +95,18 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
         return kRejected;
       }
     }
-  }
+  }**/
+  
   config_.LoadConfig(engine_);
   string punct_key(1, ch);
   auto punct_definition = config_.GetPunctDefinition(punct_key);
   if (!punct_definition)
     return kNoop;
   DLOG(INFO) << "punct key: '" << punct_key << "'";
+  
+  if (ctx->HasMenu())
+  ctx->Commit();
+  
   if (!AlternatePunct(punct_key, punct_definition)) {
     ctx->PushInput(ch) &&
         punctuation_is_translated(ctx) &&
@@ -107,6 +114,7 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
          AutoCommitPunct(punct_definition) ||
          PairPunct(punct_definition));
   }
+
   return kAccepted;
 }
 
