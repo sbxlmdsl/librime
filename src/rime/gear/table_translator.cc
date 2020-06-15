@@ -362,7 +362,7 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
               it->type != "sentence" &&
               it->type != "simplified" &&
               it->type != "uniquified" &&
-              it->type != "raw")
+			  it->type != "raw")
             break;
           if (it->type == "raw") {
             if (it->text.length() == 0)

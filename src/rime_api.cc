@@ -280,7 +280,8 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       string commit_text(ctx->GetCommitText());
       if (!commit_text.empty()) {
         size_t pos = commit_text.find_first_of(' ');
-        if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]$")) && pos != string::npos) {
+        if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]$")) 
+			&& pos != string::npos && !islower(commit_text[0])) {
           context->commit_text_preview = new char[commit_text.length() - pos];
           std::strcpy(context->commit_text_preview, commit_text.c_str() + pos + 1);
         }
@@ -386,7 +387,8 @@ RIME_API Bool RimeGetCommit(RimeSessionId session_id, RimeCommit* commit) {
   const string& commit_text(session->commit_text());
   if (!commit_text.empty()) {
     size_t pos = commit_text.find_first_of(' ');
-    if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]$")) && pos != string::npos) {
+    if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]$"))
+		&& pos != string::npos && !islower(commit_text[0])) {
       commit->text = new char[commit_text.length() - pos];
       std::strcpy(commit->text, commit_text.c_str() + pos + 1);
     }

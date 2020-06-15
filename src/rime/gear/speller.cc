@@ -106,9 +106,10 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
     return kNoop;
   }
   
-  if (is_initial && ctx->input().length() == 1 and !islower(ctx->input()[0])) {
+  if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0])) {
     ctx->Commit();
   }
+
   // handles input beyond max_code_length when auto_select is false.
   if (is_initial && AutoSelectAtMaxCodeLength(ctx)) {
     DLOG(INFO) << "auto-select at max code length.";

@@ -104,8 +104,10 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
     return kNoop;
   DLOG(INFO) << "punct key: '" << punct_key << "'";
   
-  if (ctx->HasMenu())
-  ctx->Commit();
+  if (ctx->HasMenu()) {
+	  engine_->ProcessKey(KeyEvent(XK_space, 0));
+	  //ctx->Commit();
+  }
   
   if (!AlternatePunct(punct_key, punct_definition)) {
     ctx->PushInput(ch) &&
