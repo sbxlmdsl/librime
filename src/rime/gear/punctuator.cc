@@ -85,7 +85,6 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
     engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
   
-/**
   if (ch == '.' || ch == ':') {  // 3.14, 12:30
     const CommitHistory& history(ctx->commit_history());
     if (!history.empty()) {
@@ -95,7 +94,7 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
         return kRejected;
       }
     }
-  }**/
+  }
   
   config_.LoadConfig(engine_);
   string punct_key(1, ch);
