@@ -85,17 +85,17 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
     engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
   
-/**
+
   if (ch == '.' || ch == ':') {  // 3.14, 12:30
     const CommitHistory& history(ctx->commit_history());
     if (!history.empty()) {
       const CommitRecord& cr(history.back());
       if (cr.type == "thru" &&
-          cr.text.length() == 1 && isdigit(cr.text[0])) {
-        return kRejected;
+          cr.text.length() == 1 && isdigit(cr.text[0]) && !ctx->HasMenu()) {
+		  return kRejected;
       }
     }
-  }**/
+  }
   
   config_.LoadConfig(engine_);
   string punct_key(1, ch);
