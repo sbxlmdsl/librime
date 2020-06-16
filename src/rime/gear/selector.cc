@@ -83,11 +83,12 @@ namespace rime {
         }
         int index = -1;
         const string& select_keys(engine_->schema()->select_keys());
-        if (!select_keys.empty() &&
+		const char c1 = ctx->input()[0];
+		if (!select_keys.empty() &&
             !key_event.ctrl() &&
             ch >= 0x20 && ch < 0x7f) {
             if (!select_keys.compare(" aeuio") && 
-				      (!ctx->HasMore() || string("aeuio").find(ctx->input()[0]) != string::npos)) {
+				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() <= 3))) {
                 ; // hack for sbxlm
             }
             else {
