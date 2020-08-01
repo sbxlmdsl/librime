@@ -178,7 +178,9 @@ bool Context::OkFourth() const {
 	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
 		return false;
 	auto seg = composition_.back();
-	return islower(input_[seg.start]) && seg.length == 4 && string("aeuio_23789").find(input_[seg.start + 3]) == string::npos;
+	return islower(input_[seg.start]) && seg.length == 4
+    && string("aeuio_23789").find(input_[seg.start + 3]) == string::npos
+    && string("aeuio_").find(input_[seg.start + 1]) == string::npos;
 }
 
 an<Candidate> Context::GetSelectedCandidate() const {
