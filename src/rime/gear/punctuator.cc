@@ -78,8 +78,9 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
     engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
   if ((schema == "sbfm" || schema == "sbfd" || schema == "sbkm" || schema == "sbkd"
+	|| schema == "sbfj" || schema == "sbfs" || schema == "sbkj" || schema == "sbks"
     || schema == "sbjm" || schema == "sbdp") && ctx->HasMenu() && ch == XK_backslash) {
-    if ((schema == "sbfd" || schema == "sbkd") && ctx->OkSecond()) {
+    if ((schema == "sbfd" || schema == "sbkd" || schema == "sbfs" || schema == "sbks") && ctx->OkSecond()) {
       engine_->ProcessKey(KeyEvent(XK_space, 0));
     }
     engine_->ProcessKey(KeyEvent(XK_space, 0));

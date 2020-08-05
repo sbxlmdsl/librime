@@ -334,7 +334,7 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
       UnityTableEncoder::RemovePrefix(&blessed.custom_code);
       user_dict_->UpdateEntry(blessed, 1);
     }
-    else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[kf][md]$"))
+    else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[kf][mdj]$"))
       && 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
       ;
     }
@@ -373,13 +373,13 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
           if (phrase.empty()) {
             phrase = it->text;  // last word
             pos = phrase.find_first_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]$")) && pos != string::npos) {
+            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk]j$")) && pos != string::npos) {
               phrase = phrase.substr(pos + 1);
             }
             continue;
           }
           pos = it->text.find_first_of(' ');
-          if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]$")) && pos != string::npos) {
+          if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk]j$")) && pos != string::npos) {
             phrase = it->text.substr(pos + 1) + phrase;
           } else {
             phrase = it->text + phrase;  // prepend another word
