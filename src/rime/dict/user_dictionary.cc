@@ -360,16 +360,16 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
         continue;
     }
     if (!is_exact_match && prefixed && len > 8 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
-      string r1 = (len == 10 && name_ == "sbjm") ? input.substr(8, 1) : input.substr(8, len - 8);
-      string r2 = (len == 10 && name_ == "sbjm") ? key.substr(10, 1) : key.substr(10, len - 8);
+      string r1 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j$"))) ? input.substr(8, 1) : input.substr(8, len - 8);
+      string r2 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j$"))) ? key.substr(10, 1) : key.substr(10, len - 8);
       if (r1 == r2) {
         is_exact_match = true;
       } else {
         continue;
       }
     } else if (!is_exact_match && len > 3 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
-      string r1 = (len == 5 && name_ == "sbjm") ? input.substr(3, 1) : input.substr(3, len - 3);
-      string r2 = (len == 5 && name_ == "sbjm") ? key.substr(5, 1) : key.substr(5, len - 3);
+      string r1 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j$"))) ? input.substr(3, 1) : input.substr(3, len - 3);
+      string r2 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j$"))) ? key.substr(5, 1) : key.substr(5, len - 3);
       if (r1 == r2) {
         is_exact_match = true;
       } else {
@@ -418,7 +418,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   else if (boost::regex_match(name_, boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk]j$")) && (len == 4 || (prefixed && len == 9))) {
 		if (e->text == string(words[0]))
 			continue;
-		else if (name_ == "sbjm" || name_ == "sbjk")
+		else if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j|sbjk$")))
 			result->Add(e);
 		else {
 			if (!e_holder) {
@@ -431,7 +431,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
 		}
 	}
   else if (boost::regex_match(name_, boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk]j$")) && (len == 5 || (prefixed && len == 10))) {
-    if (name_ == "sbjm" || name_ == "sbjk") {
+    if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j|sbjk$"))) {
       int i = 0;
       int j = (len == 5) ? 4 : 9;
       switch (input[j]) {
@@ -473,7 +473,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   }
   else if (boost::regex_match(name_, boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk]j$")) && (len == 6 || (prefixed && len == 11))) {
 		int i;
-		int j = (name_ == "sbjm" || name_ == "sbjk") ? 2 : 3;
+		int j = (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j|sbjk$"))) ? 2 : 3;
 		for (i = 0; i < j; i++) {
 			if (e->text == string(words[i]))
 				break;
@@ -505,7 +505,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
   if (exact_match_count > 0) {
     result->SortRange(start, exact_match_count);
   }
-  if (boost::regex_match(name_, boost::regex("^sbj[mk]$")) && prefixed && len == 9 && result->size() > 0) {
+  if (boost::regex_match(name_, boost::regex("^sbj[mk]|sb[fk]j$")) && prefixed && len == 9 && result->size() > 0) {
     int i = 1;
     while (words[i] != string("")) {
       result->Next();
@@ -526,7 +526,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       }
     }
 	result->SetIndex(0);
-  } else if (boost::regex_match(name_, boost::regex("^sbj[mk]$")) && len == 4 && result->size() > 0) {
+  } else if (boost::regex_match(name_, boost::regex("^sbj[mk]|sb[fk]j$")) && len == 4 && result->size() > 0) {
     int i = 1;
     while (i < 7) {
       auto en = result->Peek();
