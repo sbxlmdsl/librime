@@ -152,7 +152,7 @@ void Editor::BackToPreviousSyllable(Context* ctx) {
 
 void Editor::DeleteCandidate(Context* ctx) {
 	string schema = engine_->schema()->schema_id();
-	if (boost::regex_match(schema, boost::regex("^sbjm|sb[fk]j|sbjk$"))) {
+	if (boost::regex_match(schema, boost::regex("^sbjm|sbjk$"))) {
     size_t len = ctx->input().length();
 		if (len <= 2)
 			return;
