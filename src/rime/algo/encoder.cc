@@ -269,7 +269,7 @@ namespace rime {
 				DLOG(INFO) << "encode '" << phrase << "': "
 					<< "[" << code->ToString() << "] -> [" << encoded << "]";
 
-				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[kf][mdjs][ks]?$"))) {
+				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[kf]j|sb[kf][md][ks]?$"))) {
 					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))) {
 						return false;
