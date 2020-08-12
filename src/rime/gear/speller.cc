@@ -107,7 +107,7 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
   }
 
   bool is_sbxlm = boost::regex_match(engine_->schema()->schema_id(), 
-	  boost::regex("^sb[kf][mdjsb]|sbjm|sbdp|sb[jfkd]z$"));
+	  boost::regex("^sb[kf][mdjsx]|sbjm|sbdp|sb[jfkd]z|sb[kf]ms$"));
 
   if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
     ctx->Commit();

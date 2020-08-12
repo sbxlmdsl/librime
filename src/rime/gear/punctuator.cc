@@ -5,6 +5,7 @@
 //
 // 2011-11-21 GONG Chen <chen.sst@gmail.com>
 //
+#include <boost/regex.hpp>
 #include <utf8.h>
 #include <rime/commit_history.h>
 #include <rime/common.h>
@@ -73,14 +74,12 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   }
   
   string schema = engine_->schema()->schema_id();
-  if ((schema == "sbfm" || schema == "sbfd" || schema == "sbkm" || schema == "sbkd")
-    && ctx->OkFirst() && ctx->input().size() == 1) {
+  if (boost::regex_match(schema, boost::regex("^sb[kf][mdjsx]$")) && ctx->OkFirst() && ctx->input().size() == 1) {
     engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
-  if ((schema == "sbfm" || schema == "sbfd" || schema == "sbkm" || schema == "sbkd"
-	|| schema == "sbfj" || schema == "sbfs" || schema == "sbkj" || schema == "sbks"
-    || schema == "sbjm" || schema == "sbdp") && ctx->HasMenu() && ch == XK_backslash) {
-    if ((schema == "sbfd" || schema == "sbkd" || schema == "sbfs" || schema == "sbks") && ctx->OkSecond()) {
+  
+  if (boost::regex_match(schema, boost::regex("^sb[kf][mdjsx]|sbjm|sbdp$")) && ctx->HasMenu() && ch == XK_backslash) {
+    if ((schema == "sbfd" || schema == "sbkd") && ctx->OkSecond()) {
       engine_->ProcessKey(KeyEvent(XK_space, 0));
     }
     engine_->ProcessKey(KeyEvent(XK_space, 0));
