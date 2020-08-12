@@ -105,8 +105,11 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
       expecting_an_initial(ctx, alphabet_, finals_)) {
     return kNoop;
   }
-  
-  if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0])) {
+
+  bool is_sbxlm = boost::regex_match(engine_->schema()->schema_id(), 
+	  boost::regex("^sb[kf][mdjsb]|sbjm|sbdp|sb[jfkd]z$"));
+
+  if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
     ctx->Commit();
   }
 
