@@ -326,7 +326,12 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
           if (!select_keys.compare(" aeuio") &&
               (!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() <= 3)))
             std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
-          else
+		  else if (!select_keys.compare(" aeuio") &&
+			  (!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4 
+				  && boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]x$")) &&
+				  string("_aeuio").find(ctx->input()[1]) != string::npos))) // hack for sb[fk]x
+			  std::strcpy(context->menu.select_keys, string("      ").c_str()); 
+		  else
             std::strcpy(context->menu.select_keys, select_keys.c_str());
         }
         Config* config = schema->config();
@@ -341,7 +346,12 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
             if (!select_keys.compare(" aeuio") &&
 				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() <= 3)))
               std::strcpy(context->select_labels[i], " "); // hack for sbxlm
-            else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]z$")) && !ctx->IsSelect())
+			else if (!select_keys.compare(" aeuio") &&
+				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4
+					&& boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]x$")) &&
+					string("_aeuio").find(ctx->input()[1]) != string::npos)))
+				std::strcpy(context->select_labels[i], " ");  // hack for sb[fk]x
+			else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]z$")) && !ctx->IsSelect())
               std::strcpy(context->select_labels[i], labels[i].c_str());
 			else if (boost::regex_match(schema->schema_id(), boost::regex("^sbjz$")) && !ctx->IsSixth())
 				std::strcpy(context->select_labels[i], labels[i].c_str());
