@@ -311,7 +311,7 @@ namespace rime {
 					else if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
 						&& boost::regex_match(dict_name_, boost::regex("^sb[kf]j$"))) {
-						encoded.replace(2, 4, (*code)[1].substr(2, 4));
+						encoded.replace(2, 3, (*code)[1].substr(2, 3));
 					}
 				}
 				else if (boost::regex_match(dict_name_, boost::regex("^sbdp$"))) {

@@ -365,8 +365,8 @@ namespace rime {
 					continue;
 			}
 			if (!is_exact_match && prefixed && len > 8 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
-				string r1 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j$"))) ? input.substr(8, 1) : input.substr(8, len - 8);
-				string r2 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j$"))) ? key.substr(10, 1) : key.substr(10, len - 8);
+				string r1 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? input.substr(8, 1) : input.substr(8, len - 8);
+				string r2 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? key.substr(10, 1) : key.substr(10, len - 8);
 				if (r1 == r2) {
 					is_exact_match = true;
 				}
@@ -375,8 +375,8 @@ namespace rime {
 				}
 			}
 			else if (!is_exact_match && len > 3 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
-				string r1 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j$"))) ? input.substr(3, 1) : input.substr(3, len - 3);
-				string r2 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm|sb[fk]j$"))) ? key.substr(5, 1) : key.substr(5, len - 3);
+				string r1 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? input.substr(3, 1) : input.substr(3, len - 3);
+				string r2 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? key.substr(5, 1) : key.substr(5, len - 3);
 				if (r1 == r2) {
 					is_exact_match = true;
 				}
@@ -430,7 +430,7 @@ namespace rime {
 			else if (boost::regex_match(name_, boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk][js]$")) && (len == 4 || (prefixed && len == 9))) {
 				if (e->text == string(words[0]))
 					continue;
-				else if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk][js]|sbjk$")))
+				else if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbjk$")))
 					result->Add(e);
 				else {
 					if (!e_holder) {
@@ -443,7 +443,7 @@ namespace rime {
 				}
 			}
 			else if (boost::regex_match(name_, boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk][js]$")) && (len == 5 || (prefixed && len == 10))) {
-				if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk][js]|sbjk$"))) {
+				if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbjk$"))) {
 					int i = 0;
 					int j = (len == 5) ? 4 : 9;
 					switch (input[j]) {
@@ -475,7 +475,9 @@ namespace rime {
 					}
 					if (i < 2)
 						continue;
-					if (!e_holder) {
+					if (boost::regex_match(name_, boost::regex("^sb[fk]j$")))
+						result->Add(e);
+					else if (!e_holder) {
 						e_holder = e;
 					}
 					else if (e_holder->weight < e->weight) {
@@ -484,9 +486,9 @@ namespace rime {
 					continue;
 				}
 			}
-			else if (boost::regex_match(name_, boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk][js]$")) && (len == 6 || (prefixed && len == 11))) {
+			else if (boost::regex_match(name_, boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk]s$")) && (len == 6 || (prefixed && len == 11))) {
 				int i;
-				int j = (boost::regex_match(name_, boost::regex("^sbjm|sb[fk][js]|sbjk$"))) ? 2 : 3;
+				int j = (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbjk$"))) ? 2 : 3;
 				for (i = 0; i < j; i++) {
 					if (e->text == string(words[i]))
 						break;
@@ -519,7 +521,7 @@ namespace rime {
 		if (exact_match_count > 0) {
 			result->SortRange(start, exact_match_count);
 		}
-		if (boost::regex_match(name_, boost::regex("^sbj[mk]|sb[fk][js]$")) && prefixed && len == 9 && result->size() > 0) {
+		if (boost::regex_match(name_, boost::regex("^sbj[mk]|sb[fk]s$")) && prefixed && len == 9 && result->size() > 0) {
 			int i = 1;
 			while (words[i] != string("")) {
 				result->Next();
@@ -541,7 +543,7 @@ namespace rime {
 			}
 			result->SetIndex(0);
 		}
-		else if (boost::regex_match(name_, boost::regex("^sbj[mk]|sb[fk][js]$")) && len == 4 && result->size() > 0) {
+		else if (boost::regex_match(name_, boost::regex("^sbj[mk]|sb[fk]s$")) && len == 4 && result->size() > 0) {
 			int i = 1;
 			while (i < 7) {
 				auto en = result->Peek();
