@@ -328,8 +328,10 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
             std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
 		  else if (!select_keys.compare(" aeuio") &&
 			  (!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4 
-				  && boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]x$")) &&
-				  string("_aeuio").find(ctx->input()[1]) != string::npos))) // hack for sb[fk]x
+				  && boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]x$")) 
+				  && !(string("aeuio").find(ctx->input()[1]) != string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
+				  && !(string("aeuio").find(ctx->input()[1]) == string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
+				  ))) // hack for sb[fk]x
 			  std::strcpy(context->menu.select_keys, string("      ").c_str()); 
 		  else
             std::strcpy(context->menu.select_keys, select_keys.c_str());
@@ -348,8 +350,9 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
               std::strcpy(context->select_labels[i], " "); // hack for sbxlm
 			else if (!select_keys.compare(" aeuio") &&
 				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4
-					&& boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]x$")) &&
-					string("_aeuio").find(ctx->input()[1]) != string::npos)))
+					&& boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]x$")) 
+					&& !(string("aeuio").find(ctx->input()[1]) != string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
+					&& !(string("aeuio").find(ctx->input()[1]) == string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos))))
 				std::strcpy(context->select_labels[i], " ");  // hack for sb[fk]x
 			else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]z$")) && !ctx->IsSelect())
               std::strcpy(context->select_labels[i], labels[i].c_str());

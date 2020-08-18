@@ -114,9 +114,9 @@ namespace rime {
 				return kNoop;
 
 			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf]x$"))
-				&& !current_segment.HasTag("paging") && ctx->input().length() < 5 && islower(ctx->input()[0])
-				&& ctx->input().length() > 3 && (string("aeuio").find(ctx->input()[2]) == string::npos
-					|| string("aeuio_").find(ctx->input()[1]) != string::npos))
+				&& !current_segment.HasTag("paging") && ctx->input().length() < 5 && islower(ctx->input()[0]) && ctx->input().length() > 3 
+				&& !(string("aeuio").find(ctx->input()[1]) != string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
+				&& !(string("aeuio").find(ctx->input()[1]) == string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos))
 				return kNoop;
 
 			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf][md]|sb[kf]s$"))
