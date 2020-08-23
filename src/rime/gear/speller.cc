@@ -205,7 +205,13 @@ bool Speller::AutoSelectPreviousMatch(Context* ctx,
   size_t end = previous_segment->end;
   string input = ctx->input();
   string converted = input.substr(0, end);
-  if (is_auto_selectable(previous_segment->GetSelectedCandidate(),
+  auto cand = previous_segment->GetSelectedCandidate();
+  if (5 == input.length() && is_table_entry(cand)
+    && string("aeuio").find(input[4]) != string::npos
+    && boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf]x$"))) {
+      return FindEarlierMatch(ctx, start ,end - 1);
+  }
+  else if (is_auto_selectable(previous_segment->GetSelectedCandidate(),
                          converted, delimiters_)) {
     // reuse previous match
     ctx->composition().pop_back();
