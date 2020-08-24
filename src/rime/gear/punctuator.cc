@@ -104,9 +104,8 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
     return kNoop;
   DLOG(INFO) << "punct key: '" << punct_key << "'";
   
-  if (ctx->HasMenu()) {
+  if (ctx->HasMenu() && !(boost::regex_match(schema, boost::regex("^sb[kf]m$")) && ctx->input().size() == 3)) {
 	  engine_->ProcessKey(KeyEvent(XK_space, 0));
-	  //ctx->Commit();
   }
   
   if (!AlternatePunct(punct_key, punct_definition)) {

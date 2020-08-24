@@ -123,6 +123,12 @@ namespace rime {
 				&& !current_segment.HasTag("paging") && ctx->input().length() < 4 && islower(ctx->input()[0]))
 				return kNoop;
 
+			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf]m$")) 
+				&& !SelectCandidateAt(ctx, index) && ctx->input().length() == 4 && string("aeuio").find(ch) != string::npos
+				&& !(string("aeuio").find(ctx->input()[1]) != string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
+				&& !(string("aeuio").find(ctx->input()[1]) == string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos))
+				return kNoop;
+
             SelectCandidateAt(ctx, index);
             return kAccepted;
         }
