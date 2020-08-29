@@ -48,6 +48,7 @@ an<Translation> HistoryTranslator::Query(const string& input,
   int count = 0;
   for (; it != history.rend(); ++it) {
     if (it->type == "thru") continue;
+    if (it->text.empty()) continue;
     auto candidate = New<SimpleCandidate>(it->type,
                                           segment.start,
                                           segment.end,

@@ -365,7 +365,7 @@ bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
 			  it->type != "raw")
             break;
           if (it->type == "raw") {
-            if (it->text.length() == 0)
+            if (it->text.empty())
               continue;
             else
               break;
