@@ -223,7 +223,7 @@ ExpressEditor::ExpressEditor(const Ticket& ticket) : Editor(ticket, true) {
   Bind({XK_Delete, 0}, &Editor::DeleteChar);
   Bind({XK_Delete, kControlMask}, &Editor::DeleteCandidate);
   Bind({XK_Escape, 0}, &Editor::CancelComposition);
-  Bind({XK_Tab, kShiftMask}, &Editor::CommitPreviousCandidate);
+  Bind({XK_BackSpace, kShiftMask}, &Editor::CommitPreviousCandidate);
   char_handler_ = &Editor::DirectCommit;  //
   LoadConfig();
 }
