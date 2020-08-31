@@ -30,6 +30,7 @@ static Editor::ActionDef editor_action_definitions[] = {
   { "delete_candidate", &Editor::DeleteCandidate },
   { "delete", &Editor::DeleteChar },
   { "cancel", &Editor::CancelComposition },
+  { "commit_previous_candidate", &Editor::CommitPreviousCandidate },
   Editor::kActionNoop
 };
 
@@ -164,6 +165,19 @@ void Editor::DeleteCandidate(Context* ctx) {
 	ctx->DeleteCurrentSelection();
 }
 
+void Editor::CommitPreviousCandidate(Context* ctx) {
+	int len = ctx->input().length();
+	if (len < 2)
+		return;
+	//Segment& current_segment(ctx->composition().back());
+	//if (current_segment.HasTag("paging"))
+	//	return;
+	char c = ctx->input()[len - 1];
+	BackToPreviousInput(ctx);
+	ctx->Commit();
+	ctx->PushInput(c);
+}
+
 void Editor::DeleteChar(Context* ctx) {
   ctx->DeleteInput();
 }
@@ -209,6 +223,7 @@ ExpressEditor::ExpressEditor(const Ticket& ticket) : Editor(ticket, true) {
   Bind({XK_Delete, 0}, &Editor::DeleteChar);
   Bind({XK_Delete, kControlMask}, &Editor::DeleteCandidate);
   Bind({XK_Escape, 0}, &Editor::CancelComposition);
+  Bind({XK_Tab, kShiftMask}, &Editor::CommitPreviousCandidate);
   char_handler_ = &Editor::DirectCommit;  //
   LoadConfig();
 }

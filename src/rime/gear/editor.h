@@ -37,6 +37,7 @@ class Editor : public Processor, public KeyBindingProcessor<Editor> {
   Handler DeleteCandidate;
   Handler DeleteChar;
   Handler CancelComposition;
+  Handler CommitPreviousCandidate;
 
   CharHandler DirectCommit;
   CharHandler AddToInput;
