@@ -475,9 +475,7 @@ namespace rime {
 					}
 					if (i < 2)
 						continue;
-					if (boost::regex_match(name_, boost::regex("^sb[fk]j$")))
-						result->Add(e);
-					else if (!e_holder) {
+					if (!e_holder) {
 						e_holder = e;
 					}
 					else if (e_holder->weight < e->weight) {
