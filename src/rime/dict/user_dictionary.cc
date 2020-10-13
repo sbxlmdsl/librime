@@ -144,8 +144,8 @@ namespace rime {
 
 	// UserDictionary members
 
-	UserDictionary::UserDictionary(const string& name, an<Db> db)
-		: name_(name), db_(db) {
+	UserDictionary::UserDictionary(const string& name, an<Db> db, const string& schema)
+		: name_(name), db_(db), schema_(schema){
 	}
 
 	UserDictionary::~UserDictionary() {
@@ -757,7 +757,7 @@ namespace rime {
 			db.reset(component->Create(dict_name));
 			db_pool_[dict_name] = db;
 		}
-		return new UserDictionary(dict_name, db);
+		return new UserDictionary(dict_name, db, ticket.schema->schema_id());
 	}
 
 }  // namespace rime

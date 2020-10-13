@@ -55,7 +55,7 @@ struct Ticket;
 
 class UserDictionary : public Class<UserDictionary, const Ticket&> {
  public:
-  UserDictionary(const string& name, an<Db> db);
+	 UserDictionary(const string& name, an<Db> db, const string& schema);
   virtual ~UserDictionary();
 
   void Attach(const an<Table>& table, const an<Prism>& prism);
@@ -101,6 +101,7 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
  private:
   string name_;
   an<Db> db_;
+  string schema_;
   an<Table> table_;
   an<Prism> prism_;
   TickCount tick_ = 0;
