@@ -365,8 +365,12 @@ namespace rime {
 					continue;
 			}
 			if (!is_exact_match && prefixed && len > 8 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
+        string key_holder = key;
+        if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(input[8]) != string::npos
+            && string("QWRTSDFGZXCVBYPHJKLNM").find(key[13]) != string::npos)
+          key_holder[10] = key[13];
 				string r1 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? input.substr(8, 1) : input.substr(8, len - 8);
-				string r2 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? key.substr(10, 1) : key.substr(10, len - 8);
+				string r2 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? key_holder.substr(10, 1) : key_holder.substr(10, len - 8);
 				if (r1 == r2) {
 					is_exact_match = true;
 				}
@@ -375,8 +379,12 @@ namespace rime {
 				}
 			}
 			else if (!is_exact_match && len > 3 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
+        string key_holder = key;
+        if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(input[3]) != string::npos
+            && string("QWRTSDFGZXCVBYPHJKLNM").find(key[8]) != string::npos)
+          key_holder[5] = key[8];
 				string r1 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? input.substr(3, 1) : input.substr(3, len - 3);
-				string r2 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? key.substr(5, 1) : key.substr(5, len - 3);
+				string r2 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? key_holder.substr(5, 1) : key_holder.substr(5, len - 3);
 				if (r1 == r2) {
 					is_exact_match = true;
 				}
