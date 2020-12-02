@@ -358,6 +358,8 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
               std::strcpy(context->select_labels[i], labels[i].c_str());
 			else if (boost::regex_match(schema->schema_id(), boost::regex("^sbjz$")) && !ctx->IsSixth())
 				std::strcpy(context->select_labels[i], labels[i].c_str());
+			else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[hz]z$")) && !ctx->IsFourth())
+				std::strcpy(context->select_labels[i], labels[i].c_str());
 			else
               std::strcpy(context->select_labels[i], label.c_str());
           }
