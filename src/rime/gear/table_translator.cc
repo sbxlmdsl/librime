@@ -373,13 +373,13 @@ namespace rime {
             if (phrase.empty()) {
               phrase = it->text;  // last word
               pos = phrase.find_first_of(' ');
-              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk][js]$")) && pos != string::npos) {
+              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbxh|sbzr|sbjk|sbdp|sb[kf]m[ks]|sb[fk][js]$")) && pos != string::npos) {
                 phrase = phrase.substr(pos + 1);
               }
               continue;
             }
             pos = it->text.find_first_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[kf]m[ks]|sb[fk][js]$")) && pos != string::npos) {
+            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbxh|sbzr|sbjk|sbdp|sb[kf]m[ks]|sb[fk][js]$")) && pos != string::npos) {
               phrase = it->text.substr(pos + 1) + phrase;
             } else {
               phrase = it->text + phrase;  // prepend another word
