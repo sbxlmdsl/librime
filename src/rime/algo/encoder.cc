@@ -327,7 +327,7 @@ namespace rime {
 				if (boost::regex_match(dict_name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
 					collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
 				}
-				else if (boost::regex_match(dict_name_, boost::regex("^sbxh|sbzr|sbjk|sb[kf]ms|sb[fk]s$"))) {
+				else if (boost::regex_match(dict_name_, boost::regex("^sbxh|sbzr|sbjk|sb[kf]m|sb[kf]ms|sb[fk]s$"))) {
 					collector_->CreateEntry(encoded.substr(4) + " " + phrase, encoded.substr(0, 4), value);
 				}
 				else {

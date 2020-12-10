@@ -103,9 +103,9 @@ namespace rime {
         else if (ch >= XK_KP_0 && ch <= XK_KP_9)
             index = ((ch - XK_KP_0) + 9) % 10;
         if (index >= 0) {
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sbxh|sbzr|sbjk|sbdp|sb[kf]m[ks]$"))
+			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[kf]m|sbdp|sb[kf]m[ks]$"))
 				&& !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0])) {
-				if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbxh|sbzr$"))
+				if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbxh|sbzr|sb[kf]m$"))
 					&& ctx->input().length() == 4 && string("aeuio").find(ctx->input()[2]) != string::npos)
 					;
 				else
@@ -124,15 +124,19 @@ namespace rime {
 				&& !(string("aeuio").find(ctx->input()[1]) == string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos))
 				return kNoop;
 
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf][md]|sb[kf]s$"))
+			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf][ds]$"))
 				&& !current_segment.HasTag("paging") && ctx->input().length() < 4 && islower(ctx->input()[0]))
 				return kNoop;
 
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf]m$")) 
-				&& !SelectCandidateAt(ctx, index) && ctx->input().length() == 4 && string("aeuio").find(ch) != string::npos
-				&& !(string("aeuio").find(ctx->input()[1]) != string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
-				&& !(string("aeuio").find(ctx->input()[1]) == string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos))
-				return kNoop;
+			//if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf][md]|sb[kf]s$"))
+			//	&& !current_segment.HasTag("paging") && ctx->input().length() < 4 && islower(ctx->input()[0]))
+			//	return kNoop;
+
+			//if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf]m$")) 
+			//	&& !SelectCandidateAt(ctx, index) && ctx->input().length() == 4 && string("aeuio").find(ch) != string::npos
+			//	&& !(string("aeuio").find(ctx->input()[1]) != string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
+			//	&& !(string("aeuio").find(ctx->input()[1]) == string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos))
+			//	return kNoop;
 
             SelectCandidateAt(ctx, index);
             return kAccepted;
