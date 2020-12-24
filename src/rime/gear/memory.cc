@@ -74,6 +74,7 @@ Memory::Memory(const Ticket& ticket) {
   });
 
   Context* ctx = ticket.engine->context();
+
   commit_connection_ = ctx->commit_notifier().connect(
       [this](Context* ctx) { OnCommit(ctx); });
   delete_connection_ = ctx->delete_notifier().connect(

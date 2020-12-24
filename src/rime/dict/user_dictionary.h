@@ -81,6 +81,8 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
   bool RevertRecentTransaction();
   bool CommitPendingTransaction();
 
+    
+
   const string& name() const { return name_; }
   TickCount tick() const { return tick_; }
 

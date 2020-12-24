@@ -217,7 +217,9 @@ namespace rime {
                       &enable_encoder_);
       config->GetBool(name_space_ + "/encode_commit_history",
                       &encode_commit_history_);
-      config->GetInt(name_space_ + "/max_phrase_length",
+	  config->GetBool(name_space_ + "/stop_change",
+		  &stop_change_);
+	  config->GetInt(name_space_ + "/max_phrase_length",
                      &max_phrase_length_);
       config->GetInt(name_space_ + "/max_homographs",
                      &max_homographs_);
@@ -328,6 +330,8 @@ namespace rime {
   bool TableTranslator::Memorize(const CommitEntry& commit_entry) {
     if (!user_dict_)
       return false;
+	if (stop_change_)
+		return false;
     for (const DictEntry* e : commit_entry.elements) {
       if (is_constructed(e)) {
         DictEntry blessed(*e);
