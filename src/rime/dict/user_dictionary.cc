@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cfloat>
 #include <cmath>
+#include <utf8.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/scope_exit.hpp>
@@ -145,7 +146,15 @@ namespace rime {
 	// UserDictionary members
 
 	UserDictionary::UserDictionary(const string& name, an<Db> db, const string& schema)
-		: name_(name), db_(db), schema_(schema){
+		: name_(name), db_(db), schema_(schema) {
+	}
+
+	UserDictionary::UserDictionary(const string& name, an<Db> db, const string& schema, 
+		const int& delete_threshold, const bool& enable_filtering, 
+		const bool& forced_selection, const bool& no_dual_selection)
+		: name_(name), db_(db), schema_(schema), 
+		delete_threshold_(delete_threshold), enable_filtering_(enable_filtering), 
+		forced_selection_(forced_selection), no_dual_selection_(no_dual_selection) {
 	}
 
 	UserDictionary::~UserDictionary() {
@@ -365,10 +374,10 @@ namespace rime {
 					continue;
 			}
 			if (!is_exact_match && prefixed && len > 8 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
-        string key_holder = key;
-        if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(input[8]) != string::npos
-            && string("QWRTSDFGZXCVBYPHJKLNM").find(key[13]) != string::npos)
-          key_holder[10] = key[13];
+				string key_holder = key;
+				if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(input[8]) != string::npos
+					&& string("QWRTSDFGZXCVBYPHJKLNM").find(key[13]) != string::npos)
+					key_holder[10] = key[13];
 				string r1 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? input.substr(8, 1) : input.substr(8, len - 8);
 				string r2 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? key_holder.substr(10, 1) : key_holder.substr(10, len - 8);
 				if (r1 == r2) {
@@ -379,10 +388,10 @@ namespace rime {
 				}
 			}
 			else if (!is_exact_match && len > 3 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
-        string key_holder = key;
-        if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(input[3]) != string::npos
-            && string("QWRTSDFGZXCVBYPHJKLNM").find(key[8]) != string::npos)
-          key_holder[5] = key[8];
+				string key_holder = key;
+				if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(input[3]) != string::npos
+					&& string("QWRTSDFGZXCVBYPHJKLNM").find(key[8]) != string::npos)
+					key_holder[5] = key[8];
 				string r1 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? input.substr(3, 1) : input.substr(3, len - 3);
 				string r2 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$"))) ? key_holder.substr(5, 1) : key_holder.substr(5, len - 3);
 				if (r1 == r2) {
@@ -438,8 +447,14 @@ namespace rime {
 			else if (boost::regex_match(name_, boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[kf]m|sbdp|sb[kf]m[ks]|sb[fk][js]$")) && (len == 4 || (prefixed && len == 9))) {
 				if (e->text == string(words[0]))
 					continue;
-				else if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbxh|sbzr|sbjk|sb[kf]m$")))
-					result->Add(e);
+				else if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbxh|sbzr|sbjk|sb[kf]m$"))) {
+					int l = len == 4 ? 3 : 8;
+					if (name_ == "sbjm" && enable_filtering_ && string("aeuio").find(input[l]) != string::npos 
+						&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
+						continue;
+					else
+						result->Add(e);
+				}
 				else {
 					if (!e_holder) {
 						e_holder = e;
@@ -495,13 +510,20 @@ namespace rime {
 			else if (boost::regex_match(name_, boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[kf]m|sbdp|sb[kf]m[ks]|sb[fk]s$")) && (len == 6 || (prefixed && len == 11))) {
 				int i;
 				int j = (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbxh|sbzr|sbjk|sb[kf]m$"))) ? 2 : 3;
+				if (forced_selection_)
+					j += 5;
 				for (i = 0; i < j; i++) {
 					if (e->text == string(words[i]))
 						break;
 				}
 				if (i < j)
 					continue;
-				result->Add(e);
+				int l = len == 6 ? 3 : 8;
+				if (name_ == "sbjm" && enable_filtering_ && string("aeuio").find(input[l]) != string::npos
+					&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
+					continue;
+				else
+					result->Add(e);
 			}
 			else {
 				result->Add(e);
@@ -765,7 +787,17 @@ namespace rime {
 			db.reset(component->Create(dict_name));
 			db_pool_[dict_name] = db;
 		}
-		return new UserDictionary(dict_name, db, ticket.schema->schema_id());
+
+		int delete_threshold = 0;
+		config->GetInt(ticket.name_space + "/delete_threshold", &delete_threshold);
+		bool enable_filtering = false;
+		config->GetBool(ticket.name_space + "/enable_filtering", &enable_filtering);
+		bool forced_selection = false;
+		config->GetBool(ticket.name_space + "/forced_selection", &forced_selection);
+		bool no_dual_selection = false;
+		config->GetBool(ticket.name_space + "/no_dual_selection", &no_dual_selection);
+
+		return new UserDictionary(dict_name, db, ticket.schema->schema_id(), delete_threshold, enable_filtering, forced_selection, no_dual_selection);
 	}
 
 }  // namespace rime

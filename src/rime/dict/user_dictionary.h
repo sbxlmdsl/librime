@@ -56,7 +56,10 @@ struct Ticket;
 class UserDictionary : public Class<UserDictionary, const Ticket&> {
  public:
 	 UserDictionary(const string& name, an<Db> db, const string& schema);
-  virtual ~UserDictionary();
+	 UserDictionary(const string& name, an<Db> db, const string& schema, 
+		 const int& delete_threshold, const bool& enable_filtering, 
+		 const bool& forced_seletion, const bool& no_dual_selection);
+	 virtual ~UserDictionary();
 
   void Attach(const an<Table>& table, const an<Prism>& prism);
   bool Load();
@@ -85,6 +88,9 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
 
   const string& name() const { return name_; }
   TickCount tick() const { return tick_; }
+  const int& delete_threshold() const { return delete_threshold_; }
+  const bool& enable_filtering() const { return enable_filtering_; }
+  const bool& forced_selection() const { return forced_selection_; }
 
   static an<DictEntry> CreateDictEntry(const string& key,
                                        const string& value,
@@ -108,6 +114,10 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
   an<Prism> prism_;
   TickCount tick_ = 0;
   time_t transaction_time_ = 0;
+  int delete_threshold_ = 0; // tick distance to delete a word automatically, 0 means no deletion
+  bool enable_filtering_ = false; // for sbjm, sbfx and sbkx to filter out inefficient words
+  bool forced_selection_ = false;
+  bool no_dual_selection_ = false;
 };
 
 class UserDictionaryComponent : public UserDictionary::Component {
