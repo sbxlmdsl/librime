@@ -454,6 +454,7 @@ namespace rime {
 						else
 							continue;
 					}
+					else
 						result->Add(e);
 				}
 				else {
@@ -527,7 +528,14 @@ namespace rime {
 					result->Add(e);
 			}
 			else {
-				result->Add(e);
+				if (prefixed && delete_threshold_ > 0) {
+					if (!DeleteEntry(e))
+						result->Add(e);
+					else
+						continue;
+				}
+				else
+					result->Add(e);
 			}
 
 			++count;
