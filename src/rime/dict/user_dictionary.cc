@@ -149,12 +149,8 @@ namespace rime {
 		: name_(name), db_(db), schema_(schema) {
 	}
 
-	UserDictionary::UserDictionary(const string& name, an<Db> db, const string& schema, 
-		const int& delete_threshold, const bool& enable_filtering, 
-		const bool& forced_selection, const bool& no_dual_selection)
-		: name_(name), db_(db), schema_(schema), 
-		delete_threshold_(delete_threshold), enable_filtering_(enable_filtering), 
-		forced_selection_(forced_selection), no_dual_selection_(no_dual_selection) {
+	UserDictionary::UserDictionary(const string& name, an<Db> db, const string& schema, const int& delete_threshold, const bool& enable_filtering, const bool& forced_selection)
+		: name_(name), db_(db), schema_(schema), delete_threshold_(delete_threshold), enable_filtering_(enable_filtering), forced_selection_(forced_selection) {
 	}
 
 	UserDictionary::~UserDictionary() {
@@ -452,7 +448,12 @@ namespace rime {
 					if (name_ == "sbjm" && enable_filtering_ && string("aeuio").find(input[l]) != string::npos 
 						&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
 						continue;
-					else
+					else if (len == 9 && delete_threshold_ > 0) {
+						if (!DeleteEntry(e))
+							result->Add(e);
+						else
+							continue;
+					}
 						result->Add(e);
 				}
 				else {
@@ -636,6 +637,24 @@ namespace rime {
 		return db_->Update(key, v.Pack());
 	}
 
+	bool UserDictionary::DeleteEntry(an<DictEntry> entry) {
+		string code_str(entry->custom_code);
+		if (code_str.empty() && !TranslateCodeToString(entry->code, &code_str))
+			return false;
+		string key(code_str + '\t' + entry->text);
+		string value;
+		UserDbValue v;
+		if (db_->Fetch(key, &value)) {
+			v.Unpack(value);
+			if (tick_ - v.tick >= delete_threshold_ ) {
+				v.commits = -1;
+				v.dee = algo::formula_d(0.0, (double)tick_, v.dee, (double)v.tick);
+				return db_->Update(key, v.Pack());
+			}
+		}
+		return false;
+	}
+
 	bool UserDictionary::UpdateTickCount(TickCount increment) {
 		tick_ += increment;
 		try {
@@ -788,16 +807,16 @@ namespace rime {
 			db_pool_[dict_name] = db;
 		}
 
-		int delete_threshold = 0;
+		int delete_threshold = 1000;
 		config->GetInt(ticket.name_space + "/delete_threshold", &delete_threshold);
+		if (delete_threshold < 0)
+			delete_threshold = 0;
 		bool enable_filtering = false;
 		config->GetBool(ticket.name_space + "/enable_filtering", &enable_filtering);
 		bool forced_selection = false;
 		config->GetBool(ticket.name_space + "/forced_selection", &forced_selection);
-		bool no_dual_selection = false;
-		config->GetBool(ticket.name_space + "/no_dual_selection", &no_dual_selection);
 
-		return new UserDictionary(dict_name, db, ticket.schema->schema_id(), delete_threshold, enable_filtering, forced_selection, no_dual_selection);
+		return new UserDictionary(dict_name, db, ticket.schema->schema_id(), delete_threshold, enable_filtering, forced_selection);
 	}
 
 }  // namespace rime
