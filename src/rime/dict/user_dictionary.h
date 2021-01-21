@@ -56,7 +56,8 @@ struct Ticket;
 class UserDictionary : public Class<UserDictionary, const Ticket&> {
  public:
 	 UserDictionary(const string& name, an<Db> db, const string& schema);
-	 UserDictionary(const string& name, an<Db> db, const string& schema, const int& delete_threshold, const bool& enable_filtering, const bool& forced_seletion, const bool& single_selection);
+	 UserDictionary(const string& name, an<Db> db, const string& schema, const int& delete_threshold, const bool& enable_filtering, 
+		 const bool& forced_seletion, const bool& single_selection, const bool& strong_mode);
 	 virtual ~UserDictionary();
 
   void Attach(const an<Table>& table, const an<Prism>& prism);
@@ -117,6 +118,7 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
   bool enable_filtering_ = false; // for sbjm, sbfx and sbkx to filter out inefficient words
   bool forced_selection_ = false;
   bool single_selection_ = false;
+  bool strong_mode_ = false;
 };
 
 class UserDictionaryComponent : public UserDictionary::Component {

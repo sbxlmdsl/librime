@@ -150,9 +150,9 @@ namespace rime {
 	}
 
 	UserDictionary::UserDictionary(const string& name, an<Db> db, const string& schema, const int& delete_threshold, 
-		const bool& enable_filtering, const bool& forced_selection, const bool& single_selection)
+		const bool& enable_filtering, const bool& forced_selection, const bool& single_selection, const bool& strong_mode)
 		: name_(name), db_(db), schema_(schema), delete_threshold_(delete_threshold), 
-		enable_filtering_(enable_filtering), forced_selection_(forced_selection), single_selection_(single_selection) {
+		enable_filtering_(enable_filtering), forced_selection_(forced_selection), single_selection_(single_selection), strong_mode_(strong_mode) {
 	}
 
 	UserDictionary::~UserDictionary() {
@@ -323,9 +323,21 @@ namespace rime {
 				accessor = db_->Query(input);
 			}
 			else if (prefixed) {
+				if (name_ == "sbjm" && strong_mode_ && len >= 8 && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
+					if (len == 8)
+						return 0;
+					if (len == 9 && string("aeuio").find(input[8]) != string::npos)
+						return 0;
+				}
 				accessor = db_->Query(input.substr(0, 8));
 			}
 			else {
+				if (name_ == "sbjm" && strong_mode_ && len >= 3 && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
+					if (len == 3)
+						return 0;
+					if (len == 4 && string("aeuio").find(input[3]) != string::npos)
+						return 0;
+				}
 				accessor = db_->Query(input.substr(0, 3));
 			}
 		}
@@ -384,7 +396,11 @@ namespace rime {
 				if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(input[8]) != string::npos
 					&& string("QWRTSDFGZXCVBYPHJKLNM").find(key[13]) != string::npos)
 					key_holder[10] = key[13];
-				string r1 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_) ? input.substr(8, 1) : input.substr(8, len - 8);
+				string input_holder = input;
+				map<char, char> m = { {'2','a'},{'3','e'},{'7','u'},{'8','i'},{'9','o'} };
+				if (name_ == "sbjm" && string("23789").find(input[8]) != string::npos && strong_mode_ && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos)
+					input_holder[8] = m[input[8]];
+				string r1 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_) ? input_holder.substr(8, 1) : input_holder.substr(8, len - 8);
 				string r2 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_) ? key_holder.substr(10, 1) : key_holder.substr(10, len - 8);
 				if (r1 == r2) {
 					is_exact_match = true;
@@ -398,7 +414,11 @@ namespace rime {
 				if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(input[3]) != string::npos
 					&& string("QWRTSDFGZXCVBYPHJKLNM").find(key[8]) != string::npos)
 					key_holder[5] = key[8];
-				string r1 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_) ? input.substr(3, 1) : input.substr(3, len - 3);
+				string input_holder = input;
+				map<char, char> m = { {'2','a'},{'3','e'},{'7','u'},{'8','i'},{'9','o'} };
+				if (name_ == "sbjm" && string("23789").find(input[3]) != string::npos && strong_mode_ && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos)
+					input_holder[3] = m[input[3]];
+				string r1 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_) ? input_holder.substr(3, 1) : input_holder.substr(3, len - 3);
 				string r2 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_) ? key_holder.substr(5, 1) : key_holder.substr(5, len - 3);
 				if (r1 == r2) {
 					is_exact_match = true;
@@ -835,8 +855,10 @@ namespace rime {
 		config->GetBool(ticket.name_space + "/forced_selection", &forced_selection);
 		bool single_selection = false;
 		config->GetBool(ticket.name_space + "/single_selection", &single_selection);
+		bool strong_mode = false;
+		config->GetBool(ticket.name_space + "/strong_mode", &strong_mode);
 
-		return new UserDictionary(dict_name, db, ticket.schema->schema_id(), delete_threshold, enable_filtering, forced_selection, single_selection);
+		return new UserDictionary(dict_name, db, ticket.schema->schema_id(), delete_threshold, enable_filtering, forced_selection, single_selection, strong_mode);
 	}
 
 }  // namespace rime
