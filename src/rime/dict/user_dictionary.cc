@@ -398,8 +398,11 @@ namespace rime {
 					key_holder[10] = key[13];
 				string input_holder = input;
 				map<char, char> m = { {'2','a'},{'3','e'},{'7','u'},{'8','i'},{'9','o'} };
-				if (name_ == "sbjm" && string("23789").find(input[8]) != string::npos && strong_mode_ && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos)
+				if (name_ == "sbjm" && string("23789").find(input[8]) != string::npos && strong_mode_ && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
+					if (enable_filtering_ && string("QWRTSDFGZXCVBYPHJKLNM").find(key[13]) != string::npos)
+						continue;
 					input_holder[8] = m[input[8]];
+				}
 				string r1 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_) ? input_holder.substr(8, 1) : input_holder.substr(8, len - 8);
 				string r2 = (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_) ? key_holder.substr(10, 1) : key_holder.substr(10, len - 8);
 				if (r1 == r2) {
@@ -416,8 +419,11 @@ namespace rime {
 					key_holder[5] = key[8];
 				string input_holder = input;
 				map<char, char> m = { {'2','a'},{'3','e'},{'7','u'},{'8','i'},{'9','o'} };
-				if (name_ == "sbjm" && string("23789").find(input[3]) != string::npos && strong_mode_ && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos)
+				if (name_ == "sbjm" && string("23789").find(input[3]) != string::npos && strong_mode_ && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
+					if (enable_filtering_ && string("QWRTSDFGZXCVBYPHJKLNM").find(key[8]) != string::npos)
+						continue;
 					input_holder[3] = m[input[3]];
+				}
 				string r1 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_) ? input_holder.substr(3, 1) : input_holder.substr(3, len - 3);
 				string r2 = (len == 5 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_) ? key_holder.substr(5, 1) : key_holder.substr(5, len - 3);
 				if (r1 == r2) {
