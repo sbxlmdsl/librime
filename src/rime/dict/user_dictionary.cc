@@ -150,9 +150,9 @@ namespace rime {
 	}
 
 	UserDictionary::UserDictionary(const string& name, an<Db> db, const string& schema, const int& delete_threshold, 
-		const bool& enable_filtering, const bool& forced_selection, const bool& single_selection, const bool& strong_mode)
-		: name_(name), db_(db), schema_(schema), delete_threshold_(delete_threshold), 
-		enable_filtering_(enable_filtering), forced_selection_(forced_selection), single_selection_(single_selection), strong_mode_(strong_mode) {
+		const bool& enable_filtering, const bool& forced_selection, const bool& single_selection, const bool& strong_mode, const bool& lower_case)
+		: name_(name), db_(db), schema_(schema), delete_threshold_(delete_threshold), enable_filtering_(enable_filtering), 
+		forced_selection_(forced_selection), single_selection_(single_selection), strong_mode_(strong_mode), lower_case_(lower_case) {
 	}
 
 	UserDictionary::~UserDictionary() {
@@ -375,6 +375,7 @@ namespace rime {
 		while (accessor->GetNextRecord(&key, &value)) {
 			DLOG(INFO) << "key : " << key << ", value: " << value;
 			bool is_exact_match = (len < key.length() && key[len] == ' ');
+			//skip multi-char words when len is 3 or 8
 			if (boost::regex_match(name_, boost::regex("^sbdp$")) && (len == 3 || len == 8) && is_exact_match) {
 				if (prefixed && string("qwrtsdfgzxcvbyphjklnm").find(key.substr(10, 1)) != string::npos
 					&& boost::regex_match(key.substr(5, 3), boost::regex("^[qwrtsdfgzxcvbyphjklnm]{3}$")))
@@ -393,12 +394,15 @@ namespace rime {
 			}
 			if (!is_exact_match && prefixed && len > 8 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
 				string key_holder = key;
-				if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(input[8]) != string::npos
-					&& string("QWRTSDFGZXCVBYPHJKLNM").find(key[13]) != string::npos)
+				if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(key[13]) != string::npos
+					&& (string("QWRTSDFGZXCVBYPHJKLNM").find(input[8]) != string::npos || lower_case_ && string("qwrtsdfgzxcvbyphjklnm").find(input[8]) != string::npos))
 					key_holder[10] = key[13];
 				string input_holder = input;
-				map<char, char> m = { {'2','a'},{'3','e'},{'7','u'},{'8','i'},{'9','o'} };
-				if (name_ == "sbjm" && string("23789").find(input[8]) != string::npos && strong_mode_ && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
+				if (name_ == "sbjm" && lower_case_ && string("qwrtsdfgzxcvbyphjklnm").find(input[8]) != string::npos && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
+					input_holder[8] = toupper(input[8]);
+				}
+				else if (name_ == "sbjm" && string("23789").find(input[8]) != string::npos && strong_mode_ && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
+					map<char, char> m = { {'2','a'},{'3','e'},{'7','u'},{'8','i'},{'9','o'} };
 					if (enable_filtering_ && string("QWRTSDFGZXCVBYPHJKLNM").find(key[13]) != string::npos)
 						continue;
 					input_holder[8] = m[input[8]];
@@ -414,12 +418,15 @@ namespace rime {
 			}
 			else if (!is_exact_match && len > 3 && boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
 				string key_holder = key;
-				if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(input[3]) != string::npos
-					&& string("QWRTSDFGZXCVBYPHJKLNM").find(key[8]) != string::npos)
+				if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(key[8]) != string::npos
+					&& (string("QWRTSDFGZXCVBYPHJKLNM").find(input[3]) != string::npos || lower_case_ && string("qwrtsdfgzxcvbyphjklnm").find(input[3]) != string::npos))
 					key_holder[5] = key[8];
 				string input_holder = input;
-				map<char, char> m = { {'2','a'},{'3','e'},{'7','u'},{'8','i'},{'9','o'} };
-				if (name_ == "sbjm" && string("23789").find(input[3]) != string::npos && strong_mode_ && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
+				if (name_ == "sbjm" && lower_case_ && string("qwrtsdfgzxcvbyphjklnm").find(input[3]) != string::npos && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
+					input_holder[3] = toupper(input[3]);
+				}
+				else if (name_ == "sbjm" && string("23789").find(input[3]) != string::npos && strong_mode_ && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
+					map<char, char> m = { {'2','a'},{'3','e'},{'7','u'},{'8','i'},{'9','o'} };
 					if (enable_filtering_ && string("QWRTSDFGZXCVBYPHJKLNM").find(key[8]) != string::npos)
 						continue;
 					input_holder[3] = m[input[3]];
@@ -863,8 +870,10 @@ namespace rime {
 		config->GetBool(ticket.name_space + "/single_selection", &single_selection);
 		bool strong_mode = false;
 		config->GetBool(ticket.name_space + "/strong_mode", &strong_mode);
+		bool lower_case = false;
+		config->GetBool(ticket.name_space + "/lower_case", &lower_case);
 
-		return new UserDictionary(dict_name, db, ticket.schema->schema_id(), delete_threshold, enable_filtering, forced_selection, single_selection, strong_mode);
+		return new UserDictionary(dict_name, db, ticket.schema->schema_id(), delete_threshold, enable_filtering, forced_selection, single_selection, strong_mode, lower_case);
 	}
 
 }  // namespace rime
