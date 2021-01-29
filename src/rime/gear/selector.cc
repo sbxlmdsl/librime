@@ -103,12 +103,13 @@ namespace rime {
         if (index >= 0) {
 			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[kf]m|sbdp|sb[kf]m[ks]$"))
 				&& !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0])) {
-				if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbxh|sbzr$"))
+				if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf]m$"))
+					&& ctx->input().length() == 4 && string("aeuio_").find(ctx->input()[1]) != string::npos
+					&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[3]) != string::npos
+					)
+					return kNoop;
+				else if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbxh|sbzr|sb[kf]m$"))
 					&& ctx->input().length() == 4 && string("aeuio").find(ctx->input()[2]) != string::npos)
-					;
-				else if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf]m$"))
-					&& ctx->input().length() == 4 && string("aeuio_").find(ctx->input()[1]) == string::npos
-					&& string("aeuio").find(ctx->input()[2]) != string::npos)
 					;
 				else
 					return kNoop;
