@@ -491,7 +491,7 @@ namespace rime {
 					if (name_ == "sbjm" && enable_filtering_ && string("aeuio").find(input[l]) != string::npos 
 						&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
 						continue;
-					else if (len == 9 && delete_threshold_ > 0) {
+					else if (prefixed && len == 9 && delete_threshold_ > 0) {
 						if (!DeleteEntry(e))
 							result->Add(e);
 						else

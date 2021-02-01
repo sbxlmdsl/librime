@@ -20,6 +20,8 @@ void ShapeFormatter::Format(string* text) {
   if (boost::all(*text, !boost::is_from_range('\x20', '\x7e'))) {
     return;
   }
+  if (text->length() > 1)
+	  return;
   std::ostringstream oss;
   for (char ch : *text) {
     if (ch == 0x20) {
