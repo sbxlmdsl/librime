@@ -32,7 +32,7 @@ enum KeyBindingCondition {
   kWhenIsFifth,    // for sbjz
   kWhenIsSixth,    // for sbjz
   kWhenIsSelect,    // for sbkz and sbfz
-  kWhenOkFirst,		// the first code char is ok for sb[kf]m*
+  kWhenOkFirst,		// the first code char is ok for sb[fk]m*
   kWhenOkSecond, 
   kWhenOkThird,
   kWhenOkFourth,

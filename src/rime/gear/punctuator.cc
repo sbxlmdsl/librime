@@ -74,11 +74,11 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   }
   
   string schema = engine_->schema()->schema_id();
-  if (boost::regex_match(schema, boost::regex("^sb[kf][mdjsx]$")) && ctx->OkFirst() && ctx->input().size() == 1) {
+  if (boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]$")) && ctx->OkFirst() && ctx->input().size() == 1) {
     engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
   
-  if (boost::regex_match(schema, boost::regex("^sb[kf][mdjsx]|sbjm|sbdp$")) && ctx->HasMenu() && ch == XK_backslash) {
+  if (boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbjm|sbdp$")) && ctx->HasMenu() && ch == XK_backslash) {
     if ((schema == "sbfd" || schema == "sbkd") && ctx->OkSecond()) {
       engine_->ProcessKey(KeyEvent(XK_space, 0));
     }
@@ -104,7 +104,7 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
     return kNoop;
   DLOG(INFO) << "punct key: '" << punct_key << "'";
   
-  if (ctx->HasMenu() && !(boost::regex_match(schema, boost::regex("^sb[kf]m$")) && ctx->input().size() == 3)) {
+  if (ctx->HasMenu() && !(boost::regex_match(schema, boost::regex("^sb[fk]m$")) && ctx->input().size() == 3)) {
 	  engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
   

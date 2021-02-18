@@ -74,12 +74,12 @@ size_t UnityTableEncoder::LookupPhrases(UserDictEntryIterator* result,
                                         string* resume_key) {
   if (!user_dict_)
     return 0;
-  if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$")) && input.length() < 3) {
+  if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sb[fk]mk|sb[fk][jx]$")) && input.length() < 3) {
     return 0;
-  } else if (boost::regex_match(user_dict_->name(), boost::regex("^sbxh|sbzr|sbjk|sb[kf]m|sb[kf]ms|sb[fk]s$")) && input.length() < 4) {
+  } else if (boost::regex_match(user_dict_->name(), boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]ms|sb[fk]s$")) && input.length() < 4) {
     return 0;
   }
- // else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[kf]m$")) && input.length() == 4 
+ // else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk]m$")) && input.length() == 4 
 	//&& string("aeuio").find(input[2]) != string::npos) {
 	//  return 0;
  // }

@@ -269,46 +269,51 @@ namespace rime {
 				DLOG(INFO) << "encode '" << phrase << "': "
 					<< "[" << code->ToString() << "] -> [" << encoded << "]";
 
-				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[kf][sjx]|sb[kf][md][ks]?$"))) {
+				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[fk][sjx]|sb[fk][md][ks]?$"))) {
 					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
-						&& !boost::regex_match(dict_name_, boost::regex("^sb[kf]j$"))) {
+						&& !boost::regex_match(dict_name_, boost::regex("^sb[fk]j$"))) {
 						return false;
 					}
-					if (boost::regex_match(dict_name_, boost::regex("^sb[kf]ms|sb[kf]d$"))
+					if (boost::regex_match(dict_name_, boost::regex("^sb[fk]ms|sb[fk][dx]$"))
 						&& boost::regex_match((*code)[0], boost::regex("^.+2$"))
 						&& boost::regex_match((*code)[1], boost::regex("^.+2$"))) {
 						return false;
 					}
-					if (boost::regex_match(dict_name_, boost::regex("^sb[kf]d$"))
+					if (boost::regex_match(dict_name_, boost::regex("^sb[fk][dx]$"))
 						&& boost::regex_match((*code)[0], boost::regex("^.+3$"))
 						&& boost::regex_match((*code)[1], boost::regex("^.+2$"))) {
 						return false;
 					}
-					if (boost::regex_match(dict_name_, boost::regex("^sb[kf]d$"))
+					if (boost::regex_match(dict_name_, boost::regex("^sb[fk]d$"))
 						&& boost::regex_match((*code)[0], boost::regex("^.+2$"))
 						&& boost::regex_match((*code)[1], boost::regex("^.+3$"))
 						&& boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm]{2}.*$"))) {
 						return false;
 					}
+					if (boost::regex_match(dict_name_, boost::regex("^sb[fk]x$"))
+						&& boost::regex_match((*code)[0], boost::regex("^.+2$"))
+						&& boost::regex_match((*code)[1], boost::regex("^.+3$"))) {
+						return false;
+					}
 
 					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
-						&& boost::regex_match(dict_name_, boost::regex("^sb[kf]d$"))) {
+						&& boost::regex_match(dict_name_, boost::regex("^sb[fk]d$"))) {
 						encoded.replace(2, 2, (*code)[1].substr(3, 1));
 						encoded.replace(3, 1, (*code)[1].substr(0, 1));
 					}
 					else if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwertasdfgzxcvbyuiophjklnm]{2}.*$"))
-						&& boost::regex_match(dict_name_, boost::regex("^sb[kf]m[ks]$"))) {
+						&& boost::regex_match(dict_name_, boost::regex("^sb[fk]m[ks]$"))) {
 						encoded.replace(2, 4, (*code)[1].substr(2, 4));
 					}
 					else if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
-						&& boost::regex_match(dict_name_, boost::regex("^sb[kf]j$"))) {
+						&& boost::regex_match(dict_name_, boost::regex("^sb[fk]j$"))) {
 						encoded.replace(2, 4, (*code)[1].substr(2, 4));
 					}
 					else if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
-						&& boost::regex_match(dict_name_, boost::regex("^sb[kf]m$"))) {
+						&& boost::regex_match(dict_name_, boost::regex("^sb[fk]m$"))) {
 						encoded.replace(2, 1, (*code)[1].substr(2, 1));
 						encoded.replace(3, 1, (*code)[1].substr(0, 1));
 					}
@@ -329,10 +334,10 @@ namespace rime {
 					}
 				}
 
-				if (boost::regex_match(dict_name_, boost::regex("^sbjm|sbdp|sb[kf]mk|sb[fk]j$"))) {
+				if (boost::regex_match(dict_name_, boost::regex("^sbjm|sbdp|sb[fk]mk|sb[fk][jx]$"))) {
 					collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
 				}
-				else if (boost::regex_match(dict_name_, boost::regex("^sbxh|sbzr|sbjk|sb[kf]m|sb[kf]ms|sb[fk]s$"))) {
+				else if (boost::regex_match(dict_name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]ms|sb[fk]s$"))) {
 					collector_->CreateEntry(encoded.substr(4) + " " + phrase, encoded.substr(0, 4), value);
 				}
 				else {

@@ -107,7 +107,7 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
   }
 
   bool is_sbxlm = boost::regex_match(engine_->schema()->schema_id(), 
-	  boost::regex("^sb[kf][mdjsx]|sbjm|sbdp|sb[jfkd]z|sb[kf]ms|sbzr|sbxh$"));
+	  boost::regex("^sb[fk][mdjsx]|sbjm|sbdp|sb[jfkd]z|sb[fk]ms|sbzr|sbxh$"));
 
   if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
     ctx->Commit();
@@ -206,17 +206,17 @@ bool Speller::AutoSelectPreviousMatch(Context* ctx,
   string input = ctx->input();
   string converted = input.substr(0, end);
   auto cand = previous_segment->GetSelectedCandidate();
-  if (5 == input.length() && is_table_entry(cand)
+/*  if (5 == input.length() && is_table_entry(cand)
     && !(string("aeuio").find(ctx->input()[1]) != string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
     && !(string("aeuio").find(ctx->input()[1]) == string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
-    && boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf]x$"))) {
+    && boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x$"))) {
       return FindEarlierMatch(ctx, start ,end - 1);
   }
-  else if (5 == input.length() && is_table_entry(cand)
+  else*/ if (5 == input.length() && is_table_entry(cand)
 	  && string("aeuio").find(ctx->input()[4]) != string::npos
 	  && !(string("aeuio").find(ctx->input()[1]) != string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
 	  && !(string("aeuio").find(ctx->input()[1]) == string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
-	  && boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[kf]m$"))) {
+	  && boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]m$"))) {
 	  return FindEarlierMatch(ctx, start, end - 1);
   }
   else if (is_auto_selectable(previous_segment->GetSelectedCandidate(),
