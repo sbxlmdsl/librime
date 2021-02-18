@@ -417,14 +417,14 @@ namespace rime {
 				else if (len == 11 && boost::regex_match(name_, boost::regex("^sb[fk]x$")) && !single_selection_)
 					r1 = input_holder.substr(8, 2);
 				else
-					r1 = input_holder.substr(8, len - 3);
+					r1 = input_holder.substr(8, len - 8);
 				string r2;
 				if (len == 10 && boost::regex_match(name_, boost::regex("^sbjm$")) && !single_selection_)
 					r2 = key_holder.substr(10, 1);
 				else if (len == 11 && boost::regex_match(name_, boost::regex("^sb[fk]x$")) && !single_selection_)
 					r2 = key_holder.substr(10, 2);
 				else
-					r2 = key_holder.substr(10, len - 3);
+					r2 = key_holder.substr(10, len - 8);
 				if (r1 == r2) {
 					is_exact_match = true;
 				}
