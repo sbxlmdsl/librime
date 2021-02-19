@@ -323,7 +323,8 @@ namespace rime {
 				accessor = db_->Query(input);
 			}
 			else if (prefixed) {
-				if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]x$")) && len >= 8 && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
+				if (name_ == "sbjm" && strong_mode_ || boost::regex_match(name_, boost::regex("^sb[fk]x$"))
+						&& len >= 8 && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
 					if (len == 8)
 						return 0;
 					if (len == 9 && string("aeuio").find(input[8]) != string::npos)
@@ -334,7 +335,8 @@ namespace rime {
 				accessor = db_->Query(input.substr(0, 8));
 			}
 			else {
-				if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]x$")) && len >= 3 && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
+				if (name_ == "sbjm" && strong_mode_ || boost::regex_match(name_, boost::regex("^sb[fk]x$"))
+						&& len >= 3 && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
 					if (len == 3)
 						return 0;
 					if (len == 4 && string("aeuio").find(input[3]) != string::npos)
@@ -585,6 +587,7 @@ namespace rime {
 					if (e->text != string(words[i]))
 						continue;
 					else {
+						std::strcpy(words[1], e->text.c_str());
 						result->Add(e);
 						return 1;
 					}
@@ -631,6 +634,7 @@ namespace rime {
 						if (e->text != string(words[i]))
 							continue;
 						else {
+							std::strcpy(words[1], e->text.c_str());
 							result->Add(e);
 							return 1;
 						}
@@ -655,7 +659,7 @@ namespace rime {
 				}
 				else {
 					int i;
-					int j = (boost::regex_match(name_, boost::regex("^sb[fk]s|sbxh|sbzr|sbjk|sb[fk]m$"))) ? 2 : 3;
+					int j = (boost::regex_match(name_, boost::regex("^sb[fk]s|sbxh|sbzr|sbjk|sb[fk]m$"))) ? 2 : 2;
 					if (forced_selection_ && !single_selection_)
 						j += 5;
 					for (i = 0; i < j; i++) {
