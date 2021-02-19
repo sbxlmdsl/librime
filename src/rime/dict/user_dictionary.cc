@@ -542,7 +542,30 @@ namespace rime {
 				}
 			}
 			else if (boost::regex_match(name_, boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][jsx]$")) && (len == 5 || (prefixed && len == 10))) {
-				if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbxh|sbzr|sbjk|sb[fk]m$")) && !single_selection_) {
+				if (boost::regex_match(name_, boost::regex("^sb[fk]x$"))) {
+					if (enable_filtering_ && 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
+						continue;
+					if (!single_selection_) {
+						if (prefixed && len == 10 && delete_threshold_ > 0) {
+							if (!DeleteEntry(e))
+								result->Add(e);
+							else
+								continue;
+						}
+						else
+							result->Add(e);
+					}
+					else {
+						if (!e_holder) {
+							e_holder = e;
+						}
+						else if (e_holder->weight < e->weight) {
+							e_holder = e;
+						}
+						continue;
+					}
+				}
+				else if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbxh|sbzr|sbjk|sb[fk]m$")) && !single_selection_) {
 					int i = 0;
 					int j = (len == 5) ? 4 : 9;
 					switch (input[j]) {
@@ -567,29 +590,13 @@ namespace rime {
 					}
 				}
 				else {
-					if (boost::regex_match(name_, boost::regex("^sb[fk]x$")) && !single_selection_) {
-						int l = len == 5 ? 4 : 9;
-						if (enable_filtering_ && string("aeuio").find(input[l]) != string::npos
-							&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
-							continue;
-						else if (prefixed && len == 10 && delete_threshold_ > 0) {
-							if (!DeleteEntry(e))
-								result->Add(e);
-							else
-								continue;
-						}
-						else
-							result->Add(e);
+					int i;
+					for (i = 0; i < 2; i++) {
+						if (e->text == string(words[i]))
+							break;
 					}
-					else {
-						int i;
-						for (i = 0; i < 2; i++) {
-							if (e->text == string(words[i]))
-								break;
-						}
-						if (i < 2)
-							continue;
-					}
+					if (i < 2)
+						continue;
 
 					if (!e_holder) {
 						e_holder = e;
@@ -601,28 +608,49 @@ namespace rime {
 				}
 			}
 			else if (boost::regex_match(name_, boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]$")) && (len == 6 || (prefixed && len == 11))) {
-				if (boost::regex_match(name_, boost::regex("^sb[fk]x$")) && !single_selection_) {
-					int i = 0;
-					int j = (len == 6) ? 5 : 10;
-					switch (input[j]) {
-					case 'a':
-						i = 2; break;
-					case 'e':
-						i = 3; break;
-					case 'u':
-						i = 4; break;
-					case 'i':
-						i = 5; break;
-					case 'o':
-						i = 6; break;
-					}
-					if (i == 0 || words[i] == string(""))
-						return 0;
-					if (e->text != string(words[i]))
+				if (boost::regex_match(name_, boost::regex("^sb[fk]x$"))) {
+					if (enable_filtering_ && 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
 						continue;
+					if (!single_selection_) {
+						int i = 0;
+						int j = (len == 6) ? 5 : 10;
+						switch (input[j]) {
+						case 'a':
+							i = 2; break;
+						case 'e':
+							i = 3; break;
+						case 'u':
+							i = 4; break;
+						case 'i':
+							i = 5; break;
+						case 'o':
+							i = 6; break;
+						}
+						if (i == 0 || words[i] == string(""))
+							return 0;
+						if (e->text != string(words[i]))
+							continue;
+						else {
+							result->Add(e);
+							return 1;
+						}
+					}
 					else {
-						result->Add(e);
-						return 1;
+						int i;
+						for (i = 0; i < 2; i++) {
+							if (e->text == string(words[i]))
+								break;
+						}
+						if (i < 2)
+							continue;
+
+						if (!e_holder) {
+							e_holder = e;
+						}
+						else if (e_holder->weight < e->weight) {
+							e_holder = e;
+						}
+						continue;
 					}
 				}
 				else {
@@ -655,9 +683,7 @@ namespace rime {
 				}
 				if (i < j)
 					continue;
-				int l = len == 7 ? 4 : 9;
-				if (enable_filtering_ && string("aeuio").find(input[l]) != string::npos
-					&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
+				if (enable_filtering_ && 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
 					continue;
 				else
 					result->Add(e);
@@ -682,12 +708,20 @@ namespace rime {
 		if (e_holder && result->size() < 1) {	// found one most used entry
 			++count;
 			++exact_match_count;
-			if (len == 3 || (prefixed && len == 8))
-				std::strcpy(words[0], e_holder->text.c_str());
-			else if (len == 4 || (prefixed && len == 9))
-				std::strcpy(words[1], e_holder->text.c_str());
-			else if (len == 5 || (prefixed && len == 10))
-				std::strcpy(words[2], e_holder->text.c_str());
+			if (boost::regex_match(name_, boost::regex("^sb[fk]x$"))) {
+				if (len == 5 || (prefixed && len == 10))
+					std::strcpy(words[0], e_holder->text.c_str());
+				else if (len == 6 || (prefixed && len == 11))
+					std::strcpy(words[1], e_holder->text.c_str());
+			}
+			else {
+				if (len == 3 || (prefixed && len == 8))
+					std::strcpy(words[0], e_holder->text.c_str());
+				else if (len == 4 || (prefixed && len == 9))
+					std::strcpy(words[1], e_holder->text.c_str());
+				else if (len == 5 || (prefixed && len == 10))
+					std::strcpy(words[2], e_holder->text.c_str());
+			}
 			result->Add(e_holder);
 		}
 		if (exact_match_count > 0) {
