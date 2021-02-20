@@ -403,6 +403,9 @@ namespace rime {
 				if (boost::regex_match(name_, boost::regex("^sbjm$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(key[13]) != string::npos
 					&& (string("QWRTSDFGZXCVBYPHJKLNM").find(input[8]) != string::npos || lower_case_ && string("qwrtsdfgzxcvbyphjklnm").find(input[8]) != string::npos))
 					key_holder[10] = key[13];
+				else if (boost::regex_match(name_, boost::regex("^sb[fk]x$")) && string("QWRTSDFGZXCVBYPHJKLNM").find(key[14]) != string::npos
+					&& (string("QWRTSDFGZXCVBYPHJKLNM").find(input[8]) != string::npos))
+					key_holder[10] = key[14];
 				string input_holder = input;
 				if (name_ == "sbjm" && lower_case_ && string("qwrtsdfgzxcvbyphjklnm").find(input[8]) != string::npos && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
 					input_holder[8] = toupper(input[8]);
