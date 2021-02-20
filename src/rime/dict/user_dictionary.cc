@@ -587,7 +587,6 @@ namespace rime {
 					if (e->text != string(words[i]))
 						continue;
 					else {
-						std::strcpy(words[1], e->text.c_str());
 						result->Add(e);
 						return 1;
 					}
@@ -634,7 +633,6 @@ namespace rime {
 						if (e->text != string(words[i]))
 							continue;
 						else {
-							std::strcpy(words[1], e->text.c_str());
 							result->Add(e);
 							return 1;
 						}
@@ -659,7 +657,8 @@ namespace rime {
 				}
 				else {
 					int i;
-					int j = (boost::regex_match(name_, boost::regex("^sb[fk]s|sbxh|sbzr|sbjk|sb[fk]m$"))) ? 2 : 2;
+//					int j = (boost::regex_match(name_, boost::regex("^sb[fk]s|sbxh|sbzr|sbjk|sb[fk]m$"))) ? 2 : 3;
+					int j = 3;
 					if (forced_selection_ && !single_selection_)
 						j += 5;
 					for (i = 0; i < j; i++) {
@@ -1032,7 +1031,7 @@ namespace rime {
 			delete_threshold = 0;
 		bool enable_filtering = false;
 		config->GetBool(ticket.name_space + "/enable_filtering", &enable_filtering);
-		bool forced_selection = false;
+		bool forced_selection = true;
 		config->GetBool(ticket.name_space + "/forced_selection", &forced_selection);
 		bool single_selection = false;
 		config->GetBool(ticket.name_space + "/single_selection", &single_selection);
