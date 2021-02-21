@@ -207,7 +207,8 @@ bool Speller::AutoSelectPreviousMatch(Context* ctx,
   string converted = input.substr(0, end);
   auto cand = previous_segment->GetSelectedCandidate();
   if (5 == input.length() && is_table_entry(cand)
-    && !(string("aeuio").find(ctx->input()[1]) != string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
+	&& string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) == string::npos
+	&& !(string("aeuio").find(ctx->input()[1]) != string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
     && !(string("aeuio").find(ctx->input()[1]) == string::npos && string("aeuio_").find(ctx->input()[2]) != string::npos)
     && boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x$"))) {
       return FindEarlierMatch(ctx, start ,end - 1);
