@@ -329,7 +329,7 @@ namespace rime {
 						return 0;
 					if (len == 9 && string("aeuio").find(input[8]) != string::npos)
 						return 0;
-					if (name_ != "sbjm" && len == 9 && string("_qwrtsdfgzxcvbyphjklnm").find(input[8]) != string::npos)
+					if (name_ != "sbjm" && len == 9 && string("aeuio").find(input[8]) == string::npos)
 						return 0;
 				}
 				accessor = db_->Query(input.substr(0, 8));
@@ -341,7 +341,7 @@ namespace rime {
 						return 0;
 					if (len == 4 && string("aeuio").find(input[3]) != string::npos)
 						return 0;
-					if (name_ != "sbjm" && len == 4 && string("_qwrtsdfgzxcvbyphjklnm").find(input[3]) != string::npos)
+					if (name_ != "sbjm" && len == 4 && string("aeuio").find(input[3]) == string::npos)
 						return 0;
 				}
 				accessor = db_->Query(input.substr(0, 3));
