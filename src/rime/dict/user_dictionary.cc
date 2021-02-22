@@ -520,14 +520,14 @@ namespace rime {
 				continue;
 			}
 			else if (boost::regex_match(name_, boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][jsx]$")) && (len == 4 || (prefixed && len == 9))) {
+				int l = len == 4 ? 3 : 8;
+				if (boost::regex_match(name_, boost::regex("^sb[fk]x$")) && string("aeuio").find(input[l]) != string::npos	&& last_key[l + 3] != ' ')
+					continue;
 				if (e->text == string(words[0]))
 					continue;
 				else if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbxh|sbzr|sbjk|sb[fk][mx]$")) && !single_selection_) {
-					int l = len == 4 ? 3 : 8;
 					if (name_ == "sbjm" && enable_filtering_ && string("aeuio").find(input[l]) != string::npos
 						&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
-						continue;
-					else if (boost::regex_match(name_, boost::regex("^sb[fk]x$")) && string("aeuio").find(input[l]) != string::npos	&& last_key[l+3] != ' ')
 						continue;
 					else if (prefixed && len == 9 && delete_threshold_ > 0) {
 						if (!DeleteEntry(e))
@@ -643,6 +643,9 @@ namespace rime {
 						}
 					}
 					else {
+						int l = len == 6 ? 3 : 8;
+						if (boost::regex_match(name_, boost::regex("^sb[fk]x$")) && string("aeuio").find(input[l]) != string::npos	&& last_key[l + 3] == ' ')
+							continue;
 						int i;
 						for (i = 0; i < 2; i++) {
 							if (e->text == string(words[i]))
