@@ -162,7 +162,9 @@ void Editor::DeleteCandidate(Context* ctx) {
 		if (len == 3 && string("23789").find(ctx->input()[2]) != string::npos)
 			return;
 		if (len >= 2 && string("aeuio").find(ctx->input()[1]) != string::npos)
-		  return;
+			return;
+		if (len == 4 && string("aeuio").find(ctx->input()[3]) != string::npos && boost::regex_match(schema, boost::regex("^sb[fk]x$")))
+			return;
 	}
 	ctx->DeleteCurrentSelection();
 }

@@ -327,10 +327,10 @@ namespace rime {
 						&& len >= 8 && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
 					if (len == 8)
 						return 0;
-					if (len == 9 && string("aeuio").find(input[8]) != string::npos)
-						return 0;
-					if (name_ != "sbjm" && len == 9 && string("_qwrtsdfgzxcvbyphjklnm2378901456").find(input[8]) != string::npos)
-						return 0;
+					//if (len == 9 && string("aeuio").find(input[8]) != string::npos)
+					//	return 0;
+					//if (name_ != "sbjm" && len == 9 && string("_qwrtsdfgzxcvbyphjklnm2378901456").find(input[8]) != string::npos)
+					//	return 0;
 				}
 				accessor = db_->Query(input.substr(0, 8));
 			}
@@ -339,10 +339,10 @@ namespace rime {
 						&& len >= 3 && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
 					if (len == 3)
 						return 0;
-					if (len == 4 && string("aeuio").find(input[3]) != string::npos)
-						return 0;
-					if (name_ != "sbjm" && len == 4 && string("_qwrtsdfgzxcvbyphjklnm2378901456").find(input[3]) != string::npos)
-						return 0;
+					//if (len == 4 && string("aeuio").find(input[3]) != string::npos)
+					//	return 0;
+					//if (name_ != "sbjm" && len == 4 && string("_qwrtsdfgzxcvbyphjklnm2378901456").find(input[3]) != string::npos)
+					//	return 0;
 				}
 				accessor = db_->Query(input.substr(0, 3));
 			}
@@ -519,13 +519,16 @@ namespace rime {
 				}
 				continue;
 			}
-			else if (boost::regex_match(name_, boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][js]$")) && (len == 4 || (prefixed && len == 9))) {
+			else if (boost::regex_match(name_, boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][jsx]$")) && (len == 4 || (prefixed && len == 9))) {
 				if (e->text == string(words[0]))
 					continue;
-				else if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbxh|sbzr|sbjk|sb[fk]m$")) && !single_selection_) {
+				else if (boost::regex_match(name_, boost::regex("^sbjm|sb[fk]s|sbxh|sbzr|sbjk|sb[fk][mx]$")) && !single_selection_) {
 					int l = len == 4 ? 3 : 8;
-					if (name_ == "sbjm" && enable_filtering_ && string("aeuio").find(input[l]) != string::npos 
+					if (name_ == "sbjm" && enable_filtering_ && string("aeuio").find(input[l]) != string::npos
 						&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
+						continue;
+					else if (len == 4 && boost::regex_match(name_, boost::regex("^sb[fk]x$")) && string("aeuio").find(input[3]) != string::npos
+						&& last_key[6] != ' ')
 						continue;
 					else if (prefixed && len == 9 && delete_threshold_ > 0) {
 						if (!DeleteEntry(e))
