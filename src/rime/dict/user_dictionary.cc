@@ -527,8 +527,7 @@ namespace rime {
 					if (name_ == "sbjm" && enable_filtering_ && string("aeuio").find(input[l]) != string::npos
 						&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
 						continue;
-					else if (len == 4 && boost::regex_match(name_, boost::regex("^sb[fk]x$")) && string("aeuio").find(input[3]) != string::npos
-						&& last_key[6] != ' ')
+					else if (boost::regex_match(name_, boost::regex("^sb[fk]x$")) && string("aeuio").find(input[l]) != string::npos	&& last_key[l+3] != ' ')
 						continue;
 					else if (prefixed && len == 9 && delete_threshold_ > 0) {
 						if (!DeleteEntry(e))
