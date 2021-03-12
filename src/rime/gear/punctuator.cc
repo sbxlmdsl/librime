@@ -78,13 +78,13 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
     engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
   
-  if (boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbjm|sbdp$")) && ctx->HasMenu() && ch == XK_backslash) {
+  if (boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbjm|sbdp|sbxh|sbzr$")) && ctx->HasMenu()) {
     if ((schema == "sbfd" || schema == "sbkd") && ctx->OkSecond()) {
       engine_->ProcessKey(KeyEvent(XK_space, 0));
     }
-    engine_->ProcessKey(KeyEvent(XK_space, 0));
+	ctx->Commit();
+	// engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
-  
 
   if (ch == '.' || ch == ':') {  // 3.14, 12:30
     const CommitHistory& history(ctx->commit_history());
@@ -104,10 +104,10 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
     return kNoop;
   DLOG(INFO) << "punct key: '" << punct_key << "'";
   
-  if (ctx->HasMenu() && !(boost::regex_match(schema, boost::regex("^sb[fk]m$")) && ctx->input().size() == 3)) {
-	  engine_->ProcessKey(KeyEvent(XK_space, 0));
-  }
-  
+  //if (ctx->HasMenu() && !(boost::regex_match(schema, boost::regex("^sb[fk]m$")) && ctx->input().size() == 3)) {
+	 // engine_->ProcessKey(KeyEvent(XK_space, 0));
+  //}
+  //
   if (!AlternatePunct(punct_key, punct_definition)) {
     ctx->PushInput(ch) &&
         punctuation_is_translated(ctx) &&
