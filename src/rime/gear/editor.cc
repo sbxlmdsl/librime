@@ -153,6 +153,8 @@ void Editor::BackToPreviousSyllable(Context* ctx) {
 
 void Editor::DeleteCandidate(Context* ctx) {
 	string schema = engine_->schema()->schema_id();
+	if (boost::regex_match(schema, boost::regex("^sb[djhzfk]z$")))
+		return;
 	if (boost::regex_match(schema, boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk][mx]|sbdp$"))) {
 		size_t len = ctx->input().length();
 		if (len >= 1 && string("aeuio").find(ctx->input()[0]) != string::npos)
