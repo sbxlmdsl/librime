@@ -82,8 +82,8 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
     if ((schema == "sbfd" || schema == "sbkd") && ctx->OkSecond()) {
       engine_->ProcessKey(KeyEvent(XK_space, 0));
     }
-	ctx->Commit();
-	// engine_->ProcessKey(KeyEvent(XK_space, 0));
+	//ctx->Commit();
+	engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
 
   if (ch == '.' || ch == ':') {  // 3.14, 12:30
