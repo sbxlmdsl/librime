@@ -83,6 +83,7 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
       engine_->ProcessKey(KeyEvent(XK_space, 0));
     }
 	//ctx->Commit();
+	ctx->ConfirmCurrentSelection();
 	engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
 
