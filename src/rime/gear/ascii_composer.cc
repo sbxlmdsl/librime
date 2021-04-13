@@ -123,6 +123,15 @@ ProcessResult AsciiComposer::ProcessKeyEvent(const KeyEvent& key_event) {
       return kAccepted;
     }
   }
+
+  // April 12, 2021, switch to inline ascii mode if the first char is of uppercase
+  if (!ascii_mode && ctx->input().length() == 0 && isupper(ch)) {
+	  if (!key_event.release()) {
+		  ctx->PushInput(ch);
+		  ToggleAsciiModeWithKey(XK_Shift_L);
+		  return kAccepted;
+	  }
+  }
   return kNoop;
 }
 

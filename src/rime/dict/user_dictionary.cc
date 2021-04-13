@@ -846,6 +846,8 @@ namespace rime {
 			}
 			if (v.commits < 0)
 				v.commits = -v.commits;
+			else if (!new_entry_prefix.empty()) // April 12, 2021, not increase commits of existing entries  
+				return false;
 		}
 		else if (!new_entry_prefix.empty()) {
 			key.insert(0, new_entry_prefix);
