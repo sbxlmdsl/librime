@@ -107,7 +107,7 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
   }
 
   string schema = engine_->schema()->schema_id();
-  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbjm|sbdp|sb[jfkd]z|sb[fk]ms|sbzr|sbxh$"));
+  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbjm|sbdp|sb[fk]ms|sbzr|sbxh$"));
 
   if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
     ctx->Commit();
@@ -127,6 +127,30 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
 	  && 2 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
 	  && boost::regex_match(schema, boost::regex("^sb[fk]m$"))) {
 	  ch = tolower(ch);
+  }
+
+  size_t len = ctx->input().length();
+  if (string("23789").find(ch) != string::npos && belongs_to(ctx->input()[0], initials_)
+	  && (1 == len && is_sbxlm || 2 == len && islower(ctx->input()[1])
+		  && boost::regex_match(schema, boost::regex("^sb[fk][mx]$")))) {
+	  ctx->PushInput(ch);
+	  ctx->ConfirmCurrentSelection();
+	  ctx->Commit();
+	  ctx->Clear();
+	  return kAccepted;
+  }
+  if (string("23789").find(ch) != string::npos && belongs_to(ctx->input()[0], initials_)
+	  && 3 == len && is_sbxlm && islower(ctx->input()[1]) && belongs_to(ctx->input()[2], initials_)) {
+	  string rest = ctx->input().substr(2,1);
+	  ctx->set_input(ctx->input().substr(0,2));
+	  ctx->ConfirmCurrentSelection();
+	  ctx->Commit();
+	  ctx->set_input(rest);
+	  ctx->PushInput(ch);
+	  ctx->ConfirmCurrentSelection();
+	  ctx->Commit();
+	  ctx->Clear();
+	  return kAccepted;
   }
 
   // handles input beyond max_code_length when auto_select is false.
@@ -160,6 +184,7 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
   else if (auto_clear_ == kClearAuto && AutoClear(ctx)) {
     DLOG(INFO) << "auto-clear when no candidate.";
   }
+
   return kAccepted;
 }
 
