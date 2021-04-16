@@ -106,11 +106,27 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
     return kNoop;
   }
 
-  bool is_sbxlm = boost::regex_match(engine_->schema()->schema_id(), 
-	  boost::regex("^sb[fk][mdjsx]|sbjm|sbdp|sb[jfkd]z|sb[fk]ms|sbzr|sbxh$"));
+  string schema = engine_->schema()->schema_id();
+  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbjm|sbdp|sb[jfkd]z|sb[fk]ms|sbzr|sbxh$"));
 
   if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
     ctx->Commit();
+  }
+
+  bool pro_char = ctx->get_option("pro_char");
+  if (is_initial && pro_char && 2 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
+	  && boost::regex_match(schema, boost::regex("^sb[fk][mx]$"))) {
+	  ctx->ConfirmCurrentSelection();
+	  ctx->Commit();
+	  ctx->Clear();
+	  ctx->PushInput(ch);
+	  return kAccepted;
+  }
+
+  if (string("QWRTSDFGZXCVBYPHJKLNM").find(ch) != string::npos && pro_char 
+	  && 2 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
+	  && boost::regex_match(schema, boost::regex("^sb[fk]m$"))) {
+	  ch = tolower(ch);
   }
 
   // handles input beyond max_code_length when auto_select is false.
