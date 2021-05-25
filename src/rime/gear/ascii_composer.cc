@@ -124,8 +124,9 @@ ProcessResult AsciiComposer::ProcessKeyEvent(const KeyEvent& key_event) {
     }
   }
 
+  bool auto_inline = ctx->get_option("auto_inline"); // May 25, 2021
   // April 12, 2021, switch to inline ascii mode if the first char is of uppercase
-  if (!ascii_mode && ctx->input().length() == 0 && isupper(ch)) {
+  if (!ascii_mode && ctx->input().length() == 0 && isupper(ch) && auto_inline) {
 	  if (!key_event.release()) {
 		  ctx->PushInput(ch);
 		  ToggleAsciiModeWithKey(XK_Shift_L);
