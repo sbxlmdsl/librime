@@ -107,7 +107,7 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
   }
 
   string schema = engine_->schema()->schema_id();
-  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbjm|sbdp|sb[fk]ms|sbzr|sbxh$"));
+  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbfx2|sbjm|sbdp|sb[fk]ms|sbzr|sbxh$"));
 
   if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
     ctx->Commit();
@@ -115,7 +115,7 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
 
   bool pro_char = ctx->get_option("pro_char");
   if (is_initial && pro_char && 2 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
-	  && boost::regex_match(schema, boost::regex("^sb[fk][mx]$"))) {
+	  && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sbfx2$"))) {
 	  ctx->ConfirmCurrentSelection();
 	  ctx->Commit();
 	  ctx->Clear();
@@ -132,7 +132,7 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
   size_t len = ctx->input().length();
   if (string("23789").find(ch) != string::npos && belongs_to(ctx->input()[0], initials_)
 	  && (1 == len && is_sbxlm || 2 == len && islower(ctx->input()[1])
-		  && boost::regex_match(schema, boost::regex("^sb[fk][mx]$")))) {
+		  && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sbfx2$")))) {
 	  ctx->PushInput(ch);
 	  ctx->ConfirmCurrentSelection();
 	  ctx->Commit();

@@ -74,11 +74,11 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   }
   
   string schema = engine_->schema()->schema_id();
-  if (boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]$")) && ctx->OkFirst() && ctx->input().size() == 1) {
+  if (boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbfx2$")) && ctx->OkFirst() && ctx->input().size() == 1) {
     engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
   
-  if (boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbjm|sbdp|sbxh|sbzr$")) && ctx->HasMenu()) {
+  if (boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbfx2|sbjm|sbdp|sbxh|sbzr$")) && ctx->HasMenu()) {
     if ((schema == "sbfd" || schema == "sbkd") && ctx->OkSecond()) {
       engine_->ProcessKey(KeyEvent(XK_space, 0));
     }
