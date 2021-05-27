@@ -120,7 +120,7 @@ namespace rime {
 				&& ctx->input().length() > 3 && string("23789").find(ctx->input()[3]) != string::npos)
 				return kNoop;
 
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x|sbfx2$"))
+			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x$"))
 				&& !current_segment.HasTag("paging") && ctx->input().length() < 7 && islower(ctx->input()[0])) {
 				if (ctx->input().length() == 4 && (string("aeuio").find(ctx->input()[2]) != string::npos
 					|| string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos))
