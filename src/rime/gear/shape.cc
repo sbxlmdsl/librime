@@ -47,7 +47,7 @@ ProcessResult ShapeProcessor::ProcessKeyEvent(const KeyEvent& key_event) {
     return kNoop;
   }
   int ch = key_event.keycode();
-  if (ch < 0x20 || ch > 0x7e) {
+  if (ch <= 0x20 || ch > 0x7e) {
     return kNoop;
   }
   string wide(1, ch);
