@@ -153,6 +153,18 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
 	  return kAccepted;
   }
 
+  if (4 == len && isupper(ch) && belongs_to(ctx->input()[0], initials_)
+	  && string("aeuio").find(ctx->input()[2]) == string::npos
+	  && boost::regex_match(schema, boost::regex("^sb[fk]m$"))) {
+	  string rest = ctx->input().substr(2, 2);
+	  ctx->set_input(ctx->input().substr(0, 2));
+	  ctx->ConfirmCurrentSelection();
+	  ctx->Commit();
+	  ctx->set_input(rest);
+	  ctx->PushInput(tolower(ch));
+	  return kAccepted;
+  }
+
   // handles input beyond max_code_length when auto_select is false.
   if (is_initial && AutoSelectAtMaxCodeLength(ctx)) {
     DLOG(INFO) << "auto-select at max code length.";
