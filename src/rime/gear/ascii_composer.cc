@@ -126,7 +126,9 @@ ProcessResult AsciiComposer::ProcessKeyEvent(const KeyEvent& key_event) {
 
   bool auto_inline = ctx->get_option("auto_inline"); // May 25, 2021
   // April 12, 2021, switch to inline ascii mode if the first char is of uppercase
-  if (!ascii_mode && ctx->input().length() == 0 && isupper(ch) && auto_inline) {
+  // Oct. 5, 2021, removed a strange bug on Linux by adding ch >= 0x20 && ch < 0x80
+  if (!ascii_mode && ctx->input().length() == 0
+	  && ch >= 0x20 && ch < 0x80 && isupper(ch) && auto_inline) {
 	  if (!key_event.release()) {
 		  ctx->PushInput(ch);
 		  ToggleAsciiModeWithKey(XK_Shift_L);
