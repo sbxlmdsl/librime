@@ -14,3 +14,4 @@ env.bat
 node_modules/
 *~
 .*.swp
+.idea

@@ -320,6 +320,17 @@ namespace rime {
 				}
 				else 
 */
+                if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[fk][mx]$"))) {
+                    if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio].*|.+1$"))
+                        && boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio].*|.+1$"))) {
+                        return false;
+                    }
+                    if (boost::regex_match((*code)[0], boost::regex("^.+2$"))
+                        && boost::regex_match((*code)[1], boost::regex("^.+1$"))) {
+                        return false;
+                    }
+                }
+
 				if (boost::regex_match(dict_name_, boost::regex("^sbdp$"))) {
 					if (code->size() == 2 && boost::regex_match((*code)[0], boost::regex("^.+2$"))
 						&& boost::regex_match((*code)[1], boost::regex("^.+2$"))) {

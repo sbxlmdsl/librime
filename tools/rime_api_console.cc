@@ -170,6 +170,7 @@ void on_message(void* context_object,
 }
 
 int main(int argc, char *argv[]) {
+    setbuf(stdout,NULL);
   RimeApi* rime = rime_get_api();
 
   RIME_STRUCT(RimeTraits, traits);
