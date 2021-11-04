@@ -330,7 +330,7 @@ namespace rime {
                         return false;
                     }
                 }
-
+/*
 				if (boost::regex_match(dict_name_, boost::regex("^sbdp$"))) {
 					if (code->size() == 2 && boost::regex_match((*code)[0], boost::regex("^.+2$"))
 						&& boost::regex_match((*code)[1], boost::regex("^.+2$"))) {
@@ -346,7 +346,7 @@ namespace rime {
 						encoded.replace(4, 0, (*code)[0].substr(len0, 2));
 					}
 				}
-
+*/
 				if (boost::regex_match(dict_name_, boost::regex("^sbjm|sbdp|sb[fk]mk|sb[fk][jx]$"))) {
 					collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
 				}
