@@ -268,6 +268,18 @@ namespace rime {
 			if (Encode(*code, &encoded)) {
 				DLOG(INFO) << "encode '" << phrase << "': "
 					<< "[" << code->ToString() << "] -> [" << encoded << "]";
+
+				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[fk]j$"))) {
+					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
+						&& boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))) {
+						return false;
+					}
+
+					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
+						&& boost::regex_match(dict_name_, boost::regex("^sb[fk]j$"))) {
+						encoded.replace(2, 4, (*code)[1].substr(2, 4));
+					}
+				}
 /*
 				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[fk][sjx]|sb[fk][md][ks]?$"))) {
 					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
@@ -330,23 +342,7 @@ namespace rime {
                         return false;
                     }
                 }
-/*
-				if (boost::regex_match(dict_name_, boost::regex("^sbdp$"))) {
-					if (code->size() == 2 && boost::regex_match((*code)[0], boost::regex("^.+2$"))
-						&& boost::regex_match((*code)[1], boost::regex("^.+2$"))) {
-						return false;
-					}
-					int len0 = (*code)[0].length() - 4;
-					int len1 = (*code)[1].length() - 4;
-					if (code->size() == 2) {
-						string tmp = (*code)[1].substr(0, len1) + (*code)[0].substr(len0, 3);
-						encoded.replace(1, 1, tmp.substr(0, 5));
-					}
-					else {
-						encoded.replace(4, 0, (*code)[0].substr(len0, 2));
-					}
-				}
-*/
+
 				if (boost::regex_match(dict_name_, boost::regex("^sbjm|sbdp|sb[fk]mk|sb[fk][jx]$"))) {
 					collector_->CreateEntry(encoded.substr(3) + " " + phrase, encoded.substr(0, 3), value);
 				}
