@@ -161,8 +161,8 @@ void Editor::DeleteCandidate(Context* ctx) {
 			return;
 		if (len <= 2)
 			return;
-		if (len == 3 && string("23789").find(ctx->input()[2]) != string::npos)
-			return;
+		//if (len == 3 && string("23789").find(ctx->input()[2]) != string::npos)
+		//	return;
 		if (len == 3 && !boost::regex_match(schema, boost::regex("^sbjm|sbdp$")))
 			return;
 		if (len < 5 && boost::regex_match(schema, boost::regex("^sb[fk]x$")))
