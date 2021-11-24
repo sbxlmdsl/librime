@@ -117,7 +117,7 @@ namespace rime {
           
 			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]s$"))
 				&& !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0])
-				&& ctx->input().length() > 3 && string(",;/.'").find(ctx->input()[3]) != string::npos)
+				&& ctx->input().length() > 3 && string(",;/.'QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos)
 				return kNoop;
 
 			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x$"))
