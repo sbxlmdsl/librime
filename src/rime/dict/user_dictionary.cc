@@ -360,7 +360,7 @@ namespace rime {
                     return 0;
                 accessor = db_->Query(input.substr(0, 3));
             }
-        } else if (boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]ms|sb[fk]s$"))) {
+        } else if (boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]ms|sb[fk]s|sb[hz]s$"))) {
             if (len < 4) {
                 accessor = db_->Query(input);
             } else if (prefixed) {
@@ -465,10 +465,10 @@ namespace rime {
                     continue;
                 }
             } else if (!is_exact_match && prefixed && len > 9 &&
-                       boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]ms|sb[fk]s$"))) {
-                string r1 = (len == 10 && boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]s$")) &&
+                       boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]ms|sb[fk]s|sb[hz]s$"))) {
+                string r1 = (len == 10 && boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]s|sb[hz]s$")) &&
                              !single_selection_) ? input.substr(9, 0) : input.substr(9, len - 9);
-                string r2 = (len == 10 && boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]s$")) &&
+                string r2 = (len == 10 && boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]s|sb[hz]s$")) &&
                              !single_selection_) ? key.substr(11, 0) : key.substr(11, len - 9);
                 if (r1 == r2) {
                     is_exact_match = true;
@@ -476,10 +476,10 @@ namespace rime {
                     continue;
                 }
             } else if (!is_exact_match && len > 4 &&
-                       boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]ms|sb[fk]s$"))) {
-                string r1 = (len == 5 && boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]s$")) &&
+                       boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]ms|sb[fk]s|sb[hz]s$"))) {
+                string r1 = (len == 5 && boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]s|sb[hz]s$")) &&
                              !single_selection_) ? input.substr(4, 0) : input.substr(4, len - 4);
-                string r2 = (len == 5 && boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]s$")) &&
+                string r2 = (len == 5 && boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbjk|sb[fk]m|sb[fk]s|sb[hz]s$")) &&
                              !single_selection_) ? key.substr(6, 0) : key.substr(6, len - 4);
                 if (r1 == r2) {
                     is_exact_match = true;
@@ -510,7 +510,7 @@ namespace rime {
                 }
                 continue;
             } else if (boost::regex_match(name_,
-                                          boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][jsx]$")) &&
+                                          boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][jsx]|sb[hz]s$")) &&
                        (len == 4 || (prefixed && len == 9))) {
                 int l = len == 4 ? 3 : 8;
                 if (boost::regex_match(name_, boost::regex("^sb[fk]x$")) &&
@@ -518,7 +518,7 @@ namespace rime {
                     continue;
                 if (e->text == string(words[0]))
                     continue;
-                else if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fk]s|sbxh|sbzr|sbjk|sb[fk][mx]$")) &&
+                else if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fk]s|sb[hz]s|sbxh|sbzr|sbjk|sb[fk][mx]$")) &&
                          !single_selection_) {
                     if (boost::regex_match(name_, boost::regex("^sbjm|sbdp$")) && enable_filtering_ &&
                         string("aeuio").find(input[l]) != string::npos
@@ -540,7 +540,7 @@ namespace rime {
                     continue;
                 }
             } else if (boost::regex_match(name_,
-                                          boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][jsx]$")) &&
+                                          boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][jsx]|sb[hz]s$")) &&
                        (len == 5 || (prefixed && len == 10))) {
                 if (boost::regex_match(name_, boost::regex("^sb[fk]x$"))) {
                     if (enable_filtering_ &&
@@ -562,7 +562,7 @@ namespace rime {
                         }
                         continue;
                     }
-                } else if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fk]s|sbxh|sbzr|sbjk|sb[fk]m$")) &&
+                } else if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fk]s|sb[hz]s|sbxh|sbzr|sbjk|sb[fk]m$")) &&
                            !single_selection_) {
                     int i = 0;
                     int j = (len == 5) ? 4 : 9;
@@ -735,7 +735,7 @@ namespace rime {
         if (exact_match_count > 0) {
             result->SortRange(start, exact_match_count);
         }
-        if (boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbj[mk]|sbdp|sb[fk]m|sb[fk]s$")) && prefixed &&
+        if (boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbj[mk]|sbdp|sb[fk]m|sb[fk]s|sb[hz]s$")) && prefixed &&
             len == 9 && result->size() > 0 && !single_selection_) {
             int i = 1;
             while (words[i] != string("")) {
@@ -757,7 +757,7 @@ namespace rime {
                 }
             }
             result->SetIndex(0);
-        } else if (boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbj[mk]|sbdp|sb[fk]m|sb[fk]s$")) && len == 4 &&
+        } else if (boost::regex_match(name_, boost::regex("^sbxh|sbzr|sbj[mk]|sbdp|sb[fk]m|sb[fk]s|sb[hz]s$")) && len == 4 &&
                    result->size() > 0 && !single_selection_) {
             int i = 1;
             while (i < 7) {

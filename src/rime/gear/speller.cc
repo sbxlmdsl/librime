@@ -92,7 +92,7 @@ namespace rime {
     ProcessResult Speller::ProcessKeyEvent(const KeyEvent &key_event) {
         if (key_event.release() || key_event.ctrl() || key_event.alt())
             return kNoop;
-        int ch = key_event.keycode();
+        char ch = key_event.keycode();
         if (ch < 0x20 || ch >= 0x7f)  // not a valid key for spelling
             return kNoop;
         if (ch == XK_space && (!use_space_ || key_event.shift()))
@@ -107,7 +107,7 @@ namespace rime {
         }
 
         string schema = engine_->schema()->schema_id();
-        bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbfx2|sbjm|sbdp|sb[fk]ms|sbzr|sbxh$"));
+        bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbfx2|sbjm|sbdp|sb[fk]ms|sbzr|sbxh|sb[hz]s$"));
 
         if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
             ctx->Commit();
@@ -144,6 +144,18 @@ namespace rime {
             && boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) {
             ch = tolower(ch);
         }
+
+//		if (is_initial && 3 == ctx->input().length() 
+//			&& string("aeuio").find(ctx->input()[2]) == string::npos
+//			&& boost::regex_match(schema, boost::regex("^sb[hz]s$"))) {
+//			string rest = ctx->input().substr(2, 1) + string({ ch });
+//			ctx->set_input(ctx->input().substr(0, 2));
+//			ctx->ConfirmCurrentSelection();
+//			ctx->Commit();
+//			ctx->set_input(rest);
+////			ctx->PushInput(ch);
+//			return kAccepted;
+//		}
 
         size_t len = ctx->input().length();
         //if (string("23789").find(ch) != string::npos && belongs_to(ctx->input()[0], initials_)

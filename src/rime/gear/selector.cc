@@ -115,7 +115,7 @@ namespace rime {
 					return kNoop;
 			}
           
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]s$"))
+			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]s|sb[hz]s$"))
 				&& !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0])
 				&& ctx->input().length() > 3 && string(",;/.'QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos)
 				return kNoop;
@@ -133,7 +133,7 @@ namespace rime {
 			//	&& !current_segment.HasTag("paging") && ctx->input().length() < 4 && islower(ctx->input()[0]))
 			//	return kNoop;
 
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk][md]|sb[fk]s$"))
+			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk][md]|sb[fk]s|sb[hz]s$"))
 				&& !current_segment.HasTag("paging") && ctx->input().length() < 4 && islower(ctx->input()[0]))
 				return kNoop;
 
