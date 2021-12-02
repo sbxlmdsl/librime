@@ -92,7 +92,7 @@ namespace rime {
     ProcessResult Speller::ProcessKeyEvent(const KeyEvent &key_event) {
         if (key_event.release() || key_event.ctrl() || key_event.alt())
             return kNoop;
-        char ch = key_event.keycode();
+        int ch = key_event.keycode();
         if (ch < 0x20 || ch >= 0x7f)  // not a valid key for spelling
             return kNoop;
         if (ch == XK_space && (!use_space_ || key_event.shift()))
