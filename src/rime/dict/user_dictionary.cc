@@ -608,7 +608,7 @@ namespace rime {
                     continue;
                 }
             } else if (boost::regex_match(name_,
-                                          boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]$")) &&
+                                          boost::regex("^sbjm|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$")) &&
                        (len == 6 || (prefixed && len == 11))) {
                 if (boost::regex_match(name_, boost::regex("^sb[fk]x$"))) {
                     if (enable_filtering_ &&

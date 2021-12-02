@@ -74,7 +74,7 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   }
   
   string schema = engine_->schema()->schema_id();
-  if (boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbfx2$")) && ctx->OkFirst() && ctx->input().size() == 1) {
+  if (boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sb[hz]s|sbfx2$")) && ctx->OkFirst() && ctx->input().size() == 1) {
     engine_->ProcessKey(KeyEvent(XK_space, 0));
   }
   

@@ -338,7 +338,7 @@ namespace rime {
         UnityTableEncoder::RemovePrefix(&blessed.custom_code);
         user_dict_->UpdateEntry(blessed, 1);
       }
-      else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][mdjsx]|sbxh|sbzr$"))
+      else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][mdjsx]|sb[hz]s|sbxh|sbzr$"))
                && 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
         ;
       }
