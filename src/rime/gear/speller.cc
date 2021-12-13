@@ -115,7 +115,7 @@ namespace rime {
 
         bool pro_char = ctx->get_option("pro_char");
         if (is_initial && pro_char && 2 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
-            && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sbfx2$"))) {
+            && boost::regex_match(schema, boost::regex("^sb[fk][smx]|sbfx2|sbzr|sbxh|sb[hz]s$"))) {
             ctx->ConfirmCurrentSelection();
             ctx->Commit();
             ctx->Clear();

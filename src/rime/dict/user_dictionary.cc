@@ -416,7 +416,7 @@ namespace rime {
                 if (boost::regex_match(name_, boost::regex("^sb[fk]x$")) &&
                     string("QWRTSDFGZXCVBYPHJKLNM").find(key[14]) != string::npos
                     && (string("QWRTSDFGZXCVBYPHJKLNM").find(input[8]) != string::npos))
-                    key_holder[9] = key[12];
+                    key_holder[10] = key[14];
                 string input_holder = input;
                 string r1;
                 if (len == 10 && boost::regex_match(name_, boost::regex("^sbjm|sbdp$")) && !single_selection_)
