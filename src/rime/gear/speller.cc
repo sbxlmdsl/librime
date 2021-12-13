@@ -125,7 +125,7 @@ namespace rime {
 
         if (string("QWRTSDFGZXCVBYPHJKLNM").find(ch) != string::npos && pro_char
             && 2 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
-            && boost::regex_match(schema, boost::regex("^sb[fk]m$"))) {
+            && boost::regex_match(schema, boost::regex("^sb[fk]m|sbzr|sbxh$"))) {
             ch = tolower(ch);
         }
 
