@@ -115,7 +115,7 @@ namespace rime {
 
         bool pro_char = ctx->get_option("pro_char");
         if (is_initial && pro_char && 2 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
-            && boost::regex_match(schema, boost::regex("^sb[fk][smx]|sbfx2|sbzr|sbxh|sb[hz]s$"))) {
+            && boost::regex_match(schema, boost::regex("^sb[fk][smx]|sb[fkhz]j|sbfx2|sbzr|sbxh|sb[hz]s$"))) {
             ctx->ConfirmCurrentSelection();
             ctx->Commit();
             ctx->Clear();
@@ -125,7 +125,7 @@ namespace rime {
 
         if (string("QWRTSDFGZXCVBYPHJKLNM").find(ch) != string::npos && pro_char
             && 2 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
-            && boost::regex_match(schema, boost::regex("^sb[fk]m|sbzr|sbxh$"))) {
+            && boost::regex_match(schema, boost::regex("^sb[fk]m|sb[fkhz]j|sbzr|sbxh$"))) {
             ch = tolower(ch);
         }
 

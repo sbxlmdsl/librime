@@ -268,7 +268,7 @@ namespace rime {
 			if (Encode(*code, &encoded)) {
 				DLOG(INFO) << "encode '" << phrase << "': "
 					<< "[" << code->ToString() << "] -> [" << encoded << "]";
-
+/*
 				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[fk]j$"))) {
 					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))) {
@@ -280,7 +280,7 @@ namespace rime {
 						encoded.replace(2, 4, (*code)[1].substr(2, 4));
 					}
 				}
-/*
+
 				if (code->size() == 2 && boost::regex_match(dict_name_, boost::regex("^sb[fk][sjx]|sb[fk][md][ks]?$"))) {
 					if (boost::regex_match((*code)[0], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
 						&& boost::regex_match((*code)[1], boost::regex("^[qwrtsdfgzxcvbyphjklnm][aeuio_].*$"))
