@@ -107,7 +107,7 @@ namespace rime {
         }
 
         string schema = engine_->schema()->schema_id();
-        bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdjsx]|sbfx2|sbjm|sbdp|sb[fk]ms|sbzr|sbxh|sb[hz]s$"));
+        bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdsx]|sbfx2|sbjm|sbdp|sb[fkhz]j|sb[fk]ms|sbzr|sbxh|sb[hz]s$"));
 
         if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
             ctx->Commit();
@@ -131,7 +131,7 @@ namespace rime {
 
         bool lower_case = ctx->get_option("lower_case");
         if (is_initial && !lower_case && 3 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
-            && boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) {
+            && boost::regex_match(schema, boost::regex("^sbjm|sbdp|sb[fkhz]j$"))) {
             ctx->ConfirmCurrentSelection();
             ctx->Commit();
             ctx->Clear();
@@ -141,7 +141,7 @@ namespace rime {
 
         if (string("QWRTSDFGZXCVBYPHJKLNM").find(ch) != string::npos && !lower_case
             && 3 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
-            && boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) {
+            && boost::regex_match(schema, boost::regex("^sbjm|sbdp|sb[fkhz]j$"))) {
             ch = tolower(ch);
         }
 
