@@ -108,7 +108,7 @@ namespace rime {
 					&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[3]) != string::npos
 					)
 					return kNoop;
-				else if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbxh|sbzr|sb[fk]m$"))
+				else if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbxh|sbzr|sb[fk]m|sb[fkhz]j$"))
 					&& ctx->input().length() == 4 && string("aeuio").find(ctx->input()[2]) != string::npos)
 					;
 				else
