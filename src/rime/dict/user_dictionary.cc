@@ -330,7 +330,7 @@ namespace rime {
             if (len < 3) {
                 accessor = db_->Query(input);
             } else if (prefixed) {
-                if (boost::regex_match(name_, boost::regex("^sbjm|sbdp$")) && strong_mode_ ||
+                if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fkhz]j$")) && strong_mode_ ||
                     boost::regex_match(name_, boost::regex("^sb[fk]x$"))
                     && len >= 8 && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
                     if (len == 8)
@@ -345,7 +345,7 @@ namespace rime {
                     return 0;
                 accessor = db_->Query(input.substr(0, 8));
             } else {
-                if (boost::regex_match(name_, boost::regex("^sbjm|sbdp$")) && strong_mode_ ||
+                if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fkhz]j$")) && strong_mode_ ||
                     boost::regex_match(name_, boost::regex("^sb[fk]x$"))
                     && len >= 3 && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
                     if (len == 3)
