@@ -269,7 +269,7 @@ namespace rime {
     }
     else {
       DictEntryIterator iter;
-      if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbjk|sbdp|sb[fk]m[ks]$"))) {
+      if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[fk]m[ks]$"))) {
         dict_->LookupWords(&iter, code, false);
       }
       UserDictEntryIterator uter;
