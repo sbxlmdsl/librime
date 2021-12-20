@@ -145,17 +145,18 @@ namespace rime {
             ch = tolower(ch);
         }
 
-//		if (is_initial && 3 == ctx->input().length() 
-//			&& string("aeuio").find(ctx->input()[2]) == string::npos
-//			&& boost::regex_match(schema, boost::regex("^sb[hz]s$"))) {
-//			string rest = ctx->input().substr(2, 1) + string({ ch });
-//			ctx->set_input(ctx->input().substr(0, 2));
-//			ctx->ConfirmCurrentSelection();
-//			ctx->Commit();
-//			ctx->set_input(rest);
-////			ctx->PushInput(ch);
-//			return kAccepted;
-//		}
+		if (string("QWRTSDFGZXCVBYPHJKLNM',/;.").find(ch) == string::npos
+			&& 3 == ctx->input().length()
+			&& string("aeuio").find(ctx->input()[2]) == string::npos
+			&& boost::regex_match(schema, boost::regex("^sb[fkhz]s$"))) {
+			string rest = ctx->input().substr(2, 1);
+			ctx->set_input(ctx->input().substr(0, 2));
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->set_input(rest);
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
 
         size_t len = ctx->input().length();
         //if (string("23789").find(ch) != string::npos && belongs_to(ctx->input()[0], initials_)
