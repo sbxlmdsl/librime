@@ -113,6 +113,16 @@ namespace rime {
             ctx->Commit();
         }
 
+        bool third_pop = ctx->get_option("third_pop");
+        if (is_initial && third_pop && 3 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
+            && boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) {
+            ctx->ConfirmCurrentSelection();
+            ctx->Commit();
+            ctx->Clear();
+            ctx->PushInput(ch);
+            return kAccepted;
+        }
+
         bool pro_char = ctx->get_option("pro_char");
         if (is_initial && pro_char && 2 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
             && boost::regex_match(schema, boost::regex("^sb[fk][smx]|sb[fkhz]j|sbfx2|sbzr|sbxh|sb[hz]s$"))) {
@@ -127,8 +137,10 @@ namespace rime {
             && 2 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
             && boost::regex_match(schema, boost::regex("^sb[fk]m|sb[fkhz]j|sbzr|sbxh$"))) {
             ch = tolower(ch);
+            ctx->PushInput(ch);
+            return kAccepted;
         }
-
+/*
         bool lower_case = ctx->get_option("lower_case");
         if (is_initial && !lower_case && 3 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
             && boost::regex_match(schema, boost::regex("^sbjm|sbdp|sb[fkhz]j$"))) {
@@ -138,11 +150,13 @@ namespace rime {
             ctx->PushInput(ch);
             return kAccepted;
         }
-
-        if (string("QWRTSDFGZXCVBYPHJKLNM").find(ch) != string::npos && !lower_case
+*/
+        if (string("QWRTSDFGZXCVBYPHJKLNM").find(ch) != string::npos
             && 3 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
             && boost::regex_match(schema, boost::regex("^sbjm|sbdp|sb[fkhz]j$"))) {
             ch = tolower(ch);
+            ctx->PushInput(ch);
+            return kAccepted;
         }
 
 		if (string("QWRTSDFGZXCVBYPHJKLNM',/;.").find(ch) == string::npos
@@ -162,19 +176,6 @@ namespace rime {
         //if (string("23789").find(ch) != string::npos && belongs_to(ctx->input()[0], initials_)
         //    && (1 == len && is_sbxlm || 2 == len && islower(ctx->input()[1])
         //                                && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sbfx2$")))) {
-        //    ctx->PushInput(ch);
-        //    ctx->ConfirmCurrentSelection();
-        //    ctx->Commit();
-        //    ctx->Clear();
-        //    return kAccepted;
-        //}
-        //if (string("23789").find(ch) != string::npos && belongs_to(ctx->input()[0], initials_)
-        //    && 3 == len && is_sbxlm && islower(ctx->input()[1]) && belongs_to(ctx->input()[2], initials_)) {
-        //    string rest = ctx->input().substr(2, 1);
-        //    ctx->set_input(ctx->input().substr(0, 2));
-        //    ctx->ConfirmCurrentSelection();
-        //    ctx->Commit();
-        //    ctx->set_input(rest);
         //    ctx->PushInput(ch);
         //    ctx->ConfirmCurrentSelection();
         //    ctx->Commit();
