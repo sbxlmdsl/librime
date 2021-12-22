@@ -258,7 +258,13 @@ namespace rime {
     boost::trim_right_if(code, boost::is_any_of(delimiters_));
     
     an<Translation> translation;
-    if (enable_completion_) {
+	if (!engine_->context()->get_option("is_enhanced") && dict_->name() == "jmts$")
+		;
+	else if (!engine_->context()->get_option("is_enhanced") && user_dict_->name() == "sbjm"
+		&& ((code.length() == 3 && string("',/;.").find(input[2]) != string::npos)
+			|| (code.length() == 2 && string("',/;.").find(input[1]) != string::npos)))
+		;
+	else if (enable_completion_) {
       translation = Cached<LazyTableTranslation>(
                                                  this,
                                                  code,
@@ -270,7 +276,7 @@ namespace rime {
     else {
       DictEntryIterator iter;
       if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[fk]m[ks]$"))) {
-        dict_->LookupWords(&iter, code, false);
+			  dict_->LookupWords(&iter, code, false);
       }
       UserDictEntryIterator uter;
       if (enable_user_dict) {

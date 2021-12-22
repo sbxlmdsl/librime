@@ -327,6 +327,12 @@ namespace rime {
         const bool prefixed = boost::starts_with(input, "\x7f""enc\x1f");
 
         if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fkhz]j|sb[fk]mk|sb[fk]x$"))) {
+			//if (!lower_case_ && boost::regex_match(name_, boost::regex("^sbjm$"))) {
+			//	if (len == 3 && string("',/;.").find(input[2]) != string::npos)
+			//		return 0;
+			//	if (len == 2 && string("',/;.").find(input[1]) != string::npos)
+			//		return 0;
+			//}
             if (len < 3) {
                 accessor = db_->Query(input);
             } else if (prefixed) {

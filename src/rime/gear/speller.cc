@@ -172,15 +172,6 @@ namespace rime {
 		}
 
         size_t len = ctx->input().length();
-        //if (string("23789").find(ch) != string::npos && belongs_to(ctx->input()[0], initials_)
-        //    && (1 == len && is_sbxlm || 2 == len && islower(ctx->input()[1])
-        //                                && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sbfx2$")))) {
-        //    ctx->PushInput(ch);
-        //    ctx->ConfirmCurrentSelection();
-        //    ctx->Commit();
-        //    ctx->Clear();
-        //    return kAccepted;
-        //}
 
         if (4 == len && isupper(ch) && belongs_to(ctx->input()[0], initials_)
             && string("aeuio").find(ctx->input()[2]) == string::npos
