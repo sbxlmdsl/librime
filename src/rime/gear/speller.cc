@@ -140,17 +140,16 @@ namespace rime {
             ctx->PushInput(ch);
             return kAccepted;
         }
-/*
-        bool lower_case = ctx->get_option("lower_case");
-        if (is_initial && !lower_case && 3 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
-            && boost::regex_match(schema, boost::regex("^sbjm|sbdp|sb[fkhz]j$"))) {
+
+        if (is_initial && 3 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
+            && boost::regex_match(schema, boost::regex("^sb[fkhz]j$"))) {
             ctx->ConfirmCurrentSelection();
             ctx->Commit();
             ctx->Clear();
             ctx->PushInput(ch);
             return kAccepted;
         }
-*/
+
         if (string("QWRTSDFGZXCVBYPHJKLNM").find(ch) != string::npos
             && 3 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
             && boost::regex_match(schema, boost::regex("^sbjm|sbdp|sb[fkhz]j$"))) {
