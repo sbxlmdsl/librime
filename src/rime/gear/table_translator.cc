@@ -258,13 +258,10 @@ namespace rime {
     boost::trim_right_if(code, boost::is_any_of(delimiters_));
     
     an<Translation> translation;
-	if (!engine_->context()->get_option("is_enhanced") && dict_->name() == "jmts$")
+	if (dict_ && dict_->loaded() && !engine_->context()->get_option("is_enhanced") && dict_->name() == "jmts$")
 		;
-	else if (!engine_->context()->get_option("is_enhanced") && user_dict_->name() == "sbjm"
-		&& ((code.length() == 3 && string("',/;.").find(input[2]) != string::npos)
-			|| (code.length() == 2 && string("',/;.").find(input[1]) != string::npos)))
-		;
-	else if (enable_completion_) {
+	else 
+		if (enable_completion_) {
       translation = Cached<LazyTableTranslation>(
                                                  this,
                                                  code,
@@ -280,7 +277,15 @@ namespace rime {
       }
       UserDictEntryIterator uter;
       if (enable_user_dict) {
-        user_dict_->LookupWords(&uter, code, false);
+		  if (!engine_->context()->get_option("is_enhanced") && user_dict_->name() == "sbjm"
+			  && ((code.length() == 3 && string("',/;.").find(code[2]) != string::npos)
+				  || (code.length() == 2 && string("',/;.").find(code[1]) != string::npos)))
+			  ;
+		  else if (!engine_->context()->get_option("third_pop") && user_dict_->name() == "sbjm"
+			  && boost::regex_match(code, boost::regex("^[qwrtsdfgzxcvbyphjklnm]{3}$")))
+			  ;
+		  else
+			  user_dict_->LookupWords(&uter, code, false);
         if (encoder_ && encoder_->loaded()) {
           if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sb[fkhz]j|sb[fk]mk|sb[fk]x$"))
               && (code.length() < 3 || (code.length() == 3 && uter.size() == 1)))
