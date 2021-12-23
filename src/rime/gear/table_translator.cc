@@ -258,9 +258,11 @@ namespace rime {
     boost::trim_right_if(code, boost::is_any_of(delimiters_));
     
     an<Translation> translation;
-	if (dict_ && dict_->loaded() && !engine_->context()->get_option("is_enhanced") && dict_->name() == "jmts$")
+	if (dict_ && dict_->loaded() 
+		&& (!engine_->context()->get_option("is_enhanced") && (dict_->name() == "jmts$" || dict_->name() == "dpts$")
+			|| (engine_->context()->get_option("third_pop") && dict_->name() == "sss$")))
 		;
-	else 
+	else
 		if (enable_completion_) {
       translation = Cached<LazyTableTranslation>(
                                                  this,
@@ -277,12 +279,12 @@ namespace rime {
       }
       UserDictEntryIterator uter;
       if (enable_user_dict) {
-		  if (!engine_->context()->get_option("is_enhanced") && user_dict_->name() == "sbjm"
+		  if (!engine_->context()->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
 			  && ((code.length() == 3 && string("',/;.").find(code[2]) != string::npos)
 				  || (code.length() == 2 && string("',/;.").find(code[1]) != string::npos)))
 			  ;
-		  else if (!engine_->context()->get_option("third_pop") && user_dict_->name() == "sbjm"
-			  && boost::regex_match(code, boost::regex("^[qwrtsdfgzxcvbyphjklnm]{3}$")))
+		  else if (!engine_->context()->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
+			  && code.length() == 3 && boost::regex_match(code, boost::regex("^[qwrtsdfgzxcvbyphjklnm]{3}$")))
 			  ;
 		  else
 			  user_dict_->LookupWords(&uter, code, false);
@@ -293,7 +295,10 @@ namespace rime {
           else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjk|sb[fk]ms|sb[fk]s|sb[hz]s$"))
                    && (code.length() < 4))
             ;  // do nothing
-          else
+		  else if (!engine_->context()->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
+			  && code.length() == 3 && boost::regex_match(code, boost::regex("^[qwrtsdfgzxcvbyphjklnm]{3}$")))
+			  ;
+		  else
             encoder_->LookupPhrases(&uter, code, false);
         }
       }
@@ -377,7 +382,8 @@ namespace rime {
                 it->type != "sentence" &&
                 it->type != "simplified" &&
                 it->type != "uniquified" &&
-                it->type != "raw")
+				it->type != "completion" &&
+				it->type != "raw")
               break;
             if (it->type == "raw") {
               if (it->text.empty())
