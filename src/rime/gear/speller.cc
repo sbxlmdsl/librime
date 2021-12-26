@@ -107,11 +107,15 @@ namespace rime {
         }
 
         string schema = engine_->schema()->schema_id();
-        bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdsx]|sbfx2|sbjm|sbdp|sb[fkhz]j|sb[fk]ms|sbzr|sbxh|sb[hz]s$"));
+        bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdsx]|sbfx2|sbjm|sbdp|sb[fkhz]j|sbzr|sbxh|sb[hz]s$"));
 
-        if (is_initial && ctx->input().length() == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
-            ctx->Commit();
-        }
+        if (ctx->input().length() == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->Clear();
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
 
         bool third_pop = ctx->get_option("third_pop");
         if (is_initial && third_pop && 3 == ctx->input().length() && belongs_to(ctx->input()[0], initials_)
@@ -160,7 +164,7 @@ namespace rime {
 
 		if (string("QWRTSDFGZXCVBYPHJKLNM',/;.").find(ch) == string::npos
 			&& 3 == ctx->input().length()
-			&& string("aeuio").find(ctx->input()[2]) == string::npos
+			&& string("aeuio',/;.").find(ctx->input()[2]) == string::npos
 			&& boost::regex_match(schema, boost::regex("^sb[fkhz]s$"))) {
 			string rest = ctx->input().substr(2, 1);
 			ctx->set_input(ctx->input().substr(0, 2));

@@ -74,17 +74,13 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   }
   
   string schema = engine_->schema()->schema_id();
-  if (boost::regex_match(schema, boost::regex("^sb[fk][mdsx]|sb[fkhz]j|sb[hz]s|sbfx2$")) && ctx->OkFirst() && ctx->input().size() == 1) {
-    engine_->ProcessKey(KeyEvent(XK_space, 0));
-  }
-  
-  if (boost::regex_match(schema, boost::regex("^sb[fk][mdsx]|sb[hz]s|sbfx2|sbjm|sbdp|sb[fkhz]j|sbxh|sbzr$")) && ctx->HasMenu()) {
-    if ((schema == "sbfd" || schema == "sbkd") && ctx->OkSecond()) {
-      engine_->ProcessKey(KeyEvent(XK_space, 0));
-    }
-	//ctx->Commit();
-	ctx->ConfirmCurrentSelection();
-	engine_->ProcessKey(KeyEvent(XK_space, 0));
+  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdsx]|sbfx2|sbjm|sbdp|sb[fkhz]j|sbzr|sbxh|sb[hz]s$"));
+  if (is_sbxlm && ctx->HasMenu()) {
+	  ctx->ConfirmCurrentSelection();
+	  ctx->Commit();
+	  ctx->Clear();
+	  ctx->PushInput(ch);
+	  return kAccepted;
   }
 
   if (ch == '.' || ch == ':') {  // 3.14, 12:30
@@ -104,11 +100,7 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   if (!punct_definition)
     return kNoop;
   DLOG(INFO) << "punct key: '" << punct_key << "'";
-  
-  //if (ctx->HasMenu() && !(boost::regex_match(schema, boost::regex("^sb[fk]m$")) && ctx->input().size() == 3)) {
-	 // engine_->ProcessKey(KeyEvent(XK_space, 0));
-  //}
-  //
+
   if (!AlternatePunct(punct_key, punct_definition)) {
     ctx->PushInput(ch) &&
         punctuation_is_translated(ctx) &&
