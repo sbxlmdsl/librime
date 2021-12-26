@@ -78,9 +78,6 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   if (is_sbxlm && ctx->HasMenu()) {
 	  ctx->ConfirmCurrentSelection();
 	  ctx->Commit();
-	  ctx->Clear();
-	  ctx->PushInput(ch);
-	  return kAccepted;
   }
 
   if (ch == '.' || ch == ':') {  // 3.14, 12:30
