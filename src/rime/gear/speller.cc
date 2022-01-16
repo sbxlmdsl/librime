@@ -256,7 +256,8 @@ namespace rime {
 			ctx->set_input(rest);
 			ctx->ConfirmCurrentSelection();
 			ctx->Commit();
-			ctx->PushInput(tolower(ch));
+			if (string("AEUIO").find(ch) == string::npos)
+				ctx->PushInput(tolower(ch));
 			return kAccepted;
 		}
 
