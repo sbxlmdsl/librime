@@ -138,6 +138,48 @@ namespace rime {
             return kAccepted;
         }
 
+		if (1 == len && is_sbxlm && belongs_to(ctx->input()[0], initials_)
+			&& string("QWRTSDFGZXCVBYPHJKLNMAEUIO").find(ch) != string::npos) {
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->Clear();
+			ch = tolower(ch);
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
+
+		if (2 == len && is_sbxlm && !pro_char && belongs_to(ctx->input()[0], initials_)
+			&& string("QWRTSDFGZXCVBYPHJKLNMAEUIO").find(ch) != string::npos) {
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->Clear();
+			ch = tolower(ch);
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
+
+		if (3 == len && belongs_to(ctx->input()[0], initials_)
+			&& string("QWRTSDFGZXCVBYPHJKLNMAEUIO").find(ch) != string::npos
+			&& boost::regex_match(schema, boost::regex("^sb[fk]m|sbzr|sbxh$"))) {
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->Clear();
+			ch = tolower(ch);
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
+
+		if (3 == len && belongs_to(ctx->input()[0], initials_)
+			&& string("QWRTSDFGZXCVBYPHJKLNMAEUIO").find(ch) != string::npos
+			&& !third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) {
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->Clear();
+			ch = tolower(ch);
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
+
         if (string("QWRTSDFGZXCVBYPHJKLNM").find(ch) != string::npos && pro_char
             && 2 == len && belongs_to(ctx->input()[0], initials_)
             && boost::regex_match(schema, boost::regex("^sb[fk]m|sb[fkhz]j|sbzr|sbxh$"))) {
@@ -203,6 +245,20 @@ namespace rime {
             ctx->PushInput(tolower(ch));
             return kAccepted;
         }
+
+		if (5 == len && isupper(ch) && belongs_to(ctx->input()[0], initials_)
+			&& string("aeuio").find(ctx->input()[2]) == string::npos
+			&& boost::regex_match(schema, boost::regex("^sb[fk]x$"))) {
+			string rest = ctx->input().substr(2, 3);
+			ctx->set_input(ctx->input().substr(0, 2));
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->set_input(rest);
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->PushInput(tolower(ch));
+			return kAccepted;
+		}
 
         // handles input beyond max_code_length when auto_select is false.
         if (is_initial && AutoSelectAtMaxCodeLength(ctx)) {
