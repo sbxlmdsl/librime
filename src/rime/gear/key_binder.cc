@@ -36,6 +36,7 @@ enum KeyBindingCondition {
   kWhenOkSecond, 
   kWhenOkThird,
   kWhenOkFourth,
+  kWhenLastPunct,
   kWhenComposing,  // input string is not empty
   kAlways,
 };
@@ -59,6 +60,7 @@ static struct KeyBindingConditionDef {
   { kWhenOkSecond,   "ok_second" },
   { kWhenOkThird,   "ok_third" },
   { kWhenOkFourth,   "ok_fourth" },
+  { kWhenLastPunct,  "last_punct"},
   { kWhenComposing, "composing" },
   { kAlways,        "always"    },
   { kNever,         NULL        }
@@ -256,6 +258,10 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
 
   if (ctx->OkFourth() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenOkFourth);
+  }
+
+  if (ctx->LastPunct() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenLastPunct);
   }
 
   Composition& comp = ctx->composition();

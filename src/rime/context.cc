@@ -160,7 +160,8 @@ bool Context::OkSecond() const {
   if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
 	  return false;
   auto seg = composition_.back();
-  return islower(input_[seg.start]) && seg.length == 2 && string("qwrtsdfgzxcvbyphjklnm").find(input_[seg.start+1]) != string::npos;
+  return islower(input_[seg.start]) && seg.length == 2 
+	  && string("qwrtsdfgzxcvbyphjklnm").find(input_[seg.start+1]) != string::npos;
 }
 
 bool Context::OkThird() const {
@@ -169,7 +170,9 @@ bool Context::OkThird() const {
 	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
 		return false;
 	auto seg = composition_.back();
-	return islower(input_[seg.start]) && seg.length == 3 && string("qwrtsdfgzxcvbyphjklnm").find(input_[seg.start+2]) != string::npos;
+	return islower(input_[seg.start]) && seg.length == 3 
+		&& string("aeuio").find(input_[1]) == string::npos
+		&& islower(input_[seg.start+2]);
 }
 
 bool Context::OkFourth() const {
@@ -178,9 +181,18 @@ bool Context::OkFourth() const {
 	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
 		return false;
 	auto seg = composition_.back();
-	return islower(input_[seg.start]) && seg.length == 4
-    && string("qwrtsdfgzxcvbyphjklnm").find(input_[seg.start + 3]) != string::npos
-    && string("aeuio_").find(input_[seg.start + 1]) == string::npos;
+	return islower(input_[seg.start]) && seg.length == 4 
+		&& string("aeuio").find(input_[2]) == string::npos
+		&& islower(input_[seg.start + 3]);
+}
+
+bool Context::LastPunct() const {
+	if (composition_.empty())
+		return false;
+	int len = input_.length();
+	return (len > 1 
+		&& string("',/;.").find(input_[len - 1]) != string::npos
+		&& string("aeuio").find(input_[0]) == string::npos);
 }
 
 an<Candidate> Context::GetSelectedCandidate() const {
