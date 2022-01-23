@@ -133,8 +133,9 @@ namespace rime {
 			return kAccepted;
 		}
 
-        if (is_initial && 3 == len && is_sbxlm && belongs_to(ctx->input()[0], initials_)
-			&& (third_pop || boost::regex_match(schema, boost::regex("^sb[fkhz]j$")))) {
+        if (is_initial && 3 == len && belongs_to(ctx->input()[0], initials_)
+			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$")) 
+				|| boost::regex_match(schema, boost::regex("^sb[fkhz]j$")))) {
             ctx->ConfirmCurrentSelection();
             ctx->Commit();
             ctx->Clear();
@@ -142,9 +143,13 @@ namespace rime {
             return kAccepted;
         }
 
-        if (isupper(ch) && 3 == len && is_sbxlm && belongs_to(ctx->input()[0], initials_)
-			&& (third_pop || boost::regex_match(schema, boost::regex("^sb[fkhz]j$")))) {
-			ctx->PushInput(tolower(ch));
+        if (isupper(ch) && 3 == len && belongs_to(ctx->input()[0], initials_)
+			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))
+				|| boost::regex_match(schema, boost::regex("^sb[fkhz][js]$")))) {
+			if (boost::regex_match(schema, boost::regex("^sb[fkhz]s$")))
+				ctx->PushInput(ch);
+			else
+				ctx->PushInput(tolower(ch));
 			return kAccepted;
         }
 
