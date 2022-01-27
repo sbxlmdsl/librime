@@ -171,7 +171,6 @@ bool Context::OkThird() const {
 		return false;
 	auto seg = composition_.back();
 	return islower(input_[seg.start]) && seg.length == 3 
-		&& string("aeuio").find(input_[1]) == string::npos
 		&& islower(input_[seg.start+2]);
 }
 
