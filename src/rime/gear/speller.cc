@@ -321,7 +321,7 @@ namespace rime {
                         string("aeuio_").find(ctx->input()[2]) != string::npos)
                    && !(string("aeuio").find(ctx->input()[1]) == string::npos &&
                         string("aeuio_").find(ctx->input()[2]) != string::npos)
-                   && boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]m$"))) {
+                   && boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]m|sbzr|sbxh$"))) {
             return FindEarlierMatch(ctx, start, end - 1);
         } else if (is_auto_selectable(previous_segment->GetSelectedCandidate(),
                                       converted, delimiters_)) {
