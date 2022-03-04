@@ -224,107 +224,112 @@ namespace rime {
     // note that backdating works only for normal or fuzzy spellings, but not for
     // abbreviations such as 'shsh' in the previous example.
 
-    void UserDictionary::DfsLookup(const SyllableGraph &syll_graph,
-                                   size_t current_pos,
-                                   const string &current_prefix,
-                                   DfsState *state) {
-        auto index = syll_graph.indices.find(current_pos);
-        if (index == syll_graph.indices.end()) {
-            return;
-        }
-        DLOG(INFO) << "dfs lookup starts from " << current_pos;
-        string prefix;
-        for (const auto &spelling : index->second) {
-            DLOG(INFO) << "prefix: '" << current_prefix << "'"
-                       << ", syll_id: " << spelling.first
-                       << ", num_spellings: " << spelling.second.size();
-            state->code.push_back(spelling.first);
-            BOOST_SCOPE_EXIT((&state)) {
-                    state->code.pop_back();
-                }
-            BOOST_SCOPE_EXIT_END
-            if (!TranslateCodeToString(state->code, &prefix))
-                continue;
-            for (size_t i = 0; i < spelling.second.size(); ++i) {
-                auto props = spelling.second[i];
-                if (i > 0 && props->type >= kAbbreviation)
-                    continue;
-                state->credibility.push_back(
-                        state->credibility.back() + props->credibility);
-                BOOST_SCOPE_EXIT((&state)) {
-                        state->credibility.pop_back();
-                    }
-                BOOST_SCOPE_EXIT_END
-                size_t end_pos = props->end_pos;
-                DLOG(INFO) << "edge: [" << current_pos << ", " << end_pos << ")";
-                if (prefix != state->key) {  // 'a b c |d ' > 'a b c \tabracadabra'
-                    DLOG(INFO) << "forward scanning for '" << prefix << "'.";
-                    if (!state->ForwardScan(prefix))  // reached the end of db
-                        continue;
-                }
-                while (state->IsExactMatch(prefix)) {  // 'b |e ' vs. 'b e \tBe'
-                    DLOG(INFO) << "match found for '" << prefix << "'.";
-                    state->RecruitEntry(end_pos);
-                    if (!state->NextEntry())  // reached the end of db
-                        break;
-                }
-                // the caller can limit the number of syllables to look up
-                if ((!state->depth_limit || state->code.size() < state->depth_limit) &&
-                    state->IsPrefixMatch(prefix)) {  // 'b |e ' vs. 'b e f \tBefore'
-                    DfsLookup(syll_graph, end_pos, prefix, state);
-                }
-            }
-            if (!state->IsPrefixMatch(current_prefix))  // 'b |' vs. 'g o \tGo'
-                return;
-            // 'b |e ' vs. 'b y \tBy'
-        }
-    }
+void UserDictionary::DfsLookup(const SyllableGraph &syll_graph,
+	size_t current_pos,
+	const string &current_prefix,
+	DfsState *state) {
+	auto index = syll_graph.indices.find(current_pos);
+	if (index == syll_graph.indices.end()) {
+		return;
+	}
+	DLOG(INFO) << "dfs lookup starts from " << current_pos;
+	string prefix;
+	for (const auto &spelling : index->second) {
+		DLOG(INFO) << "prefix: '" << current_prefix << "'"
+			<< ", syll_id: " << spelling.first
+			<< ", num_spellings: " << spelling.second.size();
+		state->code.push_back(spelling.first);
+		BOOST_SCOPE_EXIT((&state)) {
+			state->code.pop_back();
+		}
+		BOOST_SCOPE_EXIT_END
+			if (!TranslateCodeToString(state->code, &prefix))
+				continue;
+		for (size_t i = 0; i < spelling.second.size(); ++i) {
+			auto props = spelling.second[i];
+			if (i > 0 && props->type >= kAbbreviation)
+				continue;
+			state->credibility.push_back(
+				state->credibility.back() + props->credibility);
+			BOOST_SCOPE_EXIT((&state)) {
+				state->credibility.pop_back();
+			}
+			BOOST_SCOPE_EXIT_END
+				size_t end_pos = props->end_pos;
+			DLOG(INFO) << "edge: [" << current_pos << ", " << end_pos << ")";
+			if (prefix != state->key) {  // 'a b c |d ' > 'a b c \tabracadabra'
+				DLOG(INFO) << "forward scanning for '" << prefix << "'.";
+				if (!state->ForwardScan(prefix))  // reached the end of db
+					continue;
+			}
+			while (state->IsExactMatch(prefix)) {  // 'b |e ' vs. 'b e \tBe'
+				DLOG(INFO) << "match found for '" << prefix << "'.";
+				state->RecruitEntry(end_pos);
+				if (!state->NextEntry())  // reached the end of db
+					break;
+			}
+			// the caller can limit the number of syllables to look up
+			if ((!state->depth_limit || state->code.size() < state->depth_limit) &&
+				state->IsPrefixMatch(prefix)) {  // 'b |e ' vs. 'b e f \tBefore'
+				DfsLookup(syll_graph, end_pos, prefix, state);
+			}
+		}
+		if (!state->IsPrefixMatch(current_prefix))  // 'b |' vs. 'g o \tGo'
+			return;
+		// 'b |e ' vs. 'b y \tBy'
+	}
+}
 
-    an<UserDictEntryCollector>
-    UserDictionary::Lookup(const SyllableGraph &syll_graph,
-                           size_t start_pos,
-                           size_t depth_limit,
-                           double initial_credibility) {
-        if (!table_ || !prism_ || !loaded() ||
-            start_pos >= syll_graph.interpreted_length)
-            return nullptr;
-        DfsState state;
-        state.depth_limit = depth_limit;
-        FetchTickCount();
-        state.present_tick = tick_ + 1;
-        state.credibility.push_back(initial_credibility);
-        state.collector = New<UserDictEntryCollector>();
-        state.accessor = db_->Query("");
-        state.accessor->Jump(" ");  // skip metadata
-        string prefix;
-        DfsLookup(syll_graph, start_pos, prefix, &state);
-        if (state.collector->empty())
-            return nullptr;
-        // sort each group of homophones by weight
-        for (auto &v : *state.collector) {
-            v.second.Sort();
-        }
-        return state.collector;
-    }
+an<UserDictEntryCollector>
+UserDictionary::Lookup(const SyllableGraph &syll_graph,
+	size_t start_pos,
+	size_t depth_limit,
+	double initial_credibility) {
+	if (!table_ || !prism_ || !loaded() ||
+		start_pos >= syll_graph.interpreted_length)
+		return nullptr;
+	DfsState state;
+	state.depth_limit = depth_limit;
+	FetchTickCount();
+	state.present_tick = tick_ + 1;
+	state.credibility.push_back(initial_credibility);
+	state.collector = New<UserDictEntryCollector>();
+	state.accessor = db_->Query("");
+	state.accessor->Jump(" ");  // skip metadata
+	string prefix;
+	DfsLookup(syll_graph, start_pos, prefix, &state);
+	if (state.collector->empty())
+		return nullptr;
+	// sort each group of homophones by weight
+	for (auto &v : *state.collector) {
+		v.second.Sort();
+	}
+	return state.collector;
+}
 
-    size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
-                                       const string &input,
-                                       bool predictive,
-                                       size_t limit,
-                                       string *resume_key) {
-        TickCount present_tick = tick_ + 1;
-        size_t len = input.length();
-        size_t start = result->size();
-        size_t count = 0;
-        size_t exact_match_count = 0;
-        const string kEnd = "\xff";
-        string key;
-        string value;
-        string full_code;
-        an<DbAccessor> accessor;
-        static char words[7][256];
+size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
+	const string &input,
+	bool predictive,
+	size_t limit,
+	string *resume_key) {
+	TickCount present_tick = tick_ + 1;
+	size_t len = input.length();
+	size_t start = result->size();
+	size_t count = 0;
+	size_t exact_match_count = 0;
+	const string kEnd = "\xff";
+	string key;
+	string value;
+	string full_code;
+	an<DbAccessor> accessor;
+	static char words[7][256];
 
-        const bool prefixed = boost::starts_with(input, "\x7f""enc\x1f");
+	if (input.length() == 1 && boost::regex_match(name_, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbjm|sbdp|sbzr|sbxh$"))) {
+		for (int i = 0; i < 7; i++)
+			std::strcpy(words[i], "");
+	}
+		
+		const bool prefixed = boost::starts_with(input, "\x7f""enc\x1f");
 
         if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fkhz]j|sb[fk]mk|sb[fk]x$"))) {
 			//if (!lower_case_ && boost::regex_match(name_, boost::regex("^sbjm$"))) {

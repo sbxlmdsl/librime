@@ -135,7 +135,8 @@ namespace rime {
 
         if (is_initial && 3 == len && belongs_to(ctx->input()[0], initials_)
 			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$")) 
-				|| boost::regex_match(schema, boost::regex("^sb[fkhz]j$")))) {
+				|| boost::regex_match(schema, boost::regex("^sb[fkhz]j$")))
+			&& string("aeuio").find(ch) == string::npos) {
             ctx->ConfirmCurrentSelection();
             ctx->Commit();
             ctx->Clear();
@@ -229,7 +230,12 @@ namespace rime {
         }
         DLOG(INFO) << "add to input: '" << (char) ch << "', " << key_event.repr();
         ctx->PushInput(ch);
-        ctx->ConfirmPreviousSelection();  // so that next BackSpace won't revert
+		bool is_sbjm = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sbdp$"));
+		if (is_sbjm && third_pop && ctx->input().length() == 4
+			&& string("aeuio\\").find(ctx->input()[0]) == string::npos
+			&& string("aeuio").find(ctx->input()[3]) != string::npos)
+			return kAccepted;
+		ctx->ConfirmPreviousSelection();  // so that next BackSpace won't revert
         // previous selection
         if (AutoSelectPreviousMatch(ctx, &previous_segment)) {
             DLOG(INFO) << "auto-select previous match.";
@@ -305,7 +311,7 @@ namespace rime {
         size_t start = previous_segment->start;
         size_t end = previous_segment->end;
         string input = ctx->input();
-        string converted = input.substr(0, end);
+		string converted = input.substr(0, end);
         auto cand = previous_segment->GetSelectedCandidate();
         if (5 == input.length() && is_table_entry(cand)
             && string("QWRTSDFGZXCVBYPHJKLNM,;/.'").find(ctx->input()[3]) == string::npos
