@@ -131,7 +131,7 @@ ProcessResult AsciiComposer::ProcessKeyEvent(const KeyEvent& key_event) {
 	  && ch >= 0x20 && ch < 0x80 && isupper(ch) && auto_inline) {
 	  if (!key_event.release()) {
 		  ctx->PushInput(ch);
-		  ToggleAsciiModeWithKey(XK_Shift_L);
+		  SwitchAsciiMode(true, kAsciiModeSwitchInline);
 		  return kAccepted;
 	  }
   }
