@@ -259,7 +259,7 @@ namespace rime {
     
     an<Translation> translation;
 	if (dict_ && dict_->loaded() 
-		&& (!engine_->context()->get_option("is_enhanced") && (dict_->name() == "jmts$" || dict_->name() == "dpts$")
+		&& (!engine_->context()->get_option("is_enhanced") && (dict_->name() == "jmf" || dict_->name() == "dpf")
 			|| (engine_->context()->get_option("third_pop") && dict_->name() == "sss$")))
 		;
 	else

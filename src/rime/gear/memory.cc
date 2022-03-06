@@ -110,6 +110,11 @@ void Memory::OnCommit(Context* ctx) {
     auto phrase = As<Phrase>(Candidate::GetGenuineCandidate(
             seg.GetSelectedCandidate()));
     bool recognized = Language::intelligible(phrase, this);
+	if (phrase && phrase->language() && this && this->language()
+		&& boost::regex_match(phrase->language()->name()
+			, boost::regex("^sf|sbf|spf|syf|jmf|dpf||shf|szf|fmsbb|kmsbb$"))) {
+		recognized = true;
+	}
     if (recognized) {
       commit_entry.AppendPhrase(phrase);
     }
