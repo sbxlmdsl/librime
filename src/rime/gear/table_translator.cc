@@ -259,7 +259,7 @@ namespace rime {
     
     an<Translation> translation;
 	if (dict_ && dict_->loaded() 
-		&& (!engine_->context()->get_option("is_enhanced") && (dict_->name() == "jmf" || dict_->name() == "dpf")
+		&& (!engine_->context()->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmf|dpf|sf|sbf|spf|syf|shf|szf$"))
 			|| (engine_->context()->get_option("third_pop") && dict_->name() == "sss$")))
 		;
 	else

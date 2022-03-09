@@ -675,8 +675,8 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     }
                 } else {
                     int i;
-//					int j = (boost::regex_match(name_, boost::regex("^sb[fk]s|sbxh|sbzr|sbjk|sb[fk]m$"))) ? 2 : 3;
-                    int j = 3;
+					//int j = (boost::regex_match(name_, boost::regex("^sb[fkhz]j|sbjm|sbdp$"))) ? 2 : 3;
+                    int j = 2;
                     if (forced_selection_ && !single_selection_)
                         j += 5;
                     for (i = 0; i < j; i++) {
