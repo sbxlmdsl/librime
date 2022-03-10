@@ -535,7 +535,11 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                         string("aeuio").find(input[l]) != string::npos
                         && 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
                         continue;
-                    else if (prefixed && len == 9 && delete_threshold_ > 0) {
+					else if (boost::regex_match(name_, boost::regex("^sbjk|sbkp$")) && enable_filtering_ &&
+						string("aeuio").find(input[3]) == string::npos
+						&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
+						continue;
+					else if (prefixed && len == 9 && delete_threshold_ > 0) {
                         if (!DeleteEntry(e))
                             result->Add(e);
                         else
