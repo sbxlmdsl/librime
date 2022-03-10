@@ -255,12 +255,13 @@ namespace rime {
     
     const string& preedit(input);
     string code = input;
+	auto ctx = engine_->context();
     boost::trim_right_if(code, boost::is_any_of(delimiters_));
     
     an<Translation> translation;
 	if (dict_ && dict_->loaded() 
-		&& (!engine_->context()->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmf|dpf|sf|sbf|spf|syf|shf|szf$"))
-			|| (engine_->context()->get_option("third_pop") && dict_->name() == "sss$")))
+		&& !ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmf|dpf|sf|sbf|spf|syf|shf|szf$"))
+			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3|dp3$")))
 		;
 	else
 		if (enable_completion_) {
@@ -279,12 +280,12 @@ namespace rime {
       }
       UserDictEntryIterator uter;
       if (enable_user_dict) {
-		  if (!engine_->context()->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
+		  if (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
 			  && ((code.length() == 3 && string("',/;.").find(code[2]) != string::npos)
 				  || (code.length() == 2 && string("',/;.").find(code[1]) != string::npos)))
 			  ;
-		  else if (!engine_->context()->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
-			  && code.length() == 3 && boost::regex_match(code, boost::regex("^[qwrtsdfgzxcvbyphjklnm]{3}$")))
+		  else if (!ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
+			  && code.length() == 3)
 			  ;
 		  else
 			  user_dict_->LookupWords(&uter, code, false);
@@ -295,7 +296,7 @@ namespace rime {
           else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjk|sbkp|sb[fk]ms|sb[fk]s|sb[hz]s$"))
                    && (code.length() < 4))
             ;  // do nothing
-		  else if (!engine_->context()->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
+		  else if (!ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
 			  && code.length() == 3 && boost::regex_match(code, boost::regex("^[qwrtsdfgzxcvbyphjklnm]{3}$")))
 			  ;
 		  else
@@ -314,8 +315,7 @@ namespace rime {
                                                std::move(uter));
     }
     if (translation) {
-      bool filter_by_charset = enable_charset_filter_ &&
-      !engine_->context()->get_option("extended_charset");
+      bool filter_by_charset = enable_charset_filter_ && !ctx->get_option("extended_charset");
       if (filter_by_charset) {
         translation = New<CharsetFilterTranslation>(translation);
       }
