@@ -274,7 +274,7 @@ namespace rime {
     }
     else {
       DictEntryIterator iter;
-      if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sbjk|sbdp|sb[fk]m[ks]$"))) {
+      if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sbjk|sbkp|sbdp|sb[fk]m[ks]$"))) {
 			  dict_->LookupWords(&iter, code, false);
       }
       UserDictEntryIterator uter;
@@ -292,7 +292,7 @@ namespace rime {
           if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sb[fkhz]j|sb[fk]mk|sb[fk]x$"))
               && (code.length() < 3 || (code.length() == 3 && uter.size() == 1)))
             ;	// do nothing
-          else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjk|sb[fk]ms|sb[fk]s|sb[hz]s$"))
+          else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjk|sbkp|sb[fk]ms|sb[fk]s|sb[hz]s$"))
                    && (code.length() < 4))
             ;  // do nothing
 		  else if (!engine_->context()->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
@@ -394,13 +394,13 @@ namespace rime {
             if (phrase.empty()) {
               phrase = it->text;  // last word
               pos = phrase.find_first_of(' ');
-              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$")) && pos != string::npos) {
+              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$")) && pos != string::npos) {
                 phrase = phrase.substr(pos + 1);
               }
               continue;
             }
             pos = it->text.find_first_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$")) && pos != string::npos) {
+            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$")) && pos != string::npos) {
               phrase = it->text.substr(pos + 1) + phrase;
             } else {
               phrase = it->text + phrase;  // prepend another word
