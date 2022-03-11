@@ -297,7 +297,7 @@ namespace rime {
                    && (code.length() < 4))
             ;  // do nothing
 		  else if (!ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
-			  && code.length() == 3 && boost::regex_match(code, boost::regex("^[qwrtsdfgzxcvbyphjklnm]{3}$")))
+			  && code.length() == 3)
 			  ;
 		  else
             encoder_->LookupPhrases(&uter, code, false);
@@ -354,7 +354,7 @@ namespace rime {
         UnityTableEncoder::RemovePrefix(&blessed.custom_code);
         user_dict_->UpdateEntry(blessed, 1);
       }
-      else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][mdsx]|sb[fkhz]j|sb[hz]s|sbxh|sbzr$"))
+      else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][mdsx]|sb[fk]j$"))
                && 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
         ;
       }

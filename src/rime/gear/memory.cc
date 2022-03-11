@@ -112,7 +112,7 @@ void Memory::OnCommit(Context* ctx) {
     bool recognized = Language::intelligible(phrase, this);
 	if (phrase && phrase->language() && this && this->language()
 		&& boost::regex_match(phrase->language()->name()
-			, boost::regex("^sf|sbf|spf|syf|jmf|dpf||shf|szf|fmsbb|kmsbb$"))) {
+			, boost::regex("^sss|jm3|dp3|jkf|kpf|sf|sbf|spf|syf|jmf|dpf||shf|szf|shs|szs|fmsbb|kmsbb$"))) {
 		recognized = true;
 	}
     if (recognized) {
