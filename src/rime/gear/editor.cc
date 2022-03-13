@@ -153,38 +153,28 @@ void Editor::BackToPreviousSyllable(Context* ctx) {
 
 void Editor::DeleteCandidate(Context* ctx) {
 	string schema = engine_->schema()->schema_id();
+	//允许删除整句方案的用户词组
 	if (boost::regex_match(schema, boost::regex("^sb[djhzfk]z$")))
-		return;
-	if (boost::regex_match(schema, boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk][smx]|sb[hz]s|sbdp$"))) {
+		ctx->DeleteCurrentSelection();
+	if (boost::regex_match(schema, boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sb[fk][jsmx]$"))) {
 		size_t len = ctx->input().length();
-		if (len >= 1 && string("aeuio").find(ctx->input()[0]) != string::npos)
+		//引导输入时不能删除
+		if (len >= 1 && string("aeuio").find(ctx->input()[0]) != string::npos) 
+			return; 
+		//不超过两码时不能删除
+		if (len <= 2) 
+			return; 
+		//简码和顶拼的单字不能删除
+		if (len >= 2 && string("aeuio").find(ctx->input()[1]) != string::npos
+			&& boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) 
 			return;
-		if (len <= 2)
-			return;
-		//if (len == 3 && string("23789").find(ctx->input()[2]) != string::npos)
-		//	return;
-		if (len == 3 && !boost::regex_match(schema, boost::regex("^sbjm|sbdp|sb[fkhz]j$")))
-			return;
-		if (len < 5 && boost::regex_match(schema, boost::regex("^sb[fk]x$")))
+		//其它字词方案的单字也不能删除
+		if (len >= 3 && string("aeuio").find(ctx->input()[2]) != string::npos 
+			&& boost::regex_match(schema, boost::regex("^sb[hz][js]|sbxh|sbzr|sb[fk][jsmx]$")))
 			return;
 	}
 	ctx->DeleteCurrentSelection();
 }
-
-/*
-void Editor::CommitPreviousCandidate(Context* ctx) {
-	int len = ctx->input().length();
-	if (len < 2)
-		return;
-	//Segment& current_segment(ctx->composition().back());
-	//if (current_segment.HasTag("paging"))
-	//	return;
-	char c = ctx->input()[len - 1];
-	BackToPreviousInput(ctx);
-	ctx->Commit();
-	ctx->PushInput(c);
-}
- */
 
 void Editor::DeleteChar(Context* ctx) {
   ctx->DeleteInput();

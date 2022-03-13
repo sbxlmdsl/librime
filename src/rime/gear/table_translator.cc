@@ -260,8 +260,8 @@ namespace rime {
     
     an<Translation> translation;
 	if (dict_ && dict_->loaded() 
-		&& !ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmf|dpf|sf|sbf|spf|syf|shf|szf$"))
-			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3|dp3$")))
+		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmf|dpf|sf|sbf|spf|syf|shf|szf$"))
+			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3|dp3$"))))
 		;
 	else
 		if (enable_completion_) {
@@ -354,9 +354,9 @@ namespace rime {
         UnityTableEncoder::RemovePrefix(&blessed.custom_code);
         user_dict_->UpdateEntry(blessed, 1);
       }
-      else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][mdsx]|sb[fk]j$"))
+      else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][jmdsx]$"))
                && 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
-        ;
+        ; //飞系和快系的单字不调频
       }
       else {
         user_dict_->UpdateEntry(*e, 1);
@@ -394,19 +394,20 @@ namespace rime {
             if (phrase.empty()) {
               phrase = it->text;  // last word
               pos = phrase.find_first_of(' ');
-              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$")) && pos != string::npos) {
+              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sb[fk][jsxm]$")) 
+				  && pos != string::npos) {
                 phrase = phrase.substr(pos + 1);
               }
               continue;
             }
             pos = it->text.find_first_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$")) && pos != string::npos) {
+            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sb[fk][jsxm]$"))
+				&& pos != string::npos) {
               phrase = it->text.substr(pos + 1) + phrase;
             } else {
               phrase = it->text + phrase;  // prepend another word
             }
-            size_t phrase_length = utf8::unchecked::distance(
-                                                             phrase.c_str(), phrase.c_str() + phrase.length());
+            size_t phrase_length = utf8::unchecked::distance(phrase.c_str(), phrase.c_str() + phrase.length());
             if (static_cast<int>(phrase_length) > max_phrase_length_)
               break;
             DLOG(INFO) << "phrase: " << phrase;

@@ -332,12 +332,6 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
 		const bool prefixed = boost::starts_with(input, "\x7f""enc\x1f");
 
         if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fkhz]j|sb[fk]mk|sb[fk]x$"))) {
-			//if (!lower_case_ && boost::regex_match(name_, boost::regex("^sbjm$"))) {
-			//	if (len == 3 && string("',/;.").find(input[2]) != string::npos)
-			//		return 0;
-			//	if (len == 2 && string("',/;.").find(input[1]) != string::npos)
-			//		return 0;
-			//}
             if (len < 3) {
                 accessor = db_->Query(input);
             } else if (prefixed) {
@@ -346,10 +340,6 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     && len >= 8 && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
                     if (len == 8)
                         return 0;
-                    //if (len == 9 && string("aeuio").find(input[8]) != string::npos)
-                    //	return 0;
-                    //if (name_ != "sbjm" && len == 9 && string("_qwrtsdfgzxcvbyphjklnm2378901456").find(input[8]) != string::npos)
-                    //	return 0;
                 } else if (len == 9 && boost::regex_match(name_, boost::regex("^sb[fk]x$"))
                            && string("aeuio").find(input[8]) != string::npos &&
                            string("qwrtsdfgzxcvbyphjklnm").find(input[9]) != string::npos)
@@ -361,10 +351,6 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     && len >= 3 && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
                     if (len == 3)
                         return 0;
-                    //if (len == 4 && string("aeuio").find(input[3]) != string::npos)
-                    //	return 0;
-                    //if (name_ != "sbjm" && len == 4 && string("_qwrtsdfgzxcvbyphjklnm2378901456").find(input[3]) != string::npos)
-                    //	return 0;
                 } else if (len == 4 && boost::regex_match(name_, boost::regex("^sb[fk]x$"))
                            && string("aeuio").find(input[2]) != string::npos &&
                            string("qwrtsdfgzxcvbyphjklnm").find(input[3]) != string::npos)
