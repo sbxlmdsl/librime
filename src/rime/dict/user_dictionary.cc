@@ -829,6 +829,8 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
         string code_str(entry.custom_code);
         if (code_str.empty() && !TranslateCodeToString(entry.code, &code_str))
             return false;
+		if (entry.comment == "sbxlm_fixed_entry")
+			return false;
         string key(code_str + '\t' + entry.text);
         string value;
         UserDbValue v;

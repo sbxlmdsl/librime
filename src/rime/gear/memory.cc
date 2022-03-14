@@ -29,6 +29,12 @@ void CommitEntry::AppendPhrase(const an<Phrase>& phrase) {
   text += phrase->text();
   code.insert(code.end(),
               phrase->code().begin(), phrase->code().end());
+ if (phrase->language()
+	 && boost::regex_match(phrase->language()->name()
+		 , boost::regex("^sss|jm3|dp3|jkf|kpf|sf|sbf|spf|syf|jmf|dpf||shf|szf|shs|szs|fmsbb|kmsbb$"))) {
+	 phrase->set_comment("sbxlm_fixed_entry"); 
+ }
+
   if (auto sentence = As<Sentence>(phrase)) {
     for (const DictEntry& e : sentence->components()) {
       elements.push_back(&e);
@@ -110,13 +116,9 @@ void Memory::OnCommit(Context* ctx) {
     auto phrase = As<Phrase>(Candidate::GetGenuineCandidate(
             seg.GetSelectedCandidate()));
     bool recognized = Language::intelligible(phrase, this);
-	//if (phrase && phrase->language() && this && this->language()
-	//	&& boost::regex_match(phrase->language()->name()
-	//		, boost::regex("^sss|jm3|dp3|jkf|kpf|sf|sbf|spf|syf|jmf|dpf||shf|szf|shs|szs|fmsbb|kmsbb$"))) {
-	//	recognized = true;
-	//}
 	if (phrase && phrase->language() && this && this->language()
-		&& boost::regex_match(phrase->language()->name(), boost::regex("^sss|jm3|dp3|shs|szs|fmsbb|kmsbb$"))) {
+		&& boost::regex_match(phrase->language()->name()
+			, boost::regex("^sss|jm3|dp3|jkf|kpf|sf|sbf|spf|syf|jmf|dpf||shf|szf|shs|szs|fmsbb|kmsbb$"))) {
 		recognized = true;
 	}
     if (recognized) {
