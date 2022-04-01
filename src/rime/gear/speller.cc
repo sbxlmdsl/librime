@@ -108,7 +108,7 @@ namespace rime {
 
         string schema = engine_->schema()->schema_id();
 		size_t len = ctx->input().length();
-		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbjm|sbdp|sbzr|sbxh|sbjk|sbkp$"));
+		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbjm|sbdp|sbzr|sbxh|sbjk|sbkp|sbpy|sb[fkhzjd]z$"));
 		bool pro_char = ctx->get_option("pro_char");
 		bool third_pop = ctx->get_option("third_pop");
 
