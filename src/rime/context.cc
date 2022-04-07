@@ -70,7 +70,9 @@ bool Context::MorePage() const {
 // for sbkz and sbfz
 int Context::CountLength() const {
   if (composition_.empty())
-    return false;
+    return 0;
+  if (string("aeuio").find(input_[0]) != string::npos)
+	  return 0;
   auto seg = composition_.back();
   int j = 0;
   for (int i = seg.start; i < caret_pos_; i++) {

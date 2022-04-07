@@ -323,8 +323,7 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
 		const char c1 = ctx->input()[0];
         if (!select_keys.empty()) {
           context->menu.select_keys = new char[select_keys.length() + 1];
-          if (!select_keys.compare(" aeuio") &&
-              (!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() <= 3)))
+          if (!select_keys.compare(" aeuio") &&!ctx->HasMore())
             std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
 		  else if (!select_keys.compare(" aeuio") &&
 			  (!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4 
@@ -344,7 +343,12 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
             an<ConfigValue> value = select_labels->GetValueAt(i);
             string label = value->str();
             context->select_labels[i] = new char[label.length() + 1];
-            if (!select_keys.compare(" aeuio") &&
+			if (!select_keys.compare(" aeuio") && ctx->input().length() > 1
+				&& string("uo").find(ctx->input()[0]) != string::npos
+				&& string("aeuio_").find(ctx->input()[1]) == string::npos) {
+				std::strcpy(context->select_labels[i], label.c_str());
+			}
+			else if (!select_keys.compare(" aeuio") &&
 				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() <= 3)))
               std::strcpy(context->select_labels[i], " "); // hack for sbxlm
 			else if (!select_keys.compare(" aeuio") &&

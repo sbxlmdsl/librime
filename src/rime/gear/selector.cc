@@ -85,8 +85,7 @@ namespace rime {
         const string& select_keys(engine_->schema()->select_keys());
 		const char c1 = ctx->input()[0];
 		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
-            if (!select_keys.compare(" aeuio") && 
-				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() <= 3))) {
+            if (!select_keys.compare(" aeuio") && !ctx->HasMore()) {
                 ; // hack for sbxlm
             }
             else {
@@ -101,9 +100,13 @@ namespace rime {
         else if (ch >= XK_KP_0 && ch <= XK_KP_9)
             index = ((ch - XK_KP_0) + 9) % 10;
         if (index >= 0) {
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]$"))
+			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk][mx]|sbdp$"))
 				&& !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0])) {
-				if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]m$"))
+				if (ctx->input().length() > 1
+					&& string("uo").find(ctx->input()[0]) != string::npos
+					&& string("aeuio_").find(ctx->input()[1]) == string::npos) {
+					;
+				} else if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]m$"))
 					&& ctx->input().length() == 4 && string("aeuio_").find(ctx->input()[1]) != string::npos
 					&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[3]) != string::npos
 					)
@@ -111,31 +114,30 @@ namespace rime {
 				else if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbxh|sbzr|sb[fk]m|sb[fkhz]j$"))
 					&& ctx->input().length() == 4 && string("aeuio").find(ctx->input()[2]) != string::npos)
 					;
+				else if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x$"))
+					&& !current_segment.HasTag("paging") && ctx->input().length() < 7 && islower(ctx->input()[0])) {
+					if (ctx->input().length() == 4 && (string("aeuio").find(ctx->input()[2]) != string::npos
+						|| string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos))
+						;
+					else
+						return kNoop;
+				}
 				else
 					return kNoop;
 			}
           
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]s|sb[hz]s$"))
-				&& !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0])
-				&& ctx->input().length() > 3 && string(",;/.'QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos)
-				return kNoop;
-
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x$"))
-				&& !current_segment.HasTag("paging") && ctx->input().length() < 7 && islower(ctx->input()[0])) {
-				if (ctx->input().length() == 4 && (string("aeuio").find(ctx->input()[2]) != string::npos
-					|| string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos))
-					;
-				else
-					return kNoop;
-			}
+			//if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]s|sb[hz]s$"))
+			//	&& !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0])
+			//	&& ctx->input().length() > 3 && string(",;/.'QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos)
+			//	return kNoop;
 
 			//if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk][ds]$"))
 			//	&& !current_segment.HasTag("paging") && ctx->input().length() < 4 && islower(ctx->input()[0]))
 			//	return kNoop;
 
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk][md]|sb[fk]s|sb[hz]s$"))
-				&& !current_segment.HasTag("paging") && ctx->input().length() < 4 && islower(ctx->input()[0]))
-				return kNoop;
+			//if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk][md]|sb[fk]s|sb[hz]s$"))
+			//	&& !current_segment.HasTag("paging") && ctx->input().length() < 4 && islower(ctx->input()[0]))
+			//	return kNoop;
 
             SelectCandidateAt(ctx, index);
             return kAccepted;
