@@ -83,16 +83,14 @@ namespace rime {
         }
         int index = -1;
         const string& select_keys(engine_->schema()->select_keys());
+		string schema = engine_->schema()->schema_id();
+		size_t len = ctx->input().length();
+		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz]j|sbjm|sbzr|sbxh|sbpy|sb[fkhzjd]z$"));
 		const char c1 = ctx->input()[0];
 		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
-            if (!select_keys.compare(" aeuio") && !ctx->HasMore()) {
-                ; // hack for sbxlm
-            }
-            else {
-                size_t pos = select_keys.find((char)ch);
-                if (pos != string::npos) {
-                    index = static_cast<int>(pos);
-                }
+            size_t pos = select_keys.find((char)ch);
+            if (pos != string::npos) {
+                index = static_cast<int>(pos);
             }
         }
         else if (ch >= XK_0 && ch <= XK_9)
@@ -100,24 +98,35 @@ namespace rime {
         else if (ch >= XK_KP_0 && ch <= XK_KP_9)
             index = ((ch - XK_KP_0) + 9) % 10;
         if (index >= 0) {
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk][mx]|sbdp$"))
-				&& !current_segment.HasTag("paging") && ctx->input().length() < 6 && islower(ctx->input()[0])) {
-				if (ctx->input().length() > 1
-					&& string("uo").find(ctx->input()[0]) != string::npos
-					&& string("aeuio_").find(ctx->input()[1]) == string::npos) {
+			if (is_sbxlm && len > 0 && islower(c1)) {
+				//整句模式
+				if (boost::regex_match(schema, boost::regex("^sbpy|sb[fkhzjd]z$")))
 					;
-				} else if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]m$"))
-					&& ctx->input().length() == 4 && string("aeuio_").find(ctx->input()[1]) != string::npos
-					&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[3]) != string::npos
-					)
+				else if (len == 1)
 					return kNoop;
-				else if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbxh|sbzr|sb[fk]m|sb[fkhz]j$"))
-					&& ctx->input().length() == 4 && string("aeuio").find(ctx->input()[2]) != string::npos)
+				//以aeuio开始
+				else if (string("aeuio").find(c1) != string::npos) {
+					//拼音与二分反查
+					if (string("aei").find(c1) != string::npos)
+						return kNoop;
+					//笔画反查
+					else if (string("aeuio").find(ctx->input()[1]) != string::npos)
+						return kNoop;
+				}
+				//字词模式
+				else if (len == 6)
 					;
-				else if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x$"))
-					&& !current_segment.HasTag("paging") && ctx->input().length() < 7 && islower(ctx->input()[0])) {
-					if (ctx->input().length() == 4 && (string("aeuio").find(ctx->input()[2]) != string::npos
-						|| string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos))
+				//四码时
+				else if (len == 4) {
+					//有过翻页
+					if (current_segment.HasTag("paging"))
+						;
+					//声笔简码
+					else if (boost::regex_match(schema, boost::regex("^sbjm$"))) {
+						return kNoop;
+					}
+					//单字
+					else if (string("aeuio").find(ctx->input()[2]) != string::npos)
 						;
 					else
 						return kNoop;
@@ -125,27 +134,10 @@ namespace rime {
 				else
 					return kNoop;
 			}
-          
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]s|sb[hz]s$"))
-				&& !current_segment.HasTag("paging") && ctx->input().length() < 6 
-				&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[0]) != string::npos
-				&& ctx->input().length() > 3 && string(",;/.'QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos)
-				return kNoop;
-
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk][ds]$"))
-				&& !current_segment.HasTag("paging") && ctx->input().length() < 4 
-				&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[0]) != string::npos)
-				return kNoop;
-
-			if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk][md]|sb[fk]s|sb[hz]s$"))
-				&& !current_segment.HasTag("paging") && ctx->input().length() < 4 
-				&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[0]) != string::npos)
-				return kNoop;
 
             SelectCandidateAt(ctx, index);
             return kAccepted;
         }
-        // not handled
         return kNoop;
     }
     
