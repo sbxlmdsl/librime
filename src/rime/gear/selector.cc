@@ -113,8 +113,11 @@ namespace rime {
 					else if (string("aeuio").find(ctx->input()[1]) != string::npos)
 						return kNoop;
 				}
-				//字词模式
-				else if (len == 6)
+				//飞讯和快讯词组一般词组
+				else if (len == 7 && boost::regex_match(schema, boost::regex("^sb[fk]x$")))
+					;
+				//其它字词模式
+				else if (len == 6 && !boost::regex_match(schema, boost::regex("^sb[fk]x$")))
 					;
 				//四码时
 				else if (len == 4) {
@@ -125,6 +128,9 @@ namespace rime {
 					else if (boost::regex_match(schema, boost::regex("^sbjm$"))) {
 						return kNoop;
 					}
+					//飞讯和快讯词组多字词
+					else if (string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos)
+						;
 					//单字
 					else if (string("aeuio").find(ctx->input()[2]) != string::npos)
 						;
