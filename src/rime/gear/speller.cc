@@ -133,6 +133,17 @@ namespace rime {
 			return kAccepted;
 		}
 
+		if (string("AEUIO").find(ch) != string::npos && 3 == len
+			&& boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbzr|sbxh$"))) {
+			string rest = ctx->input().substr(1, 2);
+			ctx->set_input(ctx->input().substr(0, 1));
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->set_input(rest);
+			ctx->PushInput(tolower(ch));
+			return kAccepted;
+		}
+
         if (is_initial && 3 == len && belongs_to(ctx->input()[0], initials_)
 			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$")) 
 				|| boost::regex_match(schema, boost::regex("^sb[fkhz]j$")))
