@@ -125,6 +125,9 @@ namespace rime {
 				//其它字词模式
 				else if (len == 6 && !boost::regex_match(schema, boost::regex("^sb[fk]x$")))
 					;
+				//飞讯和快讯词组五码有翻页操作时
+				else if (len == 5 && boost::regex_match(schema, boost::regex("^sb[fk]x$")) && current_segment.HasTag("paging"))
+					;
 				//四码时
 				else if (len == 4) {
 					//有过翻页
