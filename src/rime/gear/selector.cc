@@ -88,10 +88,14 @@ namespace rime {
 		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz]j|sbjm|sbzr|sbxh|sbpy|sb[fkhzjd]z$"));
 		const char c1 = ctx->input()[0];
 		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
-            size_t pos = select_keys.find((char)ch);
-            if (pos != string::npos) {
-                index = static_cast<int>(pos);
-            }
+			if (len == 1 && c1 == '\\' && string("aeuio").find(ch) != string::npos)
+				return kNoop;
+			else {
+				size_t pos = select_keys.find((char)ch);
+				if (pos != string::npos) {
+					index = static_cast<int>(pos);
+				}
+			}
         }
         else if (ch >= XK_0 && ch <= XK_9)
             index = ((ch - XK_0) + 9) % 10;
