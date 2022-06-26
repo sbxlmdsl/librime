@@ -260,7 +260,7 @@ namespace rime {
     
     an<Translation> translation;
 	if (dict_ && dict_->loaded() 
-		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmf|dpf|sf|sbf|spf|syf|shf|szf$"))
+		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmn|jmnts|sn|sbn|spn|spnts|syn|synts|shn|shnts|szn|sznts$"))
 			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3|dp3$"))))
 		;
 	else
@@ -281,8 +281,8 @@ namespace rime {
       UserDictEntryIterator uter;
       if (enable_user_dict) {
 		  if (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
-			  && ((code.length() == 3 && string("',/;.").find(code[2]) != string::npos)
-				  || (code.length() == 2 && string("',/;.").find(code[1]) != string::npos)))
+			  && ((code.length() == 3 && string("1234567890").find(code[2]) != string::npos)
+				  || (code.length() == 2 && string("1234567890").find(code[1]) != string::npos)))
 			  ;
 		  else if (!ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
 			  && code.length() == 3)

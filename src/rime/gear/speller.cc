@@ -172,35 +172,6 @@ namespace rime {
 			return kAccepted;
 		}
 
-		//if (string("QWRTSDFGZXCVBYPHJKLNM',/;.").find(ch) == string::npos
-		//	&& 3 == len	&& string("aeuio',/;.").find(ctx->input()[2]) == string::npos
-		//	&& boost::regex_match(schema, boost::regex("^sb[fkhz]s$"))) {
-		//	string rest = ctx->input().substr(2, 1);
-		//	ctx->set_input(ctx->input().substr(0, 2));
-		//	ctx->ConfirmCurrentSelection();
-		//	ctx->Commit();
-		//	ctx->set_input(rest);
-		//	ctx->PushInput(ch);
-		//	return kAccepted;
-		//}
-
-		//if (string("QWRTSDFGZXCVBYPHJKLNMAEUIO").find(ch) != string::npos
-		//	&& 4 == len && string("',/;.").find(ctx->input()[3]) != string::npos
-		//	&& boost::regex_match(schema, boost::regex("^sb[fkhz]s$"))) {
-		//	string rest = ctx->input().substr(2, 2);
-		//	ctx->set_input(ctx->input().substr(0, 2));
-		//	ctx->ConfirmCurrentSelection();
-		//	ctx->Commit();
-		//	ctx->set_input(rest);
-		//	ctx->ConfirmCurrentSelection();
-		//	ctx->Commit();
-		//	if (string("AEUIO").find(ch) == string::npos) {
-		//		ch = tolower(ch);
-		//		ctx->PushInput(ch);
-		//	}
-		//	return kAccepted;
-		//}
-
         if (4 == len && isupper(ch) && belongs_to(ctx->input()[0], initials_)
             && string("aeuio").find(ctx->input()[2]) == string::npos
             && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sb[fkhz]j|sbzr|sbxh|sbjm|sbdp$"))) {

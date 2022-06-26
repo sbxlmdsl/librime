@@ -192,7 +192,7 @@ bool Context::LastPunct() const {
 		return false;
 	int len = input_.length();
 	return (len > 1 
-		&& string("',/;.").find(input_[len - 1]) != string::npos
+		&& string("1234567890").find(input_[len - 1]) != string::npos
 		&& string("aeuio").find(input_[0]) == string::npos);
 }
 
