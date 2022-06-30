@@ -847,9 +847,12 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
             key.insert(0, new_entry_prefix);
         }
         if (commits > 0) {
-            if (v.commits < 0)
-                v.commits = -v.commits;  // revive a deleted item
-            v.commits += commits;
+			if (v.commits < 0)
+				v.commits = -v.commits;  // revive a deleted item
+			else if (v.commits < 888)
+				v.commits = 888;
+			else
+				v.commits += commits;
             UpdateTickCount(1);
             v.dee = algo::formula_d(commits, (double) tick_, v.dee, (double) v.tick);
         } else if (commits == 0) {

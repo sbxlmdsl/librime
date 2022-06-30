@@ -352,14 +352,14 @@ namespace rime {
       if (is_constructed(e)) {
         DictEntry blessed(*e);
         UnityTableEncoder::RemovePrefix(&blessed.custom_code);
-        user_dict_->UpdateEntry(blessed, 500);
+        user_dict_->UpdateEntry(blessed, 888);
       }
       else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][jmdsx]$"))
                && 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
         ; //飞系和快系的单字不调频
       }
       else {
-        user_dict_->UpdateEntry(*e, 100);
+        user_dict_->UpdateEntry(*e, 1);
       }
     }
     if (encoder_ && encoder_->loaded()) {
