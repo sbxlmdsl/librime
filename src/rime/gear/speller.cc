@@ -135,7 +135,7 @@ namespace rime {
 		}
 
 		if (isdigit(ch) && is_enhanced && 2 == len && belongs_to(ctx->input()[0], initials_) 
-				&& string("aeuio").find(ctx->input()[1]) == string::npos) {
+				&& string("aeuio1234567890").find(ctx->input()[1]) == string::npos) {
 			string rest = ctx->input().substr(1, 1);
 			ctx->set_input(ctx->input().substr(0, 1));
 			ctx->ConfirmCurrentSelection();
