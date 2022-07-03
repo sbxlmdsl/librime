@@ -110,6 +110,7 @@ namespace rime {
 		size_t len = ctx->input().length();
 		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbjm|sbdp|sbzr|sbxh|sbjk|sbkp|sbpy|sb[fkhzjd]z$"));
 		bool pro_char = ctx->get_option("pro_char") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbzr|sbxh$"));
+		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbzr|sbxh|sbjm|sbdp$"));
 		bool third_pop = ctx->get_option("third_pop");
 
         if (len == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
@@ -129,6 +130,17 @@ namespace rime {
 		}
 
 		if (isupper(ch) && pro_char && 2 == len && is_sbxlm && belongs_to(ctx->input()[0], initials_)) {
+			ctx->PushInput(tolower(ch));
+			return kAccepted;
+		}
+
+		if (isdigit(ch) && is_enhanced && 2 == len && belongs_to(ctx->input()[0], initials_) 
+				&& string("aeuio").find(ctx->input()[1]) == string::npos) {
+			string rest = ctx->input().substr(1, 1);
+			ctx->set_input(ctx->input().substr(0, 1));
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->set_input(rest);
 			ctx->PushInput(tolower(ch));
 			return kAccepted;
 		}
