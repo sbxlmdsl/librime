@@ -31,7 +31,7 @@ void CommitEntry::AppendPhrase(const an<Phrase>& phrase) {
               phrase->code().begin(), phrase->code().end());
  if (phrase->language()
 	 && boost::regex_match(phrase->language()->name()
-		 , boost::regex("^sss|jm3|sn|jmn|fmn|kmn|shn|szn|shs|szs|fmsbb|kmsbb$"))) {
+		 , boost::regex("^sss|jm3|sn|jmn|fmsbb|fmsbbtz|kmsbb|shs|szs$"))) {
 	 phrase->set_comment("sbxlm_fixed_entry"); 
  }
 
@@ -118,7 +118,7 @@ void Memory::OnCommit(Context* ctx) {
     bool recognized = Language::intelligible(phrase, this);
 	if (phrase && phrase->language() && this && this->language()
 		&& boost::regex_match(phrase->language()->name()
-			, boost::regex("^sss|jm3|sn|jmn|fmn|kmn|shn|szn|shs|szs|fmsbb|kmsbb$"))) {
+			, boost::regex("^sss|jm3|sn|jmn|fmsbb|fmsbbtz|kmsbb|szs|shs$"))) {
 		recognized = true;
 	}
     if (recognized) {

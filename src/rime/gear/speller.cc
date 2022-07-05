@@ -145,6 +145,17 @@ namespace rime {
 			return kAccepted;
 		}
 
+		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(ctx->input()[0], initials_)
+			&& string("aeuio1234567890").find(ctx->input()[2]) == string::npos) {
+			string rest = ctx->input().substr(2, 1);
+			ctx->set_input(ctx->input().substr(0, 2));
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->set_input(rest);
+			ctx->PushInput(tolower(ch));
+			return kAccepted;
+		}
+
 		if (string("AEUIO").find(ch) != string::npos && 3 == len
 			&& boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbzr|sbxh$"))) {
 			string rest = ctx->input().substr(1, 2);

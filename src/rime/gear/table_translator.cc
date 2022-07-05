@@ -260,8 +260,8 @@ namespace rime {
     
     an<Translation> translation;
 	if (dict_ && dict_->loaded() 
-		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmn|jmnts|sn|snts|fmn|fmnts|kmn|kmnts|shn|shnts|szn|sznts$"))
-			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3|dp3$"))))
+		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmn|jmnts|sn|snts$"))
+			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3$"))))
 		;
 	else
 		if (enable_completion_) {
@@ -349,15 +349,18 @@ namespace rime {
 	if (stop_change_)
 		return false;
     for (const DictEntry* e : commit_entry.elements) {
-      if (is_constructed(e)) {
-        DictEntry blessed(*e);
-        UnityTableEncoder::RemovePrefix(&blessed.custom_code);
-        user_dict_->UpdateEntry(blessed, 888);
-      }
-      else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][jmdsx]$"))
-               && 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
-        ; //飞系和快系的单字不调频
-      }
+		if (is_constructed(e)) {
+			DictEntry blessed(*e);
+			UnityTableEncoder::RemovePrefix(&blessed.custom_code);
+			user_dict_->UpdateEntry(blessed, 888);
+		}
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][jmdsx]$"))
+			&& 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
+			; //no change for sb[fk]*
+		}
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$"))
+			&& e->preedit.length() < 4)
+			; //no change when size is below 4 
       else {
         user_dict_->UpdateEntry(*e, 1);
       }
