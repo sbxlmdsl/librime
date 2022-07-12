@@ -260,7 +260,7 @@ namespace rime {
     
     an<Translation> translation;
 	if (dict_ && dict_->loaded() 
-		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmn|jmnts|sn|snts$"))
+		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^jmn|jmnts|sn|snts|fmsbn|fmsbnts|kmsbn|kmsbnts$"))
 			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3$"))))
 		;
 	else
