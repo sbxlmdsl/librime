@@ -48,6 +48,7 @@ class Context {
   bool OkSecond() const;
   bool OkThird() const;
   bool OkFourth() const;
+  bool OkFifth() const;
   bool LastPunct() const;
   int CountLength() const;
   int CountLength2() const;

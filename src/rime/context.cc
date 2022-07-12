@@ -187,6 +187,17 @@ bool Context::OkFourth() const {
 		&& islower(input_[seg.start + 3]);
 }
 
+bool Context::OkFifth() const {
+	if (composition_.empty())
+		return false;
+	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+		return false;
+	auto seg = composition_.back();
+	return islower(input_[seg.start]) && seg.length == 5
+		&& string("aeuio").find(input_[2]) == string::npos
+		&& islower(input_[seg.start + 3]);
+}
+
 bool Context::LastPunct() const {
 	if (composition_.empty())
 		return false;
