@@ -114,18 +114,20 @@ void Editor::CommitScriptText(Context* ctx) {
 }
 
 void Editor::CommitScriptText2(Context* ctx) {
+	bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->GetScriptText());
-	if (isupper(s[0])) {
-		s[0] = tolower(s[0]);
+	if (ascii_mode && s.length() > 0 && isalpha(s[0])) {
+		s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
 	}
 	engine_->sink()(s);
 	ctx->Clear();
 }
 
 void Editor::CommitScriptText3(Context* ctx) {
+	bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->GetScriptText());
-	if (isupper(s[0])) {
-		for (int i = 1; i < s.length(); i++)
+	if (ascii_mode && s.length() > 0 && isalpha(s[0])) {
+		for (int i = 0; i < s.length(); i++)
 			s[i] = toupper(s[i]);
 	}
 	engine_->sink()(s);
@@ -139,9 +141,10 @@ void Editor::CommitRawInput(Context* ctx) {
 
 void Editor::CommitRawInput2(Context* ctx) {
 	ctx->ClearNonConfirmedComposition();
+	bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->input());
-	if (isupper(s[0])) {
-		s[0] = tolower(s[0]);
+	if (ascii_mode && s.length() > 0 && isalpha(s[0])) {
+		s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
 		ctx->set_input(s);
 	}	
 	ctx->Commit();
@@ -149,9 +152,10 @@ void Editor::CommitRawInput2(Context* ctx) {
 
 void Editor::CommitRawInput3(Context* ctx) {
 	ctx->ClearNonConfirmedComposition();
+	bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->input());
-	if (isupper(s[0])) {
-		for (int i = 1; i < s.length(); i++)
+	if (ascii_mode && s.length() > 0 && isalpha(s[0])) {
+		for (int i = 0; i < s.length(); i++)
 			s[i] = toupper(s[i]);
 		ctx->set_input(s);
 	}
