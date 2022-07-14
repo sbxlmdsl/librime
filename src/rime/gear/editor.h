@@ -30,8 +30,10 @@ class Editor : public Processor, public KeyBindingProcessor<Editor> {
   Handler CommitComment;
   Handler CommitScriptText;
   Handler CommitScriptText2;
+  Handler CommitScriptText3;
   Handler CommitRawInput;
   Handler CommitRawInput2;
+  Handler CommitRawInput3;
   Handler CommitComposition;
   Handler RevertLastEdit;
   Handler BackToPreviousInput;

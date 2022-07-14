@@ -122,6 +122,16 @@ void Editor::CommitScriptText2(Context* ctx) {
 	ctx->Clear();
 }
 
+void Editor::CommitScriptText3(Context* ctx) {
+	string s(ctx->GetScriptText());
+	if (isupper(s[0])) {
+		for (int i = 1; i < s.length(); i++)
+			s[i] = toupper(s[i]);
+	}
+	engine_->sink()(s);
+	ctx->Clear();
+}
+
 void Editor::CommitRawInput(Context* ctx) {
   ctx->ClearNonConfirmedComposition();
   ctx->Commit();
@@ -134,6 +144,17 @@ void Editor::CommitRawInput2(Context* ctx) {
 		s[0] = tolower(s[0]);
 		ctx->set_input(s);
 	}	
+	ctx->Commit();
+}
+
+void Editor::CommitRawInput3(Context* ctx) {
+	ctx->ClearNonConfirmedComposition();
+	string s(ctx->input());
+	if (isupper(s[0])) {
+		for (int i = 1; i < s.length(); i++)
+			s[i] = toupper(s[i]);
+		ctx->set_input(s);
+	}
 	ctx->Commit();
 }
 
@@ -220,8 +241,8 @@ FluidEditor::FluidEditor(const Ticket& ticket) : Editor(ticket, false) {
   Bind({XK_BackSpace, 0}, &Editor::BackToPreviousInput);  //
   Bind({XK_BackSpace, kControlMask}, &Editor::BackToPreviousSyllable);
   Bind({XK_Return, 0}, &Editor::CommitScriptText);  //
-  Bind({XK_Return, kControlMask}, &Editor::CommitRawInput);  //
   Bind({XK_Return, kShiftMask}, &Editor::CommitScriptText2);  //
+  Bind({XK_Return, kControlMask}, &Editor::CommitScriptText3);  //
   Bind({XK_Return, kControlMask | kShiftMask}, &Editor::CommitComment);
   Bind({XK_Delete, 0}, &Editor::DeleteChar);
   Bind({XK_Delete, kControlMask}, &Editor::DeleteCandidate);
@@ -235,8 +256,8 @@ ExpressEditor::ExpressEditor(const Ticket& ticket) : Editor(ticket, true) {
   Bind({XK_BackSpace, 0}, &Editor::RevertLastEdit);  //
   Bind({XK_BackSpace, kControlMask}, &Editor::BackToPreviousSyllable);
   Bind({XK_Return, 0}, &Editor::CommitRawInput);  //
-  Bind({XK_Return, kControlMask}, &Editor::CommitScriptText);  //
-  Bind({XK_Return, kShiftMask }, &Editor::CommitRawInput2);  //
+  Bind({XK_Return, kShiftMask}, &Editor::CommitRawInput2);  //
+  Bind({XK_Return, kControlMask}, &Editor::CommitRawInput3);  //
   Bind({XK_Return, kControlMask | kShiftMask}, &Editor::CommitComment);
   Bind({XK_Delete, 0}, &Editor::DeleteChar);
   Bind({XK_Delete, kControlMask}, &Editor::DeleteCandidate);
