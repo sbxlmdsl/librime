@@ -377,8 +377,8 @@ namespace rime {
                 // select previous match
                 if (ctx->get_option("_auto_commit")) {
                     ctx->Commit();
-                    string rest = input.substr(end);
-                    ctx->set_input(rest);
+					ctx->Clear();
+                    ctx->set_input(input.substr(end));
                     end = 0;
                 } else {
                     ctx->ConfirmCurrentSelection();
