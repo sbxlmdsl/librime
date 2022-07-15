@@ -195,6 +195,19 @@ namespace rime {
 			return kAccepted;
 		}
 
+		if (3 == len && belongs_to(ctx->input()[0], initials_)
+			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[2]) != string::npos
+			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
+			&& boost::regex_match(schema, boost::regex("^sb[fk]x$"))) {
+			string rest = ctx->input().substr(2, 1);
+			ctx->set_input(ctx->input().substr(0, 2));
+			ctx->ConfirmCurrentSelection();
+			ctx->Commit();
+			ctx->set_input(rest);
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
+
         if (4 == len && isupper(ch) && belongs_to(ctx->input()[0], initials_)
             && string("aeuio").find(ctx->input()[2]) == string::npos
             && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sb[fkhz]j|sbzr|sbxh|sbjm|sbdp$"))) {
@@ -318,14 +331,14 @@ namespace rime {
         string input = ctx->input();
 		string converted = input.substr(0, end);
         auto cand = previous_segment->GetSelectedCandidate();
-        if (5 == input.length() && is_table_entry(cand)
-            && string("QWRTSDFGZXCVBYPHJKLNM,;/.'").find(ctx->input()[3]) == string::npos
-            && !(string("aeuio").find(ctx->input()[1]) != string::npos &&
-                 string("aeuio_").find(ctx->input()[2]) != string::npos)
-            && !(string("aeuio").find(ctx->input()[1]) == string::npos &&
-                 string("aeuio_").find(ctx->input()[2]) != string::npos)
-            && boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x|sbfx2$"))) {
-            return FindEarlierMatch(ctx, start, end - 1);
+		if (5 == input.length() && is_table_entry(cand)
+			&& string("QWRTSDFGZXCVBYPHJKLNM,;/.'").find(ctx->input()[3]) == string::npos
+			&& !(string("aeuio").find(ctx->input()[1]) != string::npos &&
+				string("aeuio_").find(ctx->input()[2]) != string::npos)
+			&& !(string("aeuio").find(ctx->input()[1]) == string::npos &&
+				string("aeuio_").find(ctx->input()[2]) != string::npos)
+			&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x$"))) {
+			return FindEarlierMatch(ctx, start, end - 1);
         } else if (5 == input.length() && is_table_entry(cand)
                    && string("aeuio").find(ctx->input()[4]) != string::npos
                    && !(string("aeuio").find(ctx->input()[1]) != string::npos &&
