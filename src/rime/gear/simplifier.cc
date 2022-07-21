@@ -54,7 +54,7 @@ class Opencc {
       return false;
     } else {
       const opencc::DictEntry* entry = item.Get();
-      for (const char* value : entry->Values()) {
+      for (auto&& value : entry->Values()) {
         forms->push_back(value);
       }
       return forms->size() > 0;
