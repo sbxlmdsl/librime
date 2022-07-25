@@ -84,9 +84,14 @@ namespace rime {
         int index = -1;
         const string& select_keys(engine_->schema()->select_keys());
 		string schema = engine_->schema()->schema_id();
-		size_t len = ctx->input().length();
+		Composition comp = ctx->composition();
+		size_t comfirmed_pos = comp.GetConfirmedPosition();
+		size_t current_start_pos = comp.GetCurrentStartPosition();
+		size_t len = ctx->input().length() - comfirmed_pos;
+		const char c1 = ctx->input()[comfirmed_pos];
+
 		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz]j|sbjm|sbzr|sbxh|sbpy|sb[fkhzjd]z$"));
-		const char c1 = ctx->input()[0];
+
 		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
 			if (len == 1 && c1 == '\\' && string("aeuio").find(ch) != string::npos)
 				return kNoop;
@@ -105,42 +110,42 @@ namespace rime {
 			if (is_sbxlm && len > 0 && islower(c1)) {
 				if (key_event.ctrl() && (ch >= XK_0 && ch <= XK_9 || ch >= XK_KP_0 && ch <= XK_KP_9))
 					;
-				//Õû¾äÄ£Ê½
+				//ï¿½ï¿½ï¿½ï¿½Ä£Ê½
 				else if (boost::regex_match(schema, boost::regex("^sbpy|sb[fkhzjd]z$")))
 					;
 				else if (len == 1)
 					return kNoop;
-				//ÒÔaeuio¿ªÊ¼
+				//ï¿½ï¿½aeuioï¿½ï¿½Ê¼
 				else if (string("aeuio").find(c1) != string::npos) {
-					//Æ´ÒôÓë¶þ·Ö·´²é
+					//Æ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
 					if (string("aei").find(c1) != string::npos)
 						return kNoop;
-					//±Ê»­·´²é
+					//ï¿½Ê»ï¿½ï¿½ï¿½ï¿½ï¿½
 					else if (string("aeuio").find(ctx->input()[1]) != string::npos)
 						return kNoop;
 				}
-				//·ÉÑ¶ºÍ¿ìÑ¶´Ê×éÒ»°ã´Ê×é
+				//ï¿½ï¿½Ñ¶ï¿½Í¿ï¿½Ñ¶ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½
 				else if (len == 7 && boost::regex_match(schema, boost::regex("^sb[fk]x$")))
 					;
-				//ÆäËü×Ö´ÊÄ£Ê½
+				//ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ä£Ê½
 				else if (len == 6 && !boost::regex_match(schema, boost::regex("^sb[fk]x$")))
 					;
-				//·ÉÑ¶ºÍ¿ìÑ¶´Ê×éÎåÂëÓÐ·­Ò³²Ù×÷Ê±
+				//ï¿½ï¿½Ñ¶ï¿½Í¿ï¿½Ñ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð·ï¿½Ò³ï¿½ï¿½ï¿½ï¿½Ê±
 				else if (len == 5 && boost::regex_match(schema, boost::regex("^sb[fk]x$")) && current_segment.HasTag("paging"))
 					;
-				//ËÄÂëÊ±
+				//ï¿½ï¿½ï¿½ï¿½Ê±
 				else if (len == 4) {
-					//ÓÐ¹ý·­Ò³
+					//ï¿½Ð¹ï¿½ï¿½ï¿½Ò³
 					if (current_segment.HasTag("paging"))
 						;
-					//Éù±Ê¼òÂë
+					//ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½
 					else if (boost::regex_match(schema, boost::regex("^sbjm$"))) {
 						return kNoop;
 					}
-					//·ÉÑ¶ºÍ¿ìÑ¶´Ê×é¶à×Ö´Ê
+					//ï¿½ï¿½Ñ¶ï¿½Í¿ï¿½Ñ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½
 					else if (string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos)
 						;
-					//µ¥×Ö
+					//ï¿½ï¿½ï¿½ï¿½
 					else if (string("aeuio").find(ctx->input()[2]) != string::npos)
 						;
 					else

@@ -279,16 +279,16 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
     if (RIME_STRUCT_HAS_MEMBER(*context, context->commit_text_preview)) {
       string commit_text(ctx->GetCommitText());
       if (!commit_text.empty()) {
-        size_t pos = commit_text.find_first_of(' ');
-        if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$")) 
-			&& pos != string::npos && commit_text.length() > pos && !isascii(commit_text[pos + 1])) {
-          context->commit_text_preview = new char[commit_text.length() - pos];
-          std::strcpy(context->commit_text_preview, commit_text.c_str() + pos + 1);
-        }
-        else {
+   //     size_t pos = commit_text.find_first_of(' ');
+   //     if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$")) 
+			//&& pos != string::npos && commit_text.length() > pos && !isascii(commit_text[pos + 1])) {
+   //       context->commit_text_preview = new char[commit_text.length() - pos];
+   //       std::strcpy(context->commit_text_preview, commit_text.c_str() + pos + 1);
+   //     }
+   //     else {
           context->commit_text_preview = new char[commit_text.length() + 1];
           std::strcpy(context->commit_text_preview, commit_text.c_str());
-        }
+        //}
       }
     }
   }
@@ -405,16 +405,16 @@ RIME_API Bool RimeGetCommit(RimeSessionId session_id, RimeCommit* commit) {
     return False;
   const string& commit_text(session->commit_text());
   if (!commit_text.empty()) {
-    size_t pos = commit_text.find_first_of(' ');
-    if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$"))
-		&& pos != string::npos && commit_text.length() > pos && !isascii(commit_text[pos + 1])) {
-      commit->text = new char[commit_text.length() - pos];
-      std::strcpy(commit->text, commit_text.c_str() + pos + 1);
-    }
-    else {
+  //  size_t pos = commit_text.find_first_of(' ');
+  //  if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$"))
+		//&& pos != string::npos && commit_text.length() > pos && !isascii(commit_text[pos + 1])) {
+  //    commit->text = new char[commit_text.length() - pos];
+  //    std::strcpy(commit->text, commit_text.c_str() + pos + 1);
+  //  }
+  //  else {
       commit->text = new char[commit_text.length() + 1];
       std::strcpy(commit->text, commit_text.c_str());
-    }
+    //}
     
     session->ResetCommitText();
     return True;
