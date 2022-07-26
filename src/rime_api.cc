@@ -344,7 +344,7 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
             string label = value->str();
             context->select_labels[i] = new char[label.length() + 1];
 			if (!select_keys.compare(" aeuio") && ctx->input().length() > 1
-				&& string("uo").find(ctx->input()[0]) != string::npos
+				&& string("uo").find(c1) != string::npos
 				&& string("aeuio_").find(ctx->input()[1]) == string::npos) {
 				std::strcpy(context->select_labels[i], label.c_str());
 			}

@@ -107,131 +107,181 @@ namespace rime {
         }
 
         string schema = engine_->schema()->schema_id();
-		size_t len = ctx->input().length();
-		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbjm|sbdp|sbzr|sbxh|sbjk|sbkp|sbpy|sb[fkhzjd]z$"));
-		bool pro_char = ctx->get_option("pro_char") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbzr|sbxh$"));
-		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbzr|sbxh|sbjm|sbdp$"));
+		Composition comp = ctx->composition();
+		size_t comfirmed_pos = comp.GetConfirmedPosition();
+		size_t len = ctx->input().length() - comfirmed_pos;
+		const char c1 = ctx->input()[comfirmed_pos];
+		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbxh|sbpy|sb[fkhzjd]z$"));
+		bool pro_char = ctx->get_option("pro_char") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbxh$"));
+		bool pseudo_sentence = ctx->get_option("pseudo_sentence") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbxh$"));
+		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbxh|sbjm|sbdp$"));
 		bool third_pop = ctx->get_option("third_pop");
 
-        if (len == 1 && !islower(ctx->input()[0]) && is_sbxlm) {
+        if (len == 1 && !islower(c1) && is_sbxlm) {
 			ctx->ConfirmCurrentSelection();
-			ctx->Commit();
-			ctx->Clear();
+			if (!pseudo_sentence) {
+				ctx->Commit();
+				ctx->Clear();
+			}
 			ctx->PushInput(ch);
 			return kAccepted;
 		}
 
-		if (is_initial && pro_char && 2 == len && is_sbxlm && belongs_to(ctx->input()[0], initials_)) {
+		if (is_initial && pro_char && 2 == len && is_sbxlm && belongs_to(c1, initials_)) {
 			ctx->ConfirmCurrentSelection();
-			ctx->Commit();
-			ctx->Clear();
+			if (!pseudo_sentence) {
+				ctx->Commit();
+				ctx->Clear();
+			}
 			ctx->PushInput(ch);
 			return kAccepted;
 		}
 
-		if (isupper(ch) && pro_char && 2 == len && is_sbxlm && belongs_to(ctx->input()[0], initials_)) {
+		if (isupper(ch) && pro_char && 2 == len && is_sbxlm && belongs_to(c1, initials_)) {
 			ctx->PushInput(tolower(ch));
 			return kAccepted;
 		}
 
-		if (isdigit(ch) && is_enhanced && 2 == len && belongs_to(ctx->input()[0], initials_) 
-				&& string("aeuio1234567890").find(ctx->input()[1]) == string::npos) {
-			string rest = ctx->input().substr(1, 1);
-			ctx->set_input(ctx->input().substr(0, 1));
-			ctx->ConfirmCurrentSelection();
-			ctx->Commit();
-			ctx->set_input(rest);
+		if (isdigit(ch) && is_enhanced && 2 == len && belongs_to(c1, initials_) 
+				&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 1]) == string::npos) {
+			if (pseudo_sentence) {
+				ctx->set_caret_pos(ctx->caret_pos() - 1);
+				ctx->ConfirmCurrentSelection();
+				ctx->set_caret_pos(ctx->caret_pos() + 1);
+			}
+			else {
+				string rest = ctx->input().substr(1, 1);
+				ctx->set_input(ctx->input().substr(0, 1));
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
+				ctx->set_input(rest);
+			}
 			ctx->PushInput(tolower(ch));
 			return kAccepted;
 		}
 
-		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(ctx->input()[0], initials_)
-			&& string("aeuio1234567890").find(ctx->input()[2]) == string::npos) {
-			string rest = ctx->input().substr(2, 1);
-			ctx->set_input(ctx->input().substr(0, 2));
-			ctx->ConfirmCurrentSelection();
-			ctx->Commit();
-			ctx->set_input(rest);
+		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_)
+			&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 2]) == string::npos) {
+			if (pseudo_sentence) {
+				ctx->set_caret_pos(ctx->caret_pos() - 1);
+				ctx->ConfirmCurrentSelection();
+				ctx->set_caret_pos(ctx->caret_pos() + 1);
+			}
+			else {
+				string rest = ctx->input().substr(2, 1);
+				ctx->set_input(ctx->input().substr(0, 2));
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
+				ctx->set_input(rest);
+			}
 			ctx->PushInput(tolower(ch));
 			return kAccepted;
 		}
 
 		if (string("AEUIO").find(ch) != string::npos && 3 == len
-			&& boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz][js]|sbzr|sbxh$"))) {
-			string rest = ctx->input().substr(1, 2);
-			ctx->set_input(ctx->input().substr(0, 1));
-			ctx->ConfirmCurrentSelection();
-			ctx->Commit();
-			ctx->set_input(rest);
+			&& boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbxh$"))) {
+			if (pseudo_sentence) {
+				ctx->set_caret_pos(ctx->caret_pos() - 2);
+				ctx->ConfirmCurrentSelection();
+				ctx->set_caret_pos(ctx->caret_pos() + 2);
+			}
+			else {
+				string rest = ctx->input().substr(1, 2);
+				ctx->set_input(ctx->input().substr(0, 1));
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
+				ctx->set_input(rest);
+			}
 			ctx->PushInput(tolower(ch));
 			return kAccepted;
 		}
 
-        if (is_initial && 3 == len && belongs_to(ctx->input()[0], initials_)
-			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$")) 
-				|| boost::regex_match(schema, boost::regex("^sb[fkhz]j$")))
+        if (is_initial && 3 == len && belongs_to(c1, initials_)
+			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$")))
 			&& string("aeuio").find(ch) == string::npos) {
             ctx->ConfirmCurrentSelection();
-            ctx->Commit();
-            ctx->Clear();
+			if (!pseudo_sentence) {
+				ctx->Commit();
+				ctx->Clear();
+			}
             ctx->PushInput(ch);
             return kAccepted;
         }
 
-        if (isupper(ch) && 3 == len && belongs_to(ctx->input()[0], initials_)
-			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))
-				|| boost::regex_match(schema, boost::regex("^sb[fkhz][js]$")))) {
-			if (boost::regex_match(schema, boost::regex("^sb[fkhz]s$")))
-				ctx->PushInput(ch);
-			else
-				ctx->PushInput(tolower(ch));
+        if (isupper(ch) && 3 == len && belongs_to(c1, initials_)
+			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$")))) {
+			ctx->PushInput(tolower(ch));
 			return kAccepted;
         }
 
-		if (isupper(ch) && is_sbxlm && 3 >= len && belongs_to(ctx->input()[0], initials_)) {
+		if (isupper(ch) && is_sbxlm && 3 >= len && belongs_to(c1, initials_)) {
 			ctx->ConfirmCurrentSelection();
-			ctx->Commit();
+			if (!pseudo_sentence)
+				ctx->Commit();
 			ctx->PushInput(tolower(ch));
 			return kAccepted;
 		}
 
-		if (3 == len && belongs_to(ctx->input()[0], initials_)
-			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[2]) != string::npos
+		if (3 == len && belongs_to(c1, initials_)
+			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
 			&& boost::regex_match(schema, boost::regex("^sb[fk]x$"))) {
-			string rest = ctx->input().substr(2, 1);
-			ctx->set_input(ctx->input().substr(0, 2));
-			ctx->ConfirmCurrentSelection();
-			ctx->Commit();
-			ctx->set_input(rest);
+			if (pseudo_sentence) {
+				ctx->set_caret_pos(ctx->caret_pos() - 1);
+				ctx->ConfirmCurrentSelection();
+				ctx->set_caret_pos(ctx->caret_pos() + 1);
+			}
+			else {
+				string rest = ctx->input().substr(2, 1);
+				ctx->set_input(ctx->input().substr(0, 2));
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
+				ctx->set_input(rest);
+			}
 			ctx->PushInput(ch);
 			return kAccepted;
 		}
 
-        if (4 == len && isupper(ch) && belongs_to(ctx->input()[0], initials_)
-            && string("aeuio").find(ctx->input()[2]) == string::npos
-            && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sb[fkhz]j|sbzr|sbxh|sbjm|sbdp$"))) {
-            string rest = ctx->input().substr(2, 2);
-            ctx->set_input(ctx->input().substr(0, 2));
-            ctx->ConfirmCurrentSelection();
-            ctx->Commit();
-            ctx->set_input(rest);
+        if (4 == len && isupper(ch) && belongs_to(c1, initials_)
+            && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) == string::npos
+            && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sbzr|sbxh|sbjm|sbdp$"))) {
+			if (pseudo_sentence) {
+				ctx->set_caret_pos(ctx->caret_pos() - 2);
+				ctx->ConfirmCurrentSelection();
+				ctx->set_caret_pos(ctx->caret_pos() + 2);
+			}
+			else {
+				string rest = ctx->input().substr(2, 2);
+				ctx->set_input(ctx->input().substr(0, 2));
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
+				ctx->set_input(rest);
+			}
             ctx->PushInput(tolower(ch));
             return kAccepted;
         }
 
-		if (5 == len && isupper(ch) && belongs_to(ctx->input()[0], initials_)
-			&& string("aeuio").find(ctx->input()[2]) == string::npos
+
+
+		if (5 == len && isupper(ch) && belongs_to(c1, initials_)
+			&& string("aeuio").find(ctx->input()[comfirmed_pos + 2]) == string::npos
 			&& boost::regex_match(schema, boost::regex("^sb[fk]x$"))) {
-			string rest = ctx->input().substr(2, 3);
-			ctx->set_input(ctx->input().substr(0, 2));
-			ctx->ConfirmCurrentSelection();
-			ctx->Commit();
-			ctx->set_input(rest);
-			ctx->ConfirmCurrentSelection();
-			ctx->Commit();
 			if (string("AEUIO").find(ch) == string::npos)
 				ctx->PushInput(tolower(ch));
+			else if (pseudo_sentence) {
+				ctx->set_caret_pos(ctx->caret_pos() - 3);
+				ctx->ConfirmCurrentSelection();
+				ctx->set_caret_pos(ctx->caret_pos() + 3);
+			}
+			else {
+				string rest = ctx->input().substr(2, 3);
+				ctx->set_input(ctx->input().substr(0, 2));
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
+				ctx->set_input(rest);
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
+			}
 			return kAccepted;
 		}
 
@@ -249,9 +299,9 @@ namespace rime {
         DLOG(INFO) << "add to input: '" << (char) ch << "', " << key_event.repr();
         ctx->PushInput(ch);
 		bool is_sbjm = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sbdp$"));
-		if (is_sbjm && third_pop && ctx->input().length() == 4
-			&& string("aeuio\\").find(ctx->input()[0]) == string::npos
-			&& string("aeuio").find(ctx->input()[3]) != string::npos)
+		if (is_sbjm && third_pop && len == 4
+			&& string("aeuio\\").find(c1) == string::npos
+			&& string("aeuio").find(ctx->input()[comfirmed_pos + 3]) != string::npos)
 			return kAccepted;
 		ctx->ConfirmPreviousSelection();  // so that next BackSpace won't revert
         // previous selection
@@ -330,22 +380,28 @@ namespace rime {
         size_t end = previous_segment->end;
         string input = ctx->input();
 		string converted = input.substr(0, end);
-        auto cand = previous_segment->GetSelectedCandidate();
-		if (5 == input.length() && is_table_entry(cand)
-			&& string("QWRTSDFGZXCVBYPHJKLNM,;/.'").find(ctx->input()[3]) == string::npos
-			&& !(string("aeuio").find(ctx->input()[1]) != string::npos &&
-				string("aeuio_").find(ctx->input()[2]) != string::npos)
-			&& !(string("aeuio").find(ctx->input()[1]) == string::npos &&
-				string("aeuio_").find(ctx->input()[2]) != string::npos)
-			&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]x$"))) {
+		auto cand = previous_segment->GetSelectedCandidate();
+
+		string schema = engine_->schema()->schema_id();
+		Composition comp = ctx->composition();
+		size_t comfirmed_pos = comp.GetConfirmedPosition();
+		size_t len = ctx->input().length() - comfirmed_pos;
+
+		if (5 == len && is_table_entry(cand)
+			&& string("QWRTSDFGZXCVBYPHJKLNM").find(input[comfirmed_pos + 3]) == string::npos
+			&& !(string("aeuio").find(input[comfirmed_pos + 1]) != string::npos &&
+				string("aeuio").find(input[comfirmed_pos + 2]) != string::npos)
+			&& !(string("aeuio").find(input[comfirmed_pos + 1]) == string::npos &&
+				string("aeuio").find(input[comfirmed_pos + 2]) != string::npos)
+			&& boost::regex_match(schema, boost::regex("^sb[fk]x$"))) {
 			return FindEarlierMatch(ctx, start, end - 1);
-        } else if (5 == input.length() && is_table_entry(cand)
-                   && string("aeuio").find(ctx->input()[4]) != string::npos
-                   && !(string("aeuio").find(ctx->input()[1]) != string::npos &&
-                        string("aeuio_").find(ctx->input()[2]) != string::npos)
-                   && !(string("aeuio").find(ctx->input()[1]) == string::npos &&
-                        string("aeuio_").find(ctx->input()[2]) != string::npos)
-                   && boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sb[fk]m|sbzr|sbxh$"))) {
+        } else if (5 == len && is_table_entry(cand)
+                   && string("aeuio").find(input[comfirmed_pos + 4]) != string::npos
+                   && !(string("aeuio").find(input[comfirmed_pos + 1]) != string::npos &&
+                        string("aeuio").find(input[comfirmed_pos + 2]) != string::npos)
+                   && !(string("aeuio").find(input[comfirmed_pos + 1]) == string::npos &&
+                        string("aeuio").find(input[comfirmed_pos + 2]) != string::npos)
+                   && boost::regex_match(schema, boost::regex("^sb[fk]m|sbzr|sbxh$"))) {
             return FindEarlierMatch(ctx, start, end - 1);
         } else if (is_auto_selectable(previous_segment->GetSelectedCandidate(),
                                       converted, delimiters_)) {
@@ -353,7 +409,7 @@ namespace rime {
             ctx->composition().pop_back();
             ctx->composition().push_back(std::move(*previous_segment));
             ctx->ConfirmCurrentSelection();
-            if (ctx->get_option("_auto_commit")) {
+			if (ctx->get_option("_auto_commit")) {
                 ctx->set_input(converted);
                 ctx->Commit();
                 string rest = input.substr(end);

@@ -197,22 +197,17 @@ void Editor::BackToPreviousSyllable(Context* ctx) {
 
 void Editor::DeleteCandidate(Context* ctx) {
 	string schema = engine_->schema()->schema_id();
-	//允许删除整句方案的用户词组
 	if (boost::regex_match(schema, boost::regex("^sb[djhzfk]z$")))
 		ctx->DeleteCurrentSelection();
 	if (boost::regex_match(schema, boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sb[fk][jsmx]$"))) {
 		size_t len = ctx->input().length();
-		//引导输入时不能删除
 		if (len >= 1 && string("aeuio").find(ctx->input()[0]) != string::npos) 
 			return; 
-		//不超过两码时不能删除
 		if (len <= 2) 
 			return; 
-		//简码和顶拼的单字不能删除
 		if (len >= 2 && string("aeuio").find(ctx->input()[1]) != string::npos
 			&& boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) 
 			return;
-		//其它字词方案的单字也不能删除
 		if (len >= 3 && string("aeuio").find(ctx->input()[2]) != string::npos 
 			&& boost::regex_match(schema, boost::regex("^sb[hz][js]|sbxh|sbzr|sb[fk][jsmx]$")))
 			return;
