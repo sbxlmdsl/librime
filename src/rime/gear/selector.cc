@@ -86,7 +86,6 @@ namespace rime {
 		string schema = engine_->schema()->schema_id();
 		Composition comp = ctx->composition();
 		size_t comfirmed_pos = comp.GetConfirmedPosition();
-		size_t current_start_pos = comp.GetCurrentStartPosition();
 		size_t len = ctx->input().length() - comfirmed_pos;
 		const char c1 = ctx->input()[comfirmed_pos];
 
@@ -110,43 +109,31 @@ namespace rime {
 			if (is_sbxlm && len > 0 && islower(c1)) {
 				if (key_event.ctrl() && (ch >= XK_0 && ch <= XK_9 || ch >= XK_KP_0 && ch <= XK_KP_9))
 					;
-				//����ģʽ
 				else if (boost::regex_match(schema, boost::regex("^sbpy|sb[fkhzjd]z$")))
 					;
 				else if (len == 1)
 					return kNoop;
-				//��aeuio��ʼ
 				else if (string("aeuio").find(c1) != string::npos) {
-					//ƴ������ַ���
 					if (string("aei").find(c1) != string::npos)
 						return kNoop;
-					//�ʻ�����
-					else if (string("aeuio").find(ctx->input()[1]) != string::npos)
+					else if (string("aeuio").find(ctx->input()[comfirmed_pos + 1]) != string::npos)
 						return kNoop;
 				}
-				//��Ѷ�Ϳ�Ѷ����һ�����
 				else if (len == 7 && boost::regex_match(schema, boost::regex("^sb[fk]x$")))
 					;
-				//�����ִ�ģʽ
 				else if (len == 6 && !boost::regex_match(schema, boost::regex("^sb[fk]x$")))
 					;
-				//��Ѷ�Ϳ�Ѷ���������з�ҳ����ʱ
 				else if (len == 5 && boost::regex_match(schema, boost::regex("^sb[fk]x$")) && current_segment.HasTag("paging"))
 					;
-				//����ʱ
 				else if (len == 4) {
-					//�й���ҳ
 					if (current_segment.HasTag("paging"))
 						;
-					//���ʼ���
 					else if (boost::regex_match(schema, boost::regex("^sbjm$"))) {
 						return kNoop;
 					}
-					//��Ѷ�Ϳ�Ѷ������ִ�
-					else if (string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) != string::npos)
+					else if (string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[comfirmed_pos + 3]) != string::npos)
 						;
-					//����
-					else if (string("aeuio").find(ctx->input()[2]) != string::npos)
+					else if (string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos)
 						;
 					else
 						return kNoop;
