@@ -197,18 +197,21 @@ void Editor::BackToPreviousSyllable(Context* ctx) {
 
 void Editor::DeleteCandidate(Context* ctx) {
 	string schema = engine_->schema()->schema_id();
+	Composition comp = ctx->composition();
+	size_t comfirmed_pos = comp.GetConfirmedPosition();
+	size_t len = ctx->input().length() - comfirmed_pos;
 	if (boost::regex_match(schema, boost::regex("^sb[djhzfk]z$")))
 		ctx->DeleteCurrentSelection();
 	if (boost::regex_match(schema, boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sb[fk][jsmx]$"))) {
 		size_t len = ctx->input().length();
-		if (len >= 1 && string("aeuio").find(ctx->input()[0]) != string::npos) 
+		if (len >= 1 && string("aeuio").find(ctx->input()[comfirmed_pos + 0]) != string::npos)
 			return; 
 		if (len <= 2) 
 			return; 
-		if (len >= 2 && string("aeuio").find(ctx->input()[1]) != string::npos
+		if (len >= 2 && string("aeuio").find(ctx->input()[comfirmed_pos + 1]) != string::npos
 			&& boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) 
 			return;
-		if (len >= 3 && string("aeuio").find(ctx->input()[2]) != string::npos 
+		if (len >= 3 && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos
 			&& boost::regex_match(schema, boost::regex("^sb[hz][js]|sbxh|sbzr|sb[fk][jsmx]$")))
 			return;
 	}
@@ -261,7 +264,6 @@ ExpressEditor::ExpressEditor(const Ticket& ticket) : Editor(ticket, true) {
   Bind({XK_Delete, 0}, &Editor::DeleteChar);
   Bind({XK_Delete, kControlMask}, &Editor::DeleteCandidate);
   Bind({XK_Escape, 0}, &Editor::CancelComposition);
- // Bind({XK_BackSpace, kShiftMask}, &Editor::CommitPreviousCandidate);
   char_handler_ = &Editor::DirectCommit;  //
   LoadConfig();
 }

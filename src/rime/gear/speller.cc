@@ -113,13 +113,13 @@ namespace rime {
 		const char c1 = ctx->input()[comfirmed_pos];
 		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbxh|sbpy|sb[fkhzjd]z$"));
 		bool pro_char = ctx->get_option("pro_char") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbxh$"));
-		bool pseudo_sentence = ctx->get_option("pseudo_sentence") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbxh$"));
+		bool fine_sentence = ctx->get_option("_auto_commit") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbxh$"));
 		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbxh|sbjm|sbdp$"));
 		bool third_pop = ctx->get_option("third_pop");
 
         if (len == 1 && !islower(c1) && is_sbxlm) {
 			ctx->ConfirmCurrentSelection();
-			if (!pseudo_sentence) {
+			if (!fine_sentence) {
 				ctx->Commit();
 				ctx->Clear();
 			}
@@ -129,7 +129,7 @@ namespace rime {
 
 		if (is_initial && pro_char && 2 == len && is_sbxlm && belongs_to(c1, initials_)) {
 			ctx->ConfirmCurrentSelection();
-			if (!pseudo_sentence) {
+			if (!fine_sentence) {
 				ctx->Commit();
 				ctx->Clear();
 			}
@@ -144,7 +144,7 @@ namespace rime {
 
 		if (isdigit(ch) && is_enhanced && 2 == len && belongs_to(c1, initials_) 
 				&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 1]) == string::npos) {
-			if (pseudo_sentence) {
+			if (fine_sentence) {
 				ctx->set_caret_pos(ctx->caret_pos() - 1);
 				ctx->ConfirmCurrentSelection();
 				ctx->set_caret_pos(ctx->caret_pos() + 1);
@@ -162,7 +162,7 @@ namespace rime {
 
 		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_)
 			&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 2]) == string::npos) {
-			if (pseudo_sentence) {
+			if (fine_sentence) {
 				ctx->set_caret_pos(ctx->caret_pos() - 1);
 				ctx->ConfirmCurrentSelection();
 				ctx->set_caret_pos(ctx->caret_pos() + 1);
@@ -180,7 +180,7 @@ namespace rime {
 
 		if (string("AEUIO").find(ch) != string::npos && 3 == len
 			&& boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbxh$"))) {
-			if (pseudo_sentence) {
+			if (fine_sentence) {
 				ctx->set_caret_pos(ctx->caret_pos() - 2);
 				ctx->ConfirmCurrentSelection();
 				ctx->set_caret_pos(ctx->caret_pos() + 2);
@@ -200,7 +200,7 @@ namespace rime {
 			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$")))
 			&& string("aeuio").find(ch) == string::npos) {
             ctx->ConfirmCurrentSelection();
-			if (!pseudo_sentence) {
+			if (!fine_sentence) {
 				ctx->Commit();
 				ctx->Clear();
 			}
@@ -216,7 +216,7 @@ namespace rime {
 
 		if (isupper(ch) && is_sbxlm && 3 >= len && belongs_to(c1, initials_)) {
 			ctx->ConfirmCurrentSelection();
-			if (!pseudo_sentence)
+			if (!fine_sentence)
 				ctx->Commit();
 			ctx->PushInput(tolower(ch));
 			return kAccepted;
@@ -226,7 +226,7 @@ namespace rime {
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
 			&& boost::regex_match(schema, boost::regex("^sb[fk]x$"))) {
-			if (pseudo_sentence) {
+			if (fine_sentence) {
 				ctx->set_caret_pos(ctx->caret_pos() - 1);
 				ctx->ConfirmCurrentSelection();
 				ctx->set_caret_pos(ctx->caret_pos() + 1);
@@ -245,7 +245,7 @@ namespace rime {
         if (4 == len && isupper(ch) && belongs_to(c1, initials_)
             && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) == string::npos
             && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sbzr|sbxh|sbjm|sbdp$"))) {
-			if (pseudo_sentence) {
+			if (fine_sentence) {
 				ctx->set_caret_pos(ctx->caret_pos() - 2);
 				ctx->ConfirmCurrentSelection();
 				ctx->set_caret_pos(ctx->caret_pos() + 2);
@@ -268,7 +268,7 @@ namespace rime {
 			&& boost::regex_match(schema, boost::regex("^sb[fk]x$"))) {
 			if (string("AEUIO").find(ch) == string::npos)
 				ctx->PushInput(tolower(ch));
-			else if (pseudo_sentence) {
+			else if (fine_sentence) {
 				ctx->set_caret_pos(ctx->caret_pos() - 3);
 				ctx->ConfirmCurrentSelection();
 				ctx->set_caret_pos(ctx->caret_pos() + 3);
@@ -329,8 +329,9 @@ namespace rime {
         if (!ctx->HasMenu())
             return false;
         auto cand = ctx->GetSelectedCandidate();
+		int mcl = ctx->get_option("_auto_commit") ? max_code_length_ : 255;
         if (cand &&
-            reached_max_code_length(cand, max_code_length_) &&
+            reached_max_code_length(cand, mcl) &&
             is_auto_selectable(cand, ctx->input(), delimiters_)) {
             ctx->ConfirmCurrentSelection();
             return true;
@@ -421,9 +422,10 @@ namespace rime {
     }
 
     bool Speller::AutoClear(Context *ctx) {
+		int mcl = ctx->get_option("_auto_commit") ? max_code_length_ : 255;
         if (!ctx->HasMenu() && auto_clear_ > kClearNone &&
-            (auto_clear_ != kClearMaxLength || max_code_length_ == 0 ||
-             ctx->input().length() >= (size_t) max_code_length_)) {
+            (auto_clear_ != kClearMaxLength || mcl == 0 ||
+             ctx->input().length() >= (size_t)mcl)) {
             ctx->Clear();
             return true;
         }
