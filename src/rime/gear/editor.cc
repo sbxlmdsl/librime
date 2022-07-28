@@ -135,19 +135,11 @@ void Editor::CommitScriptText3(Context* ctx) {
 }
 
 void Editor::CommitRawInput(Context* ctx) {
-	if (ctx->get_option("is_buffered")) {
-		CommitScriptText(ctx);
-		return;
-	}
   ctx->ClearNonConfirmedComposition();
   ctx->Commit();
 }
 
 void Editor::CommitRawInput2(Context* ctx) {
-	if (ctx->get_option("is_buffered")) {
-		CommitScriptText2(ctx);
-		return;
-	}
 	ctx->ClearNonConfirmedComposition();
 	bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->input());
@@ -159,10 +151,6 @@ void Editor::CommitRawInput2(Context* ctx) {
 }
 
 void Editor::CommitRawInput3(Context* ctx) {
-	if (ctx->get_option("is_buffered")) {
-		CommitScriptText3(ctx);
-		return;
-	}
 	ctx->ClearNonConfirmedComposition();
 	bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->input());
