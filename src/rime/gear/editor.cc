@@ -135,7 +135,7 @@ void Editor::CommitScriptText3(Context* ctx) {
 }
 
 void Editor::CommitRawInput(Context* ctx) {
-	if (ctx->get_option("fine_sentence")) {
+	if (ctx->get_option("is_buffered")) {
 		CommitScriptText(ctx);
 		return;
 	}
@@ -144,7 +144,7 @@ void Editor::CommitRawInput(Context* ctx) {
 }
 
 void Editor::CommitRawInput2(Context* ctx) {
-	if (ctx->get_option("fine_sentence")) {
+	if (ctx->get_option("is_buffered")) {
 		CommitScriptText2(ctx);
 		return;
 	}
@@ -159,7 +159,7 @@ void Editor::CommitRawInput2(Context* ctx) {
 }
 
 void Editor::CommitRawInput3(Context* ctx) {
-	if (ctx->get_option("fine_sentence")) {
+	if (ctx->get_option("is_buffered")) {
 		CommitScriptText3(ctx);
 		return;
 	}
@@ -180,7 +180,7 @@ void Editor::CommitComposition(Context* ctx) {
 }
 
 void Editor::RevertLastEdit(Context* ctx) {
-	if (ctx->get_option("fine_sentence")) {
+	if (ctx->get_option("is_buffered")) {
 		BackToPreviousInput(ctx);
 		return;
 	}
@@ -244,7 +244,7 @@ void Editor::CancelComposition(Context* ctx) {
 }
 
 ProcessResult Editor::DirectCommit(Context* ctx, int ch) {
-	if (ctx->get_option("fine_sentence")) {
+	if (ctx->get_option("is_buffered")) {
 		AddToInput(ctx, ch);
 		return kAccepted;
 	}

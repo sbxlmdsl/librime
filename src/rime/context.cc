@@ -405,7 +405,7 @@ void Context::set_option(const string& name, bool value) {
   options_[name] = value;
   option_update_notifier_(this, name);
 
-  if (name == "fine_sentence") {
+  if (name == "is_buffered") {
 	  if (value)
 		options_["_auto_commit"] = false;
 	  else
