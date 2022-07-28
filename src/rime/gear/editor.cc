@@ -135,11 +135,19 @@ void Editor::CommitScriptText3(Context* ctx) {
 }
 
 void Editor::CommitRawInput(Context* ctx) {
+	if (ctx->get_option("fine_sentence")) {
+		CommitScriptText(ctx);
+		return;
+	}
   ctx->ClearNonConfirmedComposition();
   ctx->Commit();
 }
 
 void Editor::CommitRawInput2(Context* ctx) {
+	if (ctx->get_option("fine_sentence")) {
+		CommitScriptText2(ctx);
+		return;
+	}
 	ctx->ClearNonConfirmedComposition();
 	bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->input());
@@ -151,6 +159,10 @@ void Editor::CommitRawInput2(Context* ctx) {
 }
 
 void Editor::CommitRawInput3(Context* ctx) {
+	if (ctx->get_option("fine_sentence")) {
+		CommitScriptText3(ctx);
+		return;
+	}
 	ctx->ClearNonConfirmedComposition();
 	bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->input());
@@ -168,6 +180,10 @@ void Editor::CommitComposition(Context* ctx) {
 }
 
 void Editor::RevertLastEdit(Context* ctx) {
+	if (ctx->get_option("fine_sentence")) {
+		BackToPreviousInput(ctx);
+		return;
+	}
   // different behavior in regard to previous operation type
   ctx->ReopenPreviousSelection() ||
       (ctx->PopInput() && ctx->ReopenPreviousSegment());
@@ -228,7 +244,11 @@ void Editor::CancelComposition(Context* ctx) {
 }
 
 ProcessResult Editor::DirectCommit(Context* ctx, int ch) {
-  ctx->Commit();
+	if (ctx->get_option("fine_sentence")) {
+		AddToInput(ctx, ch);
+		return kAccepted;
+	}
+	ctx->Commit();
   return kRejected;
 }
 

@@ -404,6 +404,15 @@ void Context::set_input(const string& value) {
 void Context::set_option(const string& name, bool value) {
   options_[name] = value;
   option_update_notifier_(this, name);
+
+  if (name == "fine_sentence") {
+	  if (value)
+		options_["_auto_commit"] = false;
+	  else
+		options_["_auto_commit"] = true;
+
+	  option_update_notifier_(this, "_auto_commit");
+  }
 }
 
 bool Context::get_option(const string& name) const {
