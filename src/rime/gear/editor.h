@@ -29,8 +29,6 @@ class Editor : public Processor, public KeyBindingProcessor<Editor> {
   Handler ToggleSelection;
   Handler CommitComment;
   Handler CommitScriptText;
-  Handler CommitScriptText2;
-  Handler CommitScriptText3;
   Handler CommitRawInput;
   Handler CommitRawInput2;
   Handler CommitRawInput3;
@@ -41,7 +39,6 @@ class Editor : public Processor, public KeyBindingProcessor<Editor> {
   Handler DeleteCandidate;
   Handler DeleteChar;
   Handler CancelComposition;
-//  Handler CommitPreviousCandidate;
 
   CharHandler DirectCommit;
   CharHandler AddToInput;

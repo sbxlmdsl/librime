@@ -30,7 +30,6 @@ static Editor::ActionDef editor_action_definitions[] = {
   { "delete_candidate", &Editor::DeleteCandidate },
   { "delete", &Editor::DeleteChar },
   { "cancel", &Editor::CancelComposition },
- // { "commit_previous_candidate", &Editor::CommitPreviousCandidate },
   Editor::kActionNoop
 };
 
@@ -111,27 +110,6 @@ void Editor::CommitComment(Context* ctx) {
 void Editor::CommitScriptText(Context* ctx) {
   engine_->sink()(ctx->GetScriptText());
   ctx->Clear();
-}
-
-void Editor::CommitScriptText2(Context* ctx) {
-	bool ascii_mode = ctx->get_option("ascii_mode");
-	string s(ctx->GetScriptText());
-	if (ascii_mode && s.length() > 0 && isalpha(s[0])) {
-		s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
-	}
-	engine_->sink()(s);
-	ctx->Clear();
-}
-
-void Editor::CommitScriptText3(Context* ctx) {
-	bool ascii_mode = ctx->get_option("ascii_mode");
-	string s(ctx->GetScriptText());
-	if (ascii_mode && s.length() > 0 && isalpha(s[0])) {
-		for (int i = 0; i < s.length(); i++)
-			s[i] = toupper(s[i]);
-	}
-	engine_->sink()(s);
-	ctx->Clear();
 }
 
 void Editor::CommitRawInput(Context* ctx) {
@@ -232,11 +210,7 @@ void Editor::CancelComposition(Context* ctx) {
 }
 
 ProcessResult Editor::DirectCommit(Context* ctx, int ch) {
-	if (ctx->get_option("is_buffered")) {
-		AddToInput(ctx, ch);
-		return kAccepted;
-	}
-	ctx->Commit();
+  ctx->Commit();
   return kRejected;
 }
 
@@ -251,8 +225,6 @@ FluidEditor::FluidEditor(const Ticket& ticket) : Editor(ticket, false) {
   Bind({XK_BackSpace, 0}, &Editor::BackToPreviousInput);  //
   Bind({XK_BackSpace, kControlMask}, &Editor::BackToPreviousSyllable);
   Bind({XK_Return, 0}, &Editor::CommitScriptText);  //
-  Bind({XK_Return, kShiftMask}, &Editor::CommitScriptText2);  //
-  Bind({XK_Return, kControlMask}, &Editor::CommitScriptText3);  //
   Bind({XK_Return, kControlMask | kShiftMask}, &Editor::CommitComment);
   Bind({XK_Delete, 0}, &Editor::DeleteChar);
   Bind({XK_Delete, kControlMask}, &Editor::DeleteCandidate);
