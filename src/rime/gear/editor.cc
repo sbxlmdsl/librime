@@ -114,30 +114,34 @@ void Editor::CommitScriptText(Context* ctx) {
 
 void Editor::CommitRawInput(Context* ctx) {
   ctx->ClearNonConfirmedComposition();
-  ctx->Commit();
+  //ctx->Commit();
+	engine_->sink()(ctx->input());
+	ctx->Clear();
 }
 
 void Editor::CommitRawInput2(Context* ctx) {
 	ctx->ClearNonConfirmedComposition();
-	bool ascii_mode = ctx->get_option("ascii_mode");
+	//bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->input());
-	if (ascii_mode && s.length() > 0 && isalpha(s[0])) {
+	if (s.length() > 0 && isalpha(s[0])) {
 		s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
 		ctx->set_input(s);
 	}	
-	ctx->Commit();
+	engine_->sink()(s);
+	ctx->Clear();
 }
 
 void Editor::CommitRawInput3(Context* ctx) {
 	ctx->ClearNonConfirmedComposition();
-	bool ascii_mode = ctx->get_option("ascii_mode");
+	//bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->input());
-	if (ascii_mode && s.length() > 0 && isalpha(s[0])) {
+	if (s.length() > 0 && isalpha(s[0])) {
 		for (int i = 0; i < s.length(); i++)
 			s[i] = toupper(s[i]);
 		ctx->set_input(s);
 	}
-	ctx->Commit();
+	engine_->sink()(s);
+	ctx->Clear();
 }
 
 void Editor::CommitComposition(Context* ctx) {
