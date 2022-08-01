@@ -121,10 +121,11 @@ void Editor::CommitRawInput(Context* ctx) {
 
 void Editor::CommitRawInput2(Context* ctx) {
 	ctx->ClearNonConfirmedComposition();
-	//bool ascii_mode = ctx->get_option("ascii_mode");
+	bool ascii_mode = ctx->get_option("ascii_mode");
 	string s(ctx->input());
 	if (s.length() > 0 && isalpha(s[0])) {
-		s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
+		if (ascii_mode)
+			s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
 		ctx->set_input(s);
 	}	
 	engine_->sink()(s);
