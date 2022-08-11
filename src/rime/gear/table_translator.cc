@@ -261,7 +261,8 @@ namespace rime {
     an<Translation> translation;
 	if (dict_ && dict_->loaded() 
 		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sn1|sn2$"))
-			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3$"))))
+			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3$")))
+			|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3$")))
 		;
 	else
 		if (enable_completion_) {
@@ -284,9 +285,14 @@ namespace rime {
 			  && ((code.length() == 3 && string("1234567890").find(code[2]) != string::npos)
 				  || (code.length() == 2 && string("1234567890").find(code[1]) != string::npos)))
 			  ;
-		  else if (!ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
-			  && code.length() == 3)
-			  ;
+		  else if (boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$")) && code.length() == 3) {
+			  if (ctx->get_option("third_pop"))
+				  user_dict_->LookupWords(&uter, code, false);
+			  else if (!ctx->get_option("slow_adjust") && string("aeuio").find(code[2]) != string::npos)
+				  user_dict_->LookupWords(&uter, code, false);
+			  else
+				  ;
+		  }
 		  else
 			  user_dict_->LookupWords(&uter, code, false);
         if (encoder_ && encoder_->loaded()) {
