@@ -208,10 +208,22 @@ namespace rime {
             return kAccepted;
         }
 
-        if (isupper(ch) && 3 == len && belongs_to(c1, initials_)
+        if (3 == len && belongs_to(c1, initials_)
 			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$")))) {
-			ctx->PushInput(tolower(ch));
-			return kAccepted;
+			if (isupper(ch)) {
+				ctx->PushInput(tolower(ch));
+				return kAccepted;
+			}
+			
+			if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
+				ctx->ConfirmCurrentSelection();
+				if (!is_buffered) {
+					ctx->Commit();
+					ctx->Clear();
+				}
+				ctx->PushInput(ch);
+				return kAccepted;
+			}
         }
 
 		if (isupper(ch) && is_sbxlm && 3 >= len && belongs_to(c1, initials_)) {
@@ -261,8 +273,6 @@ namespace rime {
             return kAccepted;
         }
 
-
-
 		if (5 == len && isupper(ch) && belongs_to(c1, initials_)
 			&& string("aeuio").find(ctx->input()[comfirmed_pos + 2]) == string::npos
 			&& boost::regex_match(schema, boost::regex("^sb[fk]x$"))) {
@@ -298,11 +308,11 @@ namespace rime {
         }
         DLOG(INFO) << "add to input: '" << (char) ch << "', " << key_event.repr();
         ctx->PushInput(ch);
-		bool is_sbjm = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sbdp$"));
-		if (is_sbjm && third_pop && len == 4
-			&& string("aeuio\\").find(c1) == string::npos
-			&& string("aeuio").find(ctx->input()[comfirmed_pos + 3]) != string::npos)
-			return kAccepted;
+		//bool is_sbjm = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sbdp$"));
+		//if (is_sbjm && third_pop && len == 4
+		//	&& string("aeuio\\").find(c1) == string::npos
+		//	&& string("aeuio").find(ctx->input()[comfirmed_pos + 3]) != string::npos)
+		//	return kAccepted;
 		ctx->ConfirmPreviousSelection();  // so that next BackSpace won't revert
         // previous selection
         if (AutoSelectPreviousMatch(ctx, &previous_segment)) {
