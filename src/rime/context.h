@@ -35,6 +35,24 @@ class Context {
   Preedit GetPreedit() const;
   bool IsComposing() const;
   bool HasMenu() const;
+  bool HasMore() const;
+  bool MorePage() const;
+  bool IsFirst() const;
+  bool IsSecond() const;
+  bool IsThird() const;
+  bool IsFourth() const;
+  bool IsFifth() const;
+  bool IsSixth() const;
+  bool IsSelect() const;
+  bool OkFirst() const;
+  bool OkSecond() const;
+  bool OkThird() const;
+  bool OkFourth() const;
+  bool OkFifth() const;
+  bool LastPunct() const;
+  int CountLength() const;
+  int CountLength2() const;
+
   an<Candidate> GetSelectedCandidate() const;
 
   bool PushInput(char ch);

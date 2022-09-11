@@ -29,6 +29,12 @@ void CommitEntry::AppendPhrase(const an<Phrase>& phrase) {
   text += phrase->text();
   code.insert(code.end(),
               phrase->code().begin(), phrase->code().end());
+ if (phrase->language()
+	 && boost::regex_match(phrase->language()->name()
+		 , boost::regex("^sss|sb|ss|jm3|sn1|sn2|fmsbb|fmsbbtz|kmsbb|kmsbbtz|shs|szs|sbs|sbsb|sps|spsb|sys|sysb|sygd|sybb|spgd|spbb$"))) {
+	 phrase->set_comment("sbxlm_fixed_entry"); 
+ }
+
   if (auto sentence = As<Sentence>(phrase)) {
     for (const DictEntry& e : sentence->components()) {
       elements.push_back(&e);
@@ -74,6 +80,7 @@ Memory::Memory(const Ticket& ticket) {
       nullptr);
 
   Context* ctx = ticket.engine->context();
+
   commit_connection_ = ctx->commit_notifier().connect(
       [this](Context* ctx) { OnCommit(ctx); });
   delete_connection_ = ctx->delete_notifier().connect(
@@ -109,6 +116,11 @@ void Memory::OnCommit(Context* ctx) {
     auto phrase = As<Phrase>(Candidate::GetGenuineCandidate(
             seg.GetSelectedCandidate()));
     bool recognized = Language::intelligible(phrase, this);
+	if (phrase && phrase->language() && this && this->language()
+		&& boost::regex_match(phrase->language()->name()
+			, boost::regex("^sss|sb|ss|jm3|sn1|sn2|fmsbb|fmsbbtz|kmsbb|kmsbbtz|szs|shs|sbs|sbsb|sps|spsb|sys|sysb|sygd|sybb|spgd|spbb$"))) {
+		recognized = true;
+	}
     if (recognized) {
       commit_entry.AppendPhrase(phrase);
     }

@@ -20,6 +20,8 @@ void ShapeFormatter::Format(string* text) {
   if (boost::all(*text, !boost::is_from_range('\x20', '\x7e'))) {
     return;
   }
+  if (text->length() > 1)
+	  return;
   std::ostringstream oss;
   for (char ch : *text) {
     if (ch == 0x20) {
@@ -45,7 +47,7 @@ ProcessResult ShapeProcessor::ProcessKeyEvent(const KeyEvent& key_event) {
     return kNoop;
   }
   int ch = key_event.keycode();
-  if (ch < 0x20 || ch > 0x7e) {
+  if (ch <= 0x20 || ch > 0x7e) {
     return kNoop;
   }
   string wide(1, ch);

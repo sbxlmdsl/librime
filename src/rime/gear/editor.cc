@@ -13,6 +13,7 @@
 #include <rime/gear/editor.h>
 #include <rime/gear/key_binding_processor.h>
 #include <rime/gear/translator_commons.h>
+#include <utf8.h>
 
 namespace rime {
 
@@ -113,7 +114,35 @@ void Editor::CommitScriptText(Context* ctx) {
 
 void Editor::CommitRawInput(Context* ctx) {
   ctx->ClearNonConfirmedComposition();
-  ctx->Commit();
+  //ctx->Commit();
+	engine_->sink()(ctx->input());
+	ctx->Clear();
+}
+
+void Editor::CommitRawInput2(Context* ctx) {
+	ctx->ClearNonConfirmedComposition();
+	bool ascii_mode = ctx->get_option("ascii_mode");
+	string s(ctx->input());
+	if (s.length() > 0 && isalpha(s[0])) {
+		if (ascii_mode)
+			s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
+		ctx->set_input(s);
+	}	
+	engine_->sink()(s);
+	ctx->Clear();
+}
+
+void Editor::CommitRawInput3(Context* ctx) {
+	ctx->ClearNonConfirmedComposition();
+	//bool ascii_mode = ctx->get_option("ascii_mode");
+	string s(ctx->input());
+	if (s.length() > 0 && isalpha(s[0])) {
+		for (int i = 0; i < s.length(); i++)
+			s[i] = toupper(s[i]);
+		ctx->set_input(s);
+	}
+	engine_->sink()(s);
+	ctx->Clear();
 }
 
 void Editor::CommitComposition(Context* ctx) {
@@ -122,6 +151,10 @@ void Editor::CommitComposition(Context* ctx) {
 }
 
 void Editor::RevertLastEdit(Context* ctx) {
+	if (ctx->get_option("is_buffered")) {
+		BackToPreviousInput(ctx);
+		return;
+	}
   // different behavior in regard to previous operation type
   ctx->ReopenPreviousSelection() ||
       (ctx->PopInput() && ctx->ReopenPreviousSegment());
@@ -156,7 +189,26 @@ void Editor::BackToPreviousSyllable(Context* ctx) {
 }
 
 void Editor::DeleteCandidate(Context* ctx) {
-  ctx->DeleteCurrentSelection();
+	string schema = engine_->schema()->schema_id();
+	Composition comp = ctx->composition();
+	size_t comfirmed_pos = comp.GetConfirmedPosition();
+	size_t len = ctx->input().length() - comfirmed_pos;
+	if (boost::regex_match(schema, boost::regex("^sb[djhzfk]z$")))
+		ctx->DeleteCurrentSelection();
+	if (boost::regex_match(schema, boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sb[fk][jsmx]$"))) {
+		size_t len = ctx->input().length();
+		if (len >= 1 && string("aeuio").find(ctx->input()[comfirmed_pos + 0]) != string::npos)
+			return; 
+		if (len <= 2) 
+			return; 
+		if (len >= 2 && string("aeuio").find(ctx->input()[comfirmed_pos + 1]) != string::npos
+			&& boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) 
+			return;
+		if (len >= 3 && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos
+			&& boost::regex_match(schema, boost::regex("^sb[hz][js]|sbxh|sbzr|sb[fk][jsmx]$")))
+			return;
+	}
+	ctx->DeleteCurrentSelection();
 }
 
 void Editor::DeleteChar(Context* ctx) {
@@ -183,9 +235,7 @@ FluidEditor::FluidEditor(const Ticket& ticket) : Editor(ticket, false) {
   Bind({XK_space, 0}, &Editor::Confirm);
   Bind({XK_BackSpace, 0}, &Editor::BackToPreviousInput);  //
   Bind({XK_BackSpace, kControlMask}, &Editor::BackToPreviousSyllable);
-  Bind({XK_Return, 0}, &Editor::CommitComposition);  //
-  Bind({XK_Return, kControlMask}, &Editor::CommitRawInput);  //
-  Bind({XK_Return, kShiftMask}, &Editor::CommitScriptText);  //
+  Bind({XK_Return, 0}, &Editor::CommitScriptText);  //
   Bind({XK_Return, kControlMask | kShiftMask}, &Editor::CommitComment);
   Bind({XK_Delete, 0}, &Editor::DeleteChar);
   Bind({XK_Delete, kControlMask}, &Editor::DeleteCandidate);
@@ -199,7 +249,8 @@ ExpressEditor::ExpressEditor(const Ticket& ticket) : Editor(ticket, true) {
   Bind({XK_BackSpace, 0}, &Editor::RevertLastEdit);  //
   Bind({XK_BackSpace, kControlMask}, &Editor::BackToPreviousSyllable);
   Bind({XK_Return, 0}, &Editor::CommitRawInput);  //
-  Bind({XK_Return, kControlMask}, &Editor::CommitScriptText);  //
+  Bind({XK_Return, kShiftMask}, &Editor::CommitRawInput2);  //
+  Bind({XK_Return, kControlMask}, &Editor::CommitRawInput3);  //
   Bind({XK_Return, kControlMask | kShiftMask}, &Editor::CommitComment);
   Bind({XK_Delete, 0}, &Editor::DeleteChar);
   Bind({XK_Delete, kControlMask}, &Editor::DeleteCandidate);

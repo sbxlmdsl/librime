@@ -36,7 +36,11 @@ Preedit Composition::GetPreedit(const string& full_input, size_t caret_pos,
     if (i < size() - 1) {  // converted
       if (cand) {
         end = cand->end();
-        preedit.text += cand->text();
+		size_t pos = cand->text().find_first_of(' ');
+		if (pos != string::npos && cand->text().length() > pos && !isascii(cand->text()[pos + 1]))
+			preedit.text += cand->text().substr(pos + 1);
+		else
+			preedit.text += cand->text();
       }
       else {  // raw input
         end = at(i).end;
@@ -106,7 +110,11 @@ string Composition::GetCommitText() const {
   for (const Segment& seg : *this) {
     if (auto cand = seg.GetSelectedCandidate()) {
       end = cand->end();
-      result += cand->text();
+	  size_t pos = cand->text().find_first_of(' ');
+	  if (pos != string::npos && cand->text().length() > pos && !isascii(cand->text()[pos + 1])) 
+		result += cand->text().substr(pos + 1);
+	  else
+		result += cand->text();
     }
     else {
       end = seg.end;

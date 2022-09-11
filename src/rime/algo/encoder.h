@@ -95,6 +95,7 @@ class TableEncoder : public Encoder {
   vector<TableEncodingRule> encoding_rules_;
   vector<boost::regex> exclude_patterns_;
   string tail_anchor_;
+  string dict_name_;
   // for optimization
   int max_phrase_length_;
 };

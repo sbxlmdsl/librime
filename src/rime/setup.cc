@@ -68,12 +68,12 @@ RIME_API void SetupDeployer(RimeTraits *traits) {
 
 RIME_API void SetupLogging(const char* app_name, int min_log_level, const char* log_dir) {
 #ifdef RIME_ENABLE_LOGGING
-  FLAGS_minloglevel = min_log_level;
+/*  FLAGS_minloglevel = min_log_level;
   if (log_dir) {
     FLAGS_log_dir = log_dir;
   }
   // Do not allow other users to read/write log files created by current process.
-  FLAGS_logfile_mode = 0600;
+  FLAGS_logfile_mode = 0600; */
   google::InitGoogleLogging(app_name);
 #endif  // RIME_ENABLE_LOGGING
 }

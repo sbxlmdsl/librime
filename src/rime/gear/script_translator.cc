@@ -241,7 +241,7 @@ bool ScriptTranslator::Memorize(const CommitEntry& commit_entry) {
   }
   if (update_elements) {
     for (const DictEntry* e : commit_entry.elements) {
-      user_dict_->UpdateEntry(*e, 0);
+      user_dict_->UpdateEntry(*e, 1);
     }
   }
   user_dict_->UpdateEntry(commit_entry, 1);

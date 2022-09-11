@@ -92,8 +92,14 @@ ProcessResult Recognizer::ProcessKeyEvent(const KeyEvent& key_event) {
     input += ch;
     auto match = patterns_.GetMatch(input, ctx->composition());
     if (match.found()) {
-      ctx->PushInput(ch);
-      return kAccepted;
+		//bool is_sbjm = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sbdp$"));
+		//bool third_pop = ctx->get_option("third_pop");
+		//if (is_sbjm && third_pop && input.length() == 4
+		//	&& string("aeuio\\").find(ctx->input()[0]) == string::npos
+		//	&& string("aeuio").find(ctx->input()[3]) == string::npos)
+		//	return kNoop;
+		ctx->PushInput(ch);
+	    return kAccepted;
     }
   }
   return kNoop;

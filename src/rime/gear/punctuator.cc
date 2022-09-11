@@ -1,10 +1,11 @@
-﻿// encoding: utf-8
+// encoding: utf-8
 //
 // Copyright RIME Developers
 // Distributed under the BSD License
 //
 // 2011-11-21 GONG Chen <chen.sst@gmail.com>
 //
+#include <boost/regex.hpp>
 #include <utf8.h>
 #include <rime/commit_history.h>
 #include <rime/common.h>
@@ -71,22 +72,32 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   if (!use_space_ && ch == XK_space && ctx->IsComposing()) {
     return kNoop;
   }
+  
+  string schema = engine_->schema()->schema_id();
+  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdsx]|sbjm|sbdp|sbkp|sbjk|sb[fkhz]j|sbzr|sbxh|sb[hz]s|sbpy|sb[fkhzjd]z$"));
+  if (is_sbxlm && ctx->HasMenu()) {
+	  ctx->ConfirmCurrentSelection();
+	  ctx->Commit();
+  }
+
   if (ch == '.' || ch == ':') {  // 3.14, 12:30
     const CommitHistory& history(ctx->commit_history());
     if (!history.empty()) {
       const CommitRecord& cr(history.back());
       if (cr.type == "thru" &&
-          cr.text.length() == 1 && isdigit(cr.text[0])) {
-        return kRejected;
+          cr.text.length() == 1 && isdigit(cr.text[0]) && !ctx->HasMenu()) {
+		  return kRejected;
       }
     }
   }
+  
   config_.LoadConfig(engine_);
   string punct_key(1, ch);
   auto punct_definition = config_.GetPunctDefinition(punct_key);
   if (!punct_definition)
     return kNoop;
   DLOG(INFO) << "punct key: '" << punct_key << "'";
+
   if (!AlternatePunct(punct_key, punct_definition)) {
     ctx->PushInput(ch) &&
         punctuation_is_translated(ctx) &&
@@ -94,6 +105,7 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
          AutoCommitPunct(punct_definition) ||
          PairPunct(punct_definition));
   }
+
   return kAccepted;
 }
 

@@ -12,6 +12,7 @@
 #include <rime/key_event.h>
 #include <rime/schema.h>
 #include <rime/gear/ascii_composer.h>
+#include <boost/regex.hpp>
 
 namespace rime {
 
@@ -123,6 +124,33 @@ ProcessResult AsciiComposer::ProcessKeyEvent(const KeyEvent& key_event) {
       return kAccepted;
     }
   }
+
+  bool auto_inline = ctx->get_option("auto_inline"); // May 25, 2021
+  // April 12, 2021, switch to inline ascii mode if the first char is of uppercase
+  // Oct. 5, 2021, removed a strange bug on Linux by adding ch >= 0x20 && ch < 0x80
+  if (!ascii_mode && ctx->input().length() == 0
+	  && ch >= 0x20 && ch < 0x80 && isupper(ch) && auto_inline) {
+	  if (!key_event.release()) {
+		  ctx->PushInput(ch);
+		  SwitchAsciiMode(true, kAsciiModeSwitchInline);
+		  return kAccepted;
+	  }
+  }
+
+  string schema = engine_->schema()->schema_id();
+  Composition comp = ctx->composition();
+  size_t comfirmed_pos = comp.GetConfirmedPosition();
+  size_t len = ctx->input().length() - comfirmed_pos;
+  const char c1 = ctx->input()[comfirmed_pos];
+  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbxh|sbpy|sb[fkhzjd]z$"));
+
+  if (!ascii_mode && is_sbxlm && len == 1 && islower(c1) && ch == XK_Return ) {
+	  if (!key_event.release()) {
+		  SwitchAsciiMode(true, kAsciiModeSwitchInline);
+		  return kAccepted;
+	  }
+  }
+
   return kNoop;
 }
 

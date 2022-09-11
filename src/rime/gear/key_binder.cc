@@ -25,6 +25,21 @@ enum KeyBindingCondition {
   kNever,
   kWhenPaging,     // user has changed page
   kWhenHasMenu,    // at least one candidate
+  kWhenHasMore,    // at least two candidates
+  kWhenMorePage,    // at least five candidates
+  kWhenIsFirst,    // for sbkz and sbfz
+  kWhenIsSecond,    // for sbkz and sbfz
+  kWhenIsThird,    // for sbkz and sbfz
+  kWhenIsFourth,    // for sbkz and sbfz
+  kWhenIsFifth,    // for sbjz
+  kWhenIsSixth,    // for sbjz
+  kWhenIsSelect,    // for sbkz and sbfz
+  kWhenOkFirst,		// the first code char is ok for sb[fk]m*
+  kWhenOkSecond, 
+  kWhenOkThird,
+  kWhenOkFourth,
+  kWhenOkFifth,
+  kWhenLastPunct,
   kWhenComposing,  // input string is not empty
   kAlways,
 };
@@ -35,6 +50,21 @@ static struct KeyBindingConditionDef {
 } condition_definitions[] = {
   { kWhenPaging,    "paging"    },
   { kWhenHasMenu,   "has_menu"  },
+  { kWhenHasMore,   "has_more"  },
+  { kWhenMorePage,   "more_page"  },
+  { kWhenIsFirst,   "is_first" },
+  { kWhenIsSecond,   "is_second" },
+  { kWhenIsThird,   "is_third" },
+  { kWhenIsFourth,   "is_fourth" },
+  { kWhenIsFifth,   "is_fifth" },
+  { kWhenIsSixth,   "is_sixth" },
+  { kWhenIsSelect,   "is_select" },
+  { kWhenOkFirst,   "ok_first" },
+  { kWhenOkSecond,   "ok_second" },
+  { kWhenOkThird,   "ok_third" },
+  { kWhenOkFourth,   "ok_fourth" },
+  { kWhenOkFifth,   "ok_fifth" },
+  { kWhenLastPunct,  "last_punct"},
   { kWhenComposing, "composing" },
   { kAlways,        "always"    },
   { kNever,         NULL        }
@@ -256,6 +286,64 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
     insert(kWhenHasMenu);
   }
 
+  if (ctx->HasMore() && !ctx->get_option("ascii_mode")) {
+    insert(kWhenHasMore);
+  }
+
+  if (ctx->MorePage() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenMorePage);
+  }
+
+  if (ctx->IsFirst() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenIsFirst);
+  }
+
+  if (ctx->IsSecond() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenIsSecond);
+  }
+
+  if (ctx->IsThird() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenIsThird);
+  }
+
+  if (ctx->IsFourth() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenIsFourth);
+  }
+
+  if (ctx->IsFifth() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenIsFifth);
+  }
+  if (ctx->IsSixth() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenIsSixth);
+  }
+  if (ctx->IsSelect() && !ctx->get_option("ascii_mode")) {
+    insert(kWhenIsSelect);
+  }
+  
+  if (ctx->OkFirst() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkFirst);
+  }
+
+  if (ctx->OkSecond() && !ctx->get_option("ascii_mode")) {
+    insert(kWhenOkSecond);
+  }
+
+  if (ctx->OkThird() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkThird);
+  }
+
+  if (ctx->OkFourth() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkFourth);
+  }
+
+  if (ctx->OkFifth() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkFifth);
+  }
+
+  if (ctx->LastPunct() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenLastPunct);
+  }
+
   Composition& comp = ctx->composition();
   if (!comp.empty() && comp.back().HasTag("paging")) {
     insert(kWhenPaging);
@@ -304,7 +392,7 @@ void KeyBinder::LoadConfig() {
 bool KeyBinder::ReinterpretPagingKey(const KeyEvent& key_event) {
   if (key_event.release())
     return false;
-  bool ret = false;
+  bool ret = false; 
   int ch = (key_event.modifier() == 0) ? key_event.keycode() : 0;
   // reinterpret period key followed by alphabetic keys
   // unless period/comma key has been used multiple times
@@ -315,14 +403,14 @@ bool KeyBinder::ReinterpretPagingKey(const KeyEvent& key_event) {
   if (last_key_ == '.' && ch >= 'a' && ch <= 'z') {
     Context* ctx = engine_->context();
     const string& input(ctx->input());
-    if (!input.empty() && input[input.length() - 1] != '.') {
+    if (!input.empty() && input[input.length() - 1] != '.' && !ctx->HasMore()) {
       LOG(INFO) << "reinterpreted key: '" << last_key_
                 << "', successor: '" << (char)ch << "'";
       ctx->PushInput(last_key_);
       ret = true;
     }
   }
-  last_key_ = ch;
+  last_key_ = ch; 
   return ret;
 }
 

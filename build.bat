@@ -178,11 +178,6 @@ if %build_deps% == 1 (
   if errorlevel 1 goto error
   cmake --build cmake-%build_dir% --config %build_config% --target INSTALL
   if errorlevel 1 goto error
-  if %build_config% == Debug (
-	  cd %RIME_ROOT%\lib
-	  del glog.lib
-	  ren glogd.lib glog.lib
-  )
   popd
 
   echo building leveldb.
@@ -206,12 +201,6 @@ if %build_deps% == 1 (
   if errorlevel 1 goto error
   cmake --build %build_dir% --config %build_config% --target INSTALL
   if errorlevel 1 goto error
-  echo %build_config%
-  if %build_config% == Debug (
-	  cd %RIME_ROOT%\lib
-	  del yaml-cpp.lib
-	  ren yaml-cppd.lib yaml-cpp.lib
-  )
   popd
 
   echo building gtest.
@@ -221,13 +210,6 @@ if %build_deps% == 1 (
   if errorlevel 1 goto error
   cmake --build %build_dir% --config %build_config% --target INSTALL
   if errorlevel 1 goto error
-  cd %RIME_ROOT%\lib
-  if %build_config% == Debug (
-	  del gtest.lib
-	  ren gtestd.lib gtest.lib
-	  del gtest_main.lib
-	  ren gtest_maind.lib gtest_main.lib
-  )
   popd
 
   echo building marisa.
@@ -261,6 +243,7 @@ set rime_cmake_flags=%common_cmake_flags%^
  -DCMAKE_INSTALL_PREFIX:PATH="%RIME_ROOT%\dist"
 
 echo on
+
 call cmake . -B%build_dir% %rime_cmake_flags%
 @echo off
 if errorlevel 1 goto error
@@ -272,14 +255,6 @@ echo on
 cmake --build %build_dir% --config %build_config% --target INSTALL
 @echo off
 if errorlevel 1 goto error
-
-if %build_config% == Debug (
-  copy /Y debug\lib\Debug\rime.dll debug\bin
-)
-
-if %build_config% == Release (
-  copy /Y build\lib\Release\rime.dll build\bin
-)
 
 if "%build_test%" == "ON" (
   copy /y dist\lib\rime.dll build\test

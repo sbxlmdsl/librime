@@ -22,6 +22,8 @@ class UserDictEntryIterator : public DictEntryFilterBinder {
   void Add(an<DictEntry>&& entry);
   void SetEntries(DictEntryList&& entries);
   void SortRange(size_t start, size_t count);
+  
+  bool SetIndex(size_t index);
 
   void AddFilter(DictEntryFilter filter) override;
   an<DictEntry> Peek();
@@ -52,8 +54,10 @@ struct Ticket;
 
 class UserDictionary : public Class<UserDictionary, const Ticket&> {
  public:
-  UserDictionary(const string& name, an<Db> db);
-  virtual ~UserDictionary();
+	 UserDictionary(const string& name, an<Db> db, const string& schema);
+	 UserDictionary(const string& name, an<Db> db, const string& schema, const int& delete_threshold, const bool& enable_filtering, 
+		 const bool& forced_seletion, const bool& single_selection, const bool& strong_mode, const bool& lower_case);
+	 virtual ~UserDictionary();
 
   void Attach(const an<Table>& table, const an<Prism>& prism);
   bool Load();
@@ -73,13 +77,19 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
   bool UpdateEntry(const DictEntry& entry, int commits,
                    const string& new_entry_prefix);
   bool UpdateTickCount(TickCount increment);
+  bool DeleteEntry(an<DictEntry> entry);
 
   bool NewTransaction();
   bool RevertRecentTransaction();
   bool CommitPendingTransaction();
 
+    
+
   const string& name() const { return name_; }
   TickCount tick() const { return tick_; }
+  const int& delete_threshold() const { return delete_threshold_; }
+  const bool& enable_filtering() const { return enable_filtering_; }
+  const bool& forced_selection() const { return forced_selection_; }
 
   static an<DictEntry> CreateDictEntry(const string& key,
                                        const string& value,
@@ -98,10 +108,17 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
  private:
   string name_;
   an<Db> db_;
+  string schema_;
   an<Table> table_;
   an<Prism> prism_;
   TickCount tick_ = 0;
   time_t transaction_time_ = 0;
+  int delete_threshold_ = 1000; // tick distance to delete a word automatically, 0 means no deletion
+  bool enable_filtering_ = false; // for sbjm, sbdp, sbfx and sbkx to filter out inefficient words
+  bool forced_selection_ = true; // unpublished option, forcing first selections
+  bool single_selection_ = false; // do use first selections
+  bool strong_mode_ = false; // unpublished option, for sbjm and sbdp to eject ss words
+  bool lower_case_ = false; // for sbjm and sbdp to use lower-case in the 4th code letter for multi-char words
 };
 
 class UserDictionaryComponent : public UserDictionary::Component {
