@@ -254,7 +254,7 @@ namespace rime {
 			return kAccepted;
 		}
 
-        if (4 == len && isupper(ch) && belongs_to(c1, initials_)
+        if (4 == len && (isupper(ch) || !ctx->HasMenu()) && belongs_to(c1, initials_)
             && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) == string::npos
             && boost::regex_match(schema, boost::regex("^sb[fk][mx]|sbzr|sbxh|sbjm|sbdp$"))) {
 			if (is_buffered) {
