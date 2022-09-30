@@ -748,7 +748,19 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     auto en = result->Peek();
                     if (!en)
                         break;
-                    std::strcpy(words[i], en->text.c_str());
+					for (int j = 1; j < 7, j <= i; j++) {
+						if (!std::strcmp(words[j], en->text.c_str())) {
+							result->Next();
+							en = result->Peek();
+							if (!en)
+								break;
+							continue;
+						}
+					}
+					if (en)
+						std::strcpy(words[i], en->text.c_str());
+					else
+						break;
                     result->Next();
                     i++;
                 }
@@ -786,7 +798,19 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     auto en = result->Peek();
                     if (!en)
                         break;
-                    std::strcpy(words[i], en->text.c_str());
+					for (int j = 1; j < 7, j <= i; j++) {
+						if (!std::strcmp(words[j], en->text.c_str())) {
+							result->Next();
+							en = result->Peek();
+							if (!en)
+								break;
+							continue;
+						}
+					}
+					if (en)
+						std::strcpy(words[i], en->text.c_str());
+					else
+						break;
                     result->Next();
                     i++;
                 }
