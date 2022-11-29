@@ -262,7 +262,8 @@ namespace rime {
 	if (dict_ && dict_->loaded() 
 		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sn1|sn2$"))
 			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3$")))
-			|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3$")))
+			|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3$"))
+			|| (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
 		;
 	else
 		if (enable_completion_) {
@@ -277,7 +278,7 @@ namespace rime {
     else {
       DictEntryIterator iter;
       if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))) {
-			  dict_->LookupWords(&iter, code, false);
+		  dict_->LookupWords(&iter, code, false);
       }
       UserDictEntryIterator uter;
       if (enable_user_dict) {
