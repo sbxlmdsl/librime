@@ -142,7 +142,7 @@ ProcessResult AsciiComposer::ProcessKeyEvent(const KeyEvent& key_event) {
   size_t comfirmed_pos = comp.GetConfirmedPosition();
   size_t len = ctx->input().length() - comfirmed_pos;
   const char c1 = ctx->input()[comfirmed_pos];
-  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbxh|sbpy|sb[fkhzjd]z$"));
+  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbsp|sbxh|sbpy|sb[fkhzjd]z$"));
 
   if (!ascii_mode && is_sbxlm && len == 1 && islower(c1) && ch == XK_Return ) {
 	  if (!key_event.release()) {
