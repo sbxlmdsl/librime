@@ -265,9 +265,11 @@ namespace rime {
 			|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3|jmsbb$"))
 			|| ctx->get_option("slow_adjust") && (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
 		;
+	else if (boost::regex_match(dict_->name(), boost::regex("^spsbbtz$")) && code.length() == 1)
+		;
 	else
 		if (enable_completion_) {
-      translation = Cached<LazyTableTranslation>(
+			translation = Cached<LazyTableTranslation>(
                                                  this,
                                                  code,
                                                  segment.start,
