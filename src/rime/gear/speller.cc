@@ -115,6 +115,7 @@ namespace rime {
 		bool pro_char = ctx->get_option("pro_char") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbsp|sbxh$"));
 		bool is_buffered = ctx->get_option("is_buffered") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbsp|sbxh$"));
 		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbsp|sbxh|sbjm|sbdp$"));
+		bool num_pop = ctx->get_option("num_pop") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbsp|sbxh|sbjm|sbdp$"));
 		bool third_pop = ctx->get_option("third_pop");
 
         if (len == 1 && !islower(c1) && is_sbxlm) {
@@ -142,7 +143,7 @@ namespace rime {
 			return kAccepted;
 		}
 
-		if (isdigit(ch) && is_enhanced && 2 == len && belongs_to(c1, initials_) 
+		if (isdigit(ch) && is_enhanced && 2 == len && belongs_to(c1, initials_) && num_pop 
 				&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 1]) == string::npos) {
 			if (is_buffered) {
 				ctx->set_caret_pos(ctx->caret_pos() - 1);
@@ -160,7 +161,7 @@ namespace rime {
 			return kAccepted;
 		}
 
-		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_)
+		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_) && num_pop
 			&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 2]) == string::npos) {
 			if (is_buffered) {
 				ctx->set_caret_pos(ctx->caret_pos() - 1);
@@ -308,11 +309,6 @@ namespace rime {
         }
         DLOG(INFO) << "add to input: '" << (char) ch << "', " << key_event.repr();
         ctx->PushInput(ch);
-		//bool is_sbjm = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sbdp$"));
-		//if (is_sbjm && third_pop && len == 4
-		//	&& string("aeuio\\").find(c1) == string::npos
-		//	&& string("aeuio").find(ctx->input()[comfirmed_pos + 3]) != string::npos)
-		//	return kAccepted;
 		ctx->ConfirmPreviousSelection();  // so that next BackSpace won't revert
         // previous selection
         if (AutoSelectPreviousMatch(ctx, &previous_segment)) {
