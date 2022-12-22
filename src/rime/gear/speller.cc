@@ -113,9 +113,9 @@ namespace rime {
 		const char c1 = ctx->input()[comfirmed_pos];
 		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbsp|sbxh|sbpy|sb[fkhzjd]z$"));
 		bool pro_char = ctx->get_option("pro_char") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbsp|sbxh$"));
-		bool is_buffered = ctx->get_option("is_buffered") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbsp|sbxh$"));
-		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbsp|sbxh|sbjm|sbdp$"));
-		bool num_pop = ctx->get_option("num_pop") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbsp|sbxh|sbjm|sbdp$"));
+		bool is_buffered = ctx->get_option("is_buffered") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbpy|sbzr|sbsp|sbxh$"));
+		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbpy|sbzr|sbsp|sbxh|sbjm|sbdp$"));
+		bool num_pop = ctx->get_option("num_pop") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbpy|sbzr|sbsp|sbxh|sbjm|sbdp$"));
 		bool third_pop = ctx->get_option("third_pop");
 
         if (len == 1 && !islower(c1) && is_sbxlm) {

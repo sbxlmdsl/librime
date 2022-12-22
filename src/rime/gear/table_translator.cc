@@ -372,7 +372,7 @@ namespace rime {
 			&& 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
 			; //no change for sb[fk]*
 		}
-		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbsp|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$"))
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbpy|sbzr|sbsp|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$"))
 			&& e->preedit.length() < 4)
 			; //no change when size is below 4 
       else {
@@ -411,14 +411,14 @@ namespace rime {
             if (phrase.empty()) {
               phrase = it->text;  // last word
               pos = phrase.find_first_of(' ');
-              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sbsp|sb[fk][jsxm]$")) 
+              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbpy|sbzr|sbsp|sb[fk][jsxm]$")) 
 				  && pos != string::npos) {
                 phrase = phrase.substr(pos + 1);
               }
               continue;
             }
             pos = it->text.find_first_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sbsp|sb[fk][jsxm]$"))
+            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbpy|sbzr|sbsp|sb[fk][jsxm]$"))
 				&& pos != string::npos) {
               phrase = it->text.substr(pos + 1) + phrase;
             } else {

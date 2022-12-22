@@ -109,7 +109,7 @@ namespace rime {
 			if (is_sbxlm && len > 0 && islower(c1)) {
 				if (key_event.ctrl() && (ch >= XK_0 && ch <= XK_9 || ch >= XK_KP_0 && ch <= XK_KP_9))
 					;
-				else if (boost::regex_match(schema, boost::regex("^sbpy|sb[fkhzjd]z$")))
+				else if (boost::regex_match(schema, boost::regex("^sb[fkhzjd]z$")))
 					;
 				else if (len == 1)
 					return kNoop;
