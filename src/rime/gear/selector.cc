@@ -92,9 +92,9 @@ namespace rime {
 		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz]j|sbjm|sbzr|sbsp|sbxh|sbpy|sb[fkhzjd]z$"));
 		if (boost::regex_match(schema, boost::regex("^sbpy$")) 
 			&& len == 4
-			&& string("aeuio").find(ch) != string::npos 
-			&& string("aeuio").find(ctx->input()[1]) != string::npos 
-			&& string("aeuio").find(ctx->input()[3]) == string::npos) {
+			&& string("qwrtsdfgzxcvbyphjklnm").find(c1) != string::npos
+			&& string("aeuio").find(ctx->input()[1]) != string::npos
+			&& string("aeuio").find(ch) != string::npos) {
 			return kNoop;
 		}
 		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
@@ -137,6 +137,10 @@ namespace rime {
 					else if (boost::regex_match(schema, boost::regex("^sbjm$"))) {
 						return kNoop;
 					}
+					//else if (boost::regex_match(schema, boost::regex("^sbpy$"))
+					//	&& string("aeuio").find(ctx->input()[1]) != string::npos) {
+					//	kNoop;
+					//}
 					else if (string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[comfirmed_pos + 3]) != string::npos)
 						;
 					else if (string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos)
