@@ -267,7 +267,7 @@ namespace rime {
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^spzdy|fmzdy|jmzdy$")) && code.length() == 1)
 		;
-	else if (boost::regex_match(dict_->name(), boost::regex("^sbsb|spsb|sps_b$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
+	else if (boost::regex_match(dict_->name(), boost::regex("^sbsb|spsb|sps_b|pyjc$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^sb|sbsb|spsb|sps_b$")) 
 		&& code.length() < dict_->name().length() && ctx->get_option("is_hidden"))
