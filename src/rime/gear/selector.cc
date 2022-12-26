@@ -90,13 +90,7 @@ namespace rime {
 		const char c1 = ctx->input()[comfirmed_pos];
 
 		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz]j|sbjm|sbzr|sbsp|sbxh|sbpy|sb[fkhzjd]z$"));
-		if (boost::regex_match(schema, boost::regex("^sbpy$")) 
-			&& len == 4
-			&& string("aeuio").find(ch) != string::npos 
-			&& string("aeuio").find(ctx->input()[1]) != string::npos 
-			&& string("aeuio").find(ctx->input()[3]) == string::npos) {
-			return kNoop;
-		}
+
 		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
 			if (len == 1 && c1 == '\\' && string("aeuio").find(ch) != string::npos)
 				return kNoop;

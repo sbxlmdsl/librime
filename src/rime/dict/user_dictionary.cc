@@ -505,18 +505,9 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                 if (boost::regex_match(name_, boost::regex("^sb[fk]x$")) &&
                     string("aeuio").find(input[l]) != string::npos && last_key[l + 3] != ' ')
                     continue;
-				if (e->text == string(words[0]))
-					continue;
-				else if (boost::regex_match(name_, boost::regex("^sbpy$")) &&
-					string("aeuio").find(input[1]) != string::npos && string("aeuio").find(input[3]) == string::npos) {
-					if (!e_holder) {
-						e_holder = e;
-					}
-					else if (e_holder->weight < e->weight) {
-						e_holder = e;
-					}
-					continue;
-				} else if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fkhz]j|sb[fk]s|sb[hz]s|sbxh|sbpy|sbzr|sbsp|sbjk|sbkp|sb[fk][mx]$")) &&
+                if (e->text == string(words[0]))
+                    continue;
+                else if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fkhz]j|sb[fk]s|sb[hz]s|sbxh|sbpy|sbzr|sbsp|sbjk|sbkp|sb[fk][mx]$")) &&
                          !single_selection_) {
                     if (boost::regex_match(name_, boost::regex("^sbjm|sbdp|sb[fkhz]j$")) && enable_filtering_ &&
                         string("aeuio").find(input[l]) != string::npos
