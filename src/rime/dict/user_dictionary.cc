@@ -508,7 +508,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
 				if (e->text == string(words[0]))
 					continue;
 				else if (boost::regex_match(name_, boost::regex("^sbpy$")) &&
-					string("aeuio").find(input[l-2]) != string::npos && string("aeuio").find(input[l]) == string::npos) {
+					string("aeuio").find(input[1]) != string::npos && string("aeuio").find(input[3]) == string::npos) {
 					if (!e_holder) {
 						e_holder = e;
 					}
