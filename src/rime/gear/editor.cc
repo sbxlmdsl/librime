@@ -189,7 +189,7 @@ void Editor::DeleteCandidate(Context* ctx) {
 	size_t len = ctx->input().length() - comfirmed_pos;
 	if (boost::regex_match(schema, boost::regex("^sb[djhzfk]z$")))
 		ctx->DeleteCurrentSelection();
-	if (boost::regex_match(schema, boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbpy|sbzr|sbsp|sb[fk][jsmx]$"))) {
+	if (boost::regex_match(schema, boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sbsp|sb[fk][jsmx]$"))) {
 		size_t len = ctx->input().length();
 		if (len >= 1 && string("aeuio").find(ctx->input()[comfirmed_pos + 0]) != string::npos)
 			return; 
@@ -199,7 +199,7 @@ void Editor::DeleteCandidate(Context* ctx) {
 			&& boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) 
 			return;
 		if (len >= 3 && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos
-			&& boost::regex_match(schema, boost::regex("^sb[hz][js]|sbxh|sbpy|sbzr|sbsp|sb[fk][jsmx]$")))
+			&& boost::regex_match(schema, boost::regex("^sb[hz][js]|sbxh|sbzr|sbsp|sb[fk][jsmx]$")))
 			return;
 	}
 	ctx->DeleteCurrentSelection();
