@@ -76,7 +76,7 @@ size_t UnityTableEncoder::LookupPhrases(UserDictEntryIterator* result,
     return 0;
   if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sb[fkhz]j|sb[fk]mk|sb[fk]x$")) && input.length() < 3) {
     return 0;
-  } else if (boost::regex_match(user_dict_->name(), boost::regex("^sbxh|sbzr|sbsp|sbjk|sbkp|sb[fk]m|sb[fk]ms|sb[fk]s|sb[hz]s$")) && input.length() < 4) {
+  } else if (boost::regex_match(user_dict_->name(), boost::regex("^sbxh|sbzr|sbsp|sbjk|sbjp|sb[fk]m|sb[fk]ms|sb[fk]s|sb[hz]s$")) && input.length() < 4) {
     return 0;
   }
  // else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk]m$")) && input.length() == 4 

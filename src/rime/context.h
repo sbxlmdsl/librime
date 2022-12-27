@@ -44,6 +44,7 @@ class Context {
   bool IsFifth() const;
   bool IsSixth() const;
   bool IsSelect() const;
+  bool IsSys() const;
   bool OkFirst() const;
   bool OkSecond() const;
   bool OkThird() const;

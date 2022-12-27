@@ -147,6 +147,17 @@ bool Context::IsSelect() const {
   return IsFourth() || (IsSecond() && string("_aeuio").find(input_[caret_pos_-1]) != string::npos);
 }
 
+bool Context::IsSys() const {
+	if (composition_.empty())
+		return false;
+	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+		return false;
+	auto seg = composition_.back();
+	return seg.length == 3
+		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
+		&& string("aeuio").find(input_[seg.start + 2]) == string::npos;
+}
+
 bool Context::OkFirst() const {
 	if (composition_.empty())
 		return false;

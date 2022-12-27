@@ -89,7 +89,7 @@ namespace rime {
 		size_t len = ctx->input().length() - comfirmed_pos;
 		const char c1 = ctx->input()[comfirmed_pos];
 
-		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz]j|sbjm|sbzr|sbsp|sbxh|sbpy|sb[fkhzjd]z$"));
+		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz]j|sbjm|sbzr|sbsp|sbjp|sbxh|sbpy|sb[fkhzjd]z$"));
 
 		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
 			if (len == 1 && c1 == '\\' && string("aeuio").find(ch) != string::npos)
@@ -128,7 +128,7 @@ namespace rime {
 				else if (len == 4) {
 					if (current_segment.HasTag("paging"))
 						;
-					else if (boost::regex_match(schema, boost::regex("^sbjm$"))) {
+					else if (boost::regex_match(schema, boost::regex("^sbjm|sbdp|sbjp$"))) {
 						return kNoop;
 					}
 					else if (string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[comfirmed_pos + 3]) != string::npos)
