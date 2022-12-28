@@ -32,7 +32,6 @@ enum KeyBindingCondition {
   kWhenIsFifth,    // for sbjz
   kWhenIsSixth,    // for sbjz
   kWhenIsSelect,    // for sbkz and sbfz
-  kWhenIsSys,    // for sbjp
   kWhenOkFirst,		// the first code char is ok for sb[fk]m*
   kWhenOkSecond, 
   kWhenOkThird,
@@ -58,7 +57,6 @@ static struct KeyBindingConditionDef {
   { kWhenIsFifth,   "is_fifth" },
   { kWhenIsSixth,   "is_sixth" },
   { kWhenIsSelect,   "is_select" },
-  { kWhenIsSys,   "is_sys" },
   { kWhenOkFirst,   "ok_first" },
   { kWhenOkSecond,   "ok_second" },
   { kWhenOkThird,   "ok_third" },
@@ -247,10 +245,7 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
   if (ctx->IsSelect() && !ctx->get_option("ascii_mode")) {
     insert(kWhenIsSelect);
   }
-  if (ctx->IsSys() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSys);
-  }
-
+  
   if (ctx->OkFirst() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenOkFirst);
   }
