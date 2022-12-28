@@ -125,9 +125,11 @@ void Memory::OnCommit(Context* ctx) {
       commit_entry.AppendPhrase(phrase);
     }
     if (!recognized || seg.status >= Segment::kConfirmed) {
-      commit_entry.Save();
-      commit_entry.Clear();
-    }
+		if (seg.end == ctx->input().length()) {
+			commit_entry.Save();
+			commit_entry.Clear();
+		}
+	}
   }
 }
 
