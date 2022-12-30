@@ -259,18 +259,21 @@ namespace rime {
     boost::trim_right_if(code, boost::is_any_of(delimiters_));
     
     an<Translation> translation;
-	if (dict_ && dict_->loaded() 
+	if (dict_ && dict_->loaded()
 		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sn1|sn2|jmn|jmnts$"))
 			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3|jmsbb$")))
-			|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3|jmsbb$"))
-			|| ctx->get_option("slow_adjust") && (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
+		|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3|jmsbb$"))
+		|| ctx->get_option("slow_adjust") && (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^spzdy|fmzdy|jmzdy$")) && code.length() == 1)
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^sbsb|spsb|sps_b$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
 		;
-	else if (boost::regex_match(dict_->name(), boost::regex("^sb|sbsb|spsb|sps_b$")) 
+	else if (boost::regex_match(dict_->name(), boost::regex("^sb|sbsb|spsb|sps_b$"))
 		&& code.length() < dict_->name().length() && ctx->get_option("is_hidden"))
+		;
+	else if (!ctx->get_option("is_fixed") && engine_->schema()->schema_id() == "sbpy" &&
+		boost::regex_match(dict_->name(), boost::regex("^ss|sss|pygd|pygd_lookup$")))
 		;
 	else
 		if (enable_completion_) {

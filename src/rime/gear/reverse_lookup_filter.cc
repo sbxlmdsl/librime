@@ -7,6 +7,7 @@
 #include <rime/candidate.h>
 #include <rime/engine.h>
 #include <rime/schema.h>
+#include <rime/context.h>
 #include <rime/translation.h>
 #include <rime/dict/reverse_lookup_dictionary.h>
 #include <rime/gear/reverse_lookup_filter.h>
@@ -46,6 +47,10 @@ void ReverseLookupFilter::Initialize() {
   if (!engine_)
     return;
   Ticket ticket(engine_, name_space_);
+  if (!engine_->context()->get_option("is_fixed") && name_space_ == "pygd_reverse_lookup"
+	  && engine_->schema()->schema_id() == "sbpy") {
+	  return;
+  }
   if (auto c = ReverseLookupDictionary::Require("reverse_lookup_dictionary")) {
     rev_dict_.reset(c->Create(ticket));
     if (rev_dict_ && !rev_dict_->Load()) {

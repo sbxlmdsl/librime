@@ -116,7 +116,8 @@ namespace rime {
 		bool is_buffered = ctx->get_option("is_buffered") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbjm|sbdp|sbzr|sbsp|sbxh$"));
 		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbsp|sbxh|sbjm|sbdp$"));
 		bool num_pop = ctx->get_option("num_pop") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbsp|sbxh|sbjm|sbdp$"));
-		bool third_pop = ctx->get_option("third_pop");
+		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm|sbdp$"));
+		bool is_popped = ctx->get_option("is_popped") && ctx->get_option("is_fixed") && boost::regex_match(schema, boost::regex("^sbpy$"));
 
         if (len == 1 && !islower(c1) && is_sbxlm) {
 			ctx->ConfirmCurrentSelection();
@@ -251,6 +252,26 @@ namespace rime {
 				ctx->Commit();
 				ctx->set_input(rest);
 			}
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
+
+		if (3 <= len && is_popped && ctx->OkSsy() 
+			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
+			&& boost::regex_match(schema, boost::regex("^sbpy$"))) {
+			ctx->ConfirmCurrentSelection();
+			if (!is_buffered)
+				ctx->Commit();
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
+		if (4 <= len && is_popped 
+			&& (ctx->OkSyxs() || ctx->OkSyss() || ctx->OkSsss() || ctx->OkSyxb() || ctx->OkSysy())
+			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
+			&& boost::regex_match(schema, boost::regex("^sbpy$"))) {
+			ctx->ConfirmCurrentSelection();
+			if (!is_buffered)
+				ctx->Commit();
 			ctx->PushInput(ch);
 			return kAccepted;
 		}
