@@ -49,6 +49,7 @@ class Context {
   bool IsSsyx() const;
   bool IsSsys() const;
   bool IsSssy() const;
+  bool IsSyss() const;
   bool IsSelect() const;
   bool OkSsy() const;
   bool OkSyxs() const;

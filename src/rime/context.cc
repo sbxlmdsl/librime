@@ -212,6 +212,18 @@ bool Context::IsSssy() const {
 		&& string("aeuio").find(input_[seg.start + 3]) != string::npos;
 }
 
+bool Context::IsSyss() const {
+	if (composition_.empty())
+		return false;
+	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+		return false;
+	auto seg = composition_.back();
+	return seg.length == 4
+		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
+		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
+		&& string("aeuio").find(input_[seg.start + 3]) == string::npos;
+}
+
 bool Context::IsSelect() const {
   if (composition_.empty())
     return false;

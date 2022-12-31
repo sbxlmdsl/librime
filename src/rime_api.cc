@@ -336,7 +336,7 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
         }
         Config* config = schema->config();
         an<ConfigList>  select_labels = config->GetList("menu/alternative_select_labels");
-        string labels[] = {"6 ","7 ","8 ","9 ","0 "};
+        string labels[] = {"£¶","£·","£¸","£¹","£°"};
         if (select_labels && (size_t)page_size <= select_labels->size()) {
           context->select_labels = new char*[page_size];
           for (size_t i = 0; i < (size_t)page_size; ++i) {

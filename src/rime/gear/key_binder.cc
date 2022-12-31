@@ -38,6 +38,7 @@ enum KeyBindingCondition {
   kWhenIsSsyx,
   kWhenIsSsys,
   kWhenIsSssy,
+  kWhenIsSyss,
   kWhenOkSsy,
   kWhenOkSyxs,
   kWhenOkSyss,
@@ -75,6 +76,7 @@ static struct KeyBindingConditionDef {
   { kWhenIsSsyx,   "is_ssyx" },
   { kWhenIsSsys,   "is_ssys" },
   { kWhenIsSssy,   "is_sssy" },
+  { kWhenIsSyss,   "is_syss" },
   { kWhenOkSsy,   "ok_ssy" },
   { kWhenOkSyxs,   "ok_syxs" },
   { kWhenOkSyss,   "ok_syss" },
@@ -283,6 +285,9 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
   }
   if (ctx->IsSssy() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenIsSssy);
+  }
+  if (ctx->IsSyss() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenIsSyss);
   }
   if (ctx->IsSelect() && !ctx->get_option("ascii_mode")) {
     insert(kWhenIsSelect);
