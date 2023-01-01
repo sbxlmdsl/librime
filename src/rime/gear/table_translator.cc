@@ -273,7 +273,7 @@ namespace rime {
 		&& code.length() < dict_->name().length() && ctx->get_option("is_hidden"))
 		;
 	else if (!ctx->get_option("is_fixed") && engine_->schema()->schema_id() == "sbpy" &&
-		boost::regex_match(dict_->name(), boost::regex("^ss|sss|pygd|pygd_lookup$")))
+		boost::regex_match(dict_->name(), boost::regex("^ss|sss|pygd|pygd_lookup|pyn$")))
 		;
 	else
 		if (enable_completion_) {
