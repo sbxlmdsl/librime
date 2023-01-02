@@ -140,90 +140,6 @@ bool Context::IsSixth() const {
   return CountLength2() == 6;
 }
 
-bool Context::IsSys() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 3
-		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) == string::npos;
-}
-
-bool Context::IsSyxs() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 4
-		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
-		&& string("aeuion").find(input_[seg.start + 2]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) == string::npos;
-}
-
-bool Context::IsSyxsy() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 5
-		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
-		&& string("aeuion").find(input_[seg.start + 2]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 4]) != string::npos;
-}
-
-bool Context::IsSsyx() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 4
-		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) != string::npos;
-}
-
-bool Context::IsSsys() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 4
-		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) == string::npos;
-}
-
-bool Context::IsSssy() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 4
-		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) != string::npos;
-}
-
-bool Context::IsSyss() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 4
-		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) == string::npos;
-}
-
 bool Context::IsSelect() const {
   if (composition_.empty())
     return false;
@@ -231,6 +147,15 @@ bool Context::IsSelect() const {
   return IsFourth() || (IsSecond() && string("_aeuio").find(input_[caret_pos_-1]) != string::npos);
 }
 
+bool Context::OkSy() const {
+	if (composition_.empty())
+		return false;
+	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+		return false;
+	auto seg = composition_.back();
+	return seg.length >= 2
+		&& string("aeuio").find(input_[seg.start + 1]) != string::npos;
+}
 bool Context::OkSsy() const {
 	if (composition_.empty())
 		return false;
@@ -241,28 +166,16 @@ bool Context::OkSsy() const {
 		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
 		&& string("aeuio").find(input_[seg.start + 2]) != string::npos;
 }
-
-bool Context::OkSyxs() const {
+bool Context::OkSssy() const {
 	if (composition_.empty())
 		return false;
 	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
 		return false;
 	auto seg = composition_.back();
-	return seg.length >= 4
-		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) == string::npos;
-}
-bool Context::OkSyss() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length >= 4
-		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
+	return seg.length >= 4 
+		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
 		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) == string::npos;
+		&& string("aeuio").find(input_[seg.start + 3]) != string::npos;
 }
 bool Context::OkSsss() const {
 	if (composition_.empty())
@@ -270,32 +183,19 @@ bool Context::OkSsss() const {
 	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
 		return false;
 	auto seg = composition_.back();
-	return seg.length >= 4
+	return 
+		(seg.length == 4
 		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
 		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) == string::npos;
-}
-bool Context::OkSyxb() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length >= 4
-		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) != string::npos;
-}
-bool Context::OkSysy() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length >= 4
-		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
+		&& string("aeuio").find(input_[seg.start + 3]) == string::npos)
+		||
+		(seg.length >= 6
+		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
 		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) != string::npos;
+		&& string("aeuio").find(input_[seg.start + 3]) == string::npos
+		&& string("aeuio").find(input_[seg.start + 4]) != string::npos
+		&& string("aeuio").find(input_[seg.start + 5]) != string::npos)
+		;
 }
 
 bool Context::OkFirst() const {

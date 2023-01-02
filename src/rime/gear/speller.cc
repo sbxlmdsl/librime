@@ -256,17 +256,7 @@ namespace rime {
 			return kAccepted;
 		}
 
-		if (3 <= len && is_popped && ctx->OkSsy() 
-			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
-			&& boost::regex_match(schema, boost::regex("^sbpy$"))) {
-			ctx->ConfirmCurrentSelection();
-			if (!is_buffered)
-				ctx->Commit();
-			ctx->PushInput(ch);
-			return kAccepted;
-		}
-		if (4 <= len && is_popped 
-			&& (ctx->OkSyxs() || ctx->OkSyss() || ctx->OkSsss() || ctx->OkSyxb() || ctx->OkSysy())
+		if (is_popped && (ctx->OkSy() || ctx->OkSsy() || ctx->OkSssy() || ctx->OkSsss())
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
 			&& boost::regex_match(schema, boost::regex("^sbpy$"))) {
 			ctx->ConfirmCurrentSelection();

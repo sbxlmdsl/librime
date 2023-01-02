@@ -32,19 +32,10 @@ enum KeyBindingCondition {
   kWhenIsFifth,    // for sbjz
   kWhenIsSixth,    // for sbjz
   kWhenIsSelect,    // for sbkz and sbfz
-  kWhenIsSys,
-  kWhenIsSyxs,
-  kWhenIsSyxsy,
-  kWhenIsSsyx,
-  kWhenIsSsys,
-  kWhenIsSssy,
-  kWhenIsSyss,
+  kWhenOkSy,
   kWhenOkSsy,
-  kWhenOkSyxs,
-  kWhenOkSyss,
+  kWhenOkSssy,
   kWhenOkSsss,
-  kWhenOkSyxb,
-  kWhenOkSysy,
   kWhenOkFirst,		// the first code char is ok for sb[fk]m*
   kWhenOkSecond, 
   kWhenOkThird,
@@ -70,19 +61,10 @@ static struct KeyBindingConditionDef {
   { kWhenIsFifth,   "is_fifth" },
   { kWhenIsSixth,   "is_sixth" },
   { kWhenIsSelect,   "is_select" },
-  { kWhenIsSys,   "is_sys" },
-  { kWhenIsSyxs,   "is_syxs" },
-  { kWhenIsSyxsy,   "is_syxsy" },
-  { kWhenIsSsyx,   "is_ssyx" },
-  { kWhenIsSsys,   "is_ssys" },
-  { kWhenIsSssy,   "is_sssy" },
-  { kWhenIsSyss,   "is_syss" },
+  { kWhenOkSy,   "ok_sy" },
   { kWhenOkSsy,   "ok_ssy" },
-  { kWhenOkSyxs,   "ok_syxs" },
-  { kWhenOkSyss,   "ok_syss" },
+  { kWhenOkSssy,   "ok_sssy" },
   { kWhenOkSsss,   "ok_ssss" },
-  { kWhenOkSyxb,   "ok_syxb" },
-  { kWhenOkSysy,   "ok_sysy" },
   { kWhenOkFirst,   "ok_first" },
   { kWhenOkSecond,   "ok_second" },
   { kWhenOkThird,   "ok_third" },
@@ -268,48 +250,21 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
   if (ctx->IsSixth() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenIsSixth);
   }
-  if (ctx->IsSys() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSys);
-  }
-  if (ctx->IsSyxs() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSyxs);
-  }
-  if (ctx->IsSyxsy() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSyxsy);
-  }
-  if (ctx->IsSsyx() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSsyx);
-  }
-  if (ctx->IsSsys() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSsys);
-  }
-  if (ctx->IsSssy() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSssy);
-  }
-  if (ctx->IsSyss() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSyss);
-  }
   if (ctx->IsSelect() && !ctx->get_option("ascii_mode")) {
     insert(kWhenIsSelect);
   }
   
+  if (ctx->OkSy() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSy);
+  }
   if (ctx->OkSsy() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenOkSsy);
   }
-  if (ctx->OkSyxs() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkSyxs);
-  }
-  if (ctx->OkSyss() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkSyss);
+  if (ctx->OkSssy() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSssy);
   }
   if (ctx->OkSsss() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenOkSsss);
-  }
-  if (ctx->OkSyxb() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkSyxb);
-  }
-  if (ctx->OkSysy() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkSysy);
   }
 
   if (ctx->OkFirst() && !ctx->get_option("ascii_mode")) {
