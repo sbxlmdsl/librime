@@ -79,8 +79,8 @@ Memory::Memory(const Ticket& ticket) {
     Language::get_language_component(dict_->name())
   });
 
+  schema_ = ticket.engine->schema()->schema_id();
   Context* ctx = ticket.engine->context();
-
   commit_connection_ = ctx->commit_notifier().connect(
       [this](Context* ctx) { OnCommit(ctx); });
   delete_connection_ = ctx->delete_notifier().connect(
@@ -119,7 +119,8 @@ void Memory::OnCommit(Context* ctx) {
 	if (phrase && phrase->language() && this && this->language()
 		&& boost::regex_match(phrase->language()->name()
 			, boost::regex("^sss|sb|ss|jm3|jmn|sn1|sn2|jmsbb|fmsbb|spszb|fmzdy|jmzdy|spzdy|pyzdy|kmsbb|kmsbbtz|szs|sxs|shs|sbs|sbsb|sps|spsb|sys|sysb|sygd|sybb|spgd|spbb$"))) {
-		recognized = true;
+		if (schema_ != "sbpy")
+			recognized = true;
 	}
     if (recognized) {
       commit_entry.AppendPhrase(phrase);

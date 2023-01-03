@@ -53,6 +53,7 @@ class Memory {
   void OnDeleteEntry(Context* ctx);
   void OnUnhandledKey(Context* ctx, const KeyEvent& key);
 
+  string schema_;
   the<Dictionary> dict_;
   the<UserDictionary> user_dict_;
   the<Language> language_;

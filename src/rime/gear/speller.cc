@@ -119,7 +119,7 @@ namespace rime {
 		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm|sbdp$"));
 		bool is_popped = ctx->get_option("is_popped") && ctx->get_option("is_fixed") 
 			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
-		bool is_appendable = is_popped && len >= 6 && !is_initial;
+		bool is_appendable = is_popped && len >= 4 && !is_initial;
 
 
         if (len == 1 && !islower(c1) && is_sbxlm) {
@@ -272,18 +272,19 @@ namespace rime {
 			string input = ctx->input();
 			size_t i = 0;
 			auto caret_pos = ctx->caret_pos();
-			if (string("aeuio").find(input[len - 1]) != string::npos
-				&& string("aeuio").find(input[len - 2]) != string::npos
-				&& string("aeuio").find(input[len - 3]) == string::npos
+			if (string("aeuio").find(input[comfirmed_pos + len - 1]) != string::npos
+				&& string("aeuio").find(input[comfirmed_pos + len - 2]) != string::npos
+				&& string("aeuio").find(input[comfirmed_pos + len - 3]) == string::npos
 				) {
 				for (i = 1; i < 5; i++) {
-					if (string("aeuio").find(input[i]) == string::npos)
+					if (string("aeuio").find(input[comfirmed_pos + i]) == string::npos)
 						break;
 				}
 				if (i < 5) {
-					ctx->set_caret_pos(i);
+					ctx->set_caret_pos(comfirmed_pos + i);
 					ctx->PushInput(ch);
-					//ctx->set_caret_pos(caret_pos);
+					if (i < 4)
+						ctx->set_caret_pos(comfirmed_pos + caret_pos + i);
 					return kAccepted;
 				}
 			}
