@@ -117,7 +117,10 @@ namespace rime {
 		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbsp|sbxh|sbjm|sbdp$"));
 		bool num_pop = ctx->get_option("num_pop") && boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sbzr|sbsp|sbxh|sbjm|sbdp$"));
 		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm|sbdp$"));
-		bool is_popped = ctx->get_option("is_popped") && ctx->get_option("is_fixed") && boost::regex_match(schema, boost::regex("^sbpy$"));
+		bool is_popped = ctx->get_option("is_popped") && ctx->get_option("is_fixed") 
+			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
+		bool is_appendable = is_popped && len >= 6 && !is_initial;
+
 
         if (len == 1 && !islower(c1) && is_sbxlm) {
 			ctx->ConfirmCurrentSelection();
@@ -257,13 +260,33 @@ namespace rime {
 		}
 
 		if (is_popped && (ctx->OkSy() || ctx->OkSsy() || ctx->OkSssy() || ctx->OkSsss())
-			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
-			&& boost::regex_match(schema, boost::regex("^sbpy$"))) {
+			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
 			ctx->ConfirmCurrentSelection();
 			if (!is_buffered)
 				ctx->Commit();
 			ctx->PushInput(ch);
 			return kAccepted;
+		}
+
+		if (is_appendable) {
+			string input = ctx->input();
+			size_t i = 0;
+			auto caret_pos = ctx->caret_pos();
+			if (string("aeuio").find(input[len - 1]) != string::npos
+				&& string("aeuio").find(input[len - 2]) != string::npos
+				&& string("aeuio").find(input[len - 3]) == string::npos
+				) {
+				for (i = 1; i < 5; i++) {
+					if (string("aeuio").find(input[i]) == string::npos)
+						break;
+				}
+				if (i < 5) {
+					ctx->set_caret_pos(i);
+					ctx->PushInput(ch);
+					//ctx->set_caret_pos(caret_pos);
+					return kAccepted;
+				}
+			}
 		}
 
         if (4 == len && (isupper(ch) || !ctx->HasMenu()) && belongs_to(c1, initials_)
