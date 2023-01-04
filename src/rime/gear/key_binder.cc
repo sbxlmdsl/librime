@@ -36,7 +36,7 @@ enum KeyBindingCondition {
   kWhenOkSsy,
   kWhenOkSssy,
   kWhenOkSsss,
-  kWhenOkFirst,		// the first code char is ok for sb[fk]m*
+  kWhenOkFirst,		// the first code char is ok for sbfm*
   kWhenOkSecond, 
   kWhenOkThird,
   kWhenOkFourth,

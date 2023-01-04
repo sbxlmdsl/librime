@@ -115,11 +115,11 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
   TickCount tick_ = 0;
   time_t transaction_time_ = 0;
   int delete_threshold_ = 1000; // tick distance to delete a word automatically, 0 means no deletion
-  bool enable_filtering_ = false; // for sbjm, sbdp, sbfx and sbkx to filter out inefficient words
+  bool enable_filtering_ = false; // for sbjm, sbfx to filter out inefficient words
   bool forced_selection_ = true; // unpublished option, forcing first selections
   bool single_selection_ = false; // do use first selections
-  bool strong_mode_ = false; // unpublished option, for sbjm and sbdp to eject ss words
-  bool lower_case_ = false; // for sbjm and sbdp to use lower-case in the 4th code letter for multi-char words
+  bool strong_mode_ = false; // unpublished option, for sbjm to eject ss words
+  bool lower_case_ = false; // for sbjm to use lower-case in the 4th code letter for multi-char words
 };
 
 class UserDictionaryComponent : public UserDictionary::Component {

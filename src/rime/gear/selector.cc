@@ -89,7 +89,7 @@ namespace rime {
 		size_t len = ctx->input().length() - comfirmed_pos;
 		const char c1 = ctx->input()[comfirmed_pos];
 
-		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mxd]|sb[fkhz]j|sbjm|sbzr|sbsp|sbxh|sbpy|sb[fkhzjd]z$"));
+		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mxd]|sbjm|sbsp|sbpy$"));
 
 		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
 			if (len == 1 && c1 == '\\' && string("aeuio").find(ch) != string::npos)
@@ -109,7 +109,7 @@ namespace rime {
 			if (is_sbxlm && len > 0 && islower(c1)) {
 				if (key_event.ctrl() && (ch >= XK_0 && ch <= XK_9 || ch >= XK_KP_0 && ch <= XK_KP_9))
 					;
-				else if (boost::regex_match(schema, boost::regex("^sbpy|sb[fkhzjd]z$")))
+				else if (boost::regex_match(schema, boost::regex("^sbpy$")))
 					;
 				else if (len == 1)
 					return kNoop;
@@ -119,11 +119,11 @@ namespace rime {
 					else if (string("aeuio").find(ctx->input()[comfirmed_pos + 1]) != string::npos)
 						return kNoop;
 				}
-				else if (len == 7 && boost::regex_match(schema, boost::regex("^sb[fk]x$")))
+				else if (len == 7 && boost::regex_match(schema, boost::regex("^sbfx$")))
 					;
-				else if (len == 6 && !boost::regex_match(schema, boost::regex("^sb[fk]x$")))
+				else if (len == 6 && !boost::regex_match(schema, boost::regex("^sbfx$")))
 					;
-				else if (len == 5 && boost::regex_match(schema, boost::regex("^sb[fk]x$")) && current_segment.HasTag("paging"))
+				else if (len == 5 && boost::regex_match(schema, boost::regex("^sbfx$")) && current_segment.HasTag("paging"))
 					;
 				else if (len == 4) {
 					if (current_segment.HasTag("paging"))

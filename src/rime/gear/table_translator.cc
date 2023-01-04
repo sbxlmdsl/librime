@@ -177,9 +177,9 @@ namespace rime {
   bool LazyTableTranslation::FetchMoreTableEntries() {
     if (!dict_ || limit_ == 0)
       return false;
-    if (boost::regex_match(dict_->name(), boost::regex("^sb[fk]dgd$")) && (input_.length() == 1
-                                                                           || input_.length() == 2 && string("_aeuio").find(input_[1]) == string::npos))
-      return false;
+    //if (boost::regex_match(dict_->name(), boost::regex("^sbfdgd$")) && (input_.length() == 1
+    //                                                                       || input_.length() == 2 && string("_aeuio").find(input_[1]) == string::npos))
+    //  return false;
     size_t previous_entry_count = iter_.entry_count();
     DLOG(INFO) << "fetching more table entries: limit = " << limit_
     << ", count = " << previous_entry_count;
@@ -292,11 +292,11 @@ namespace rime {
       }
       UserDictEntryIterator uter;
       if (enable_user_dict) {
-		  if (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
+		  if (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sbjm$"))
 			  && ((code.length() == 3 && string("1234567890").find(code[2]) != string::npos)
 				  || (code.length() == 2 && string("1234567890").find(code[1]) != string::npos)))
 			  ;
-		  else if (boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$")) && code.length() == 3) {
+		  else if (boost::regex_match(dict_->name(), boost::regex("^sbjm$")) && code.length() == 3) {
 			  if (ctx->get_option("third_pop"))
 				  user_dict_->LookupWords(&uter, code, false);
 			  else if (!ctx->get_option("slow_adjust") && string("aeuio").find(code[2]) != string::npos)
@@ -307,13 +307,10 @@ namespace rime {
 		  else
 			  user_dict_->LookupWords(&uter, code, false);
         if (encoder_ && encoder_->loaded()) {
-          if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sb[fkhz]j|sb[fk]mk|sb[fk]x$"))
+          if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbfx$"))
               && (code.length() < 3 || (code.length() == 3 && uter.size() == 1)))
             ;	// do nothing
-          else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjk|sbkp|sb[fk]ms|sb[fk]s|sb[hz]s$"))
-                   && (code.length() < 4))
-            ;  // do nothing
-		  else if (!ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
+		  else if (!ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm$"))
 			  && code.length() == 3)
 			  ;
 		  else
@@ -371,11 +368,11 @@ namespace rime {
 			UnityTableEncoder::RemovePrefix(&blessed.custom_code);
 			user_dict_->UpdateEntry(blessed, 1);
 		}
-		else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][jmdsx]$"))
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbf[mdx]$"))
 			&& 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
-			; //no change for sb[fk]*
+			; //no change for sbf*
 		}
-		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbsp|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$"))
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbsp|sbf[mx]$"))
 			&& e->preedit.length() < 4)
 			; //no change when size is below 4 
       else {
@@ -414,14 +411,14 @@ namespace rime {
             if (phrase.empty()) {
               phrase = it->text;  // last word
               pos = phrase.find_first_of(' ');
-              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sbsp|sb[fk][jsxm]$")) 
+              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbsp|sbf[mx]$")) 
 				  && pos != string::npos) {
                 phrase = phrase.substr(pos + 1);
               }
               continue;
             }
             pos = it->text.find_first_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sbsp|sb[fk][jsxm]$"))
+            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm||sbsp|sbf[xm]$"))
 				&& pos != string::npos) {
               phrase = it->text.substr(pos + 1) + phrase;
             } else {

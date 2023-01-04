@@ -279,16 +279,8 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
     if (RIME_STRUCT_HAS_MEMBER(*context, context->commit_text_preview)) {
       string commit_text(ctx->GetCommitText());
       if (!commit_text.empty()) {
-   //     size_t pos = commit_text.find_first_of(' ');
-   //     if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbsp|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$")) 
-			//&& pos != string::npos && commit_text.length() > pos && !isascii(commit_text[pos + 1])) {
-   //       context->commit_text_preview = new char[commit_text.length() - pos];
-   //       std::strcpy(context->commit_text_preview, commit_text.c_str() + pos + 1);
-   //     }
-   //     else {
           context->commit_text_preview = new char[commit_text.length() + 1];
           std::strcpy(context->commit_text_preview, commit_text.c_str());
-        //}
       }
     }
   }
@@ -312,7 +304,7 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       context->menu.candidates = new RimeCandidate[page->candidates.size()];
       for (const an<Candidate> &cand : page->candidates) {
         RimeCandidate* dest = &context->menu.candidates[i++];
-        if (boost::regex_match(schema->schema_id(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbsp|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$"))) {
+        if (boost::regex_match(schema->schema_id(), boost::regex("^sbjm|sbsp|sbf[mx]$"))) {
           rime_candidate_copy2(dest, cand);
         } else {
           rime_candidate_copy(dest, cand);
@@ -327,16 +319,16 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
             std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
 		  else if (!select_keys.compare(" aeuio") &&
 			  (!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4 
-				  && boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]x$")) 
+				  && boost::regex_match(schema->schema_id(), boost::regex("^sbfx$")) 
 				  && string("aeuio").find(ctx->input()[2]) == string::npos && string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) == string::npos
-				  ))) // hack for sb[fk]x
+				  ))) // hack for sbfx
 			  std::strcpy(context->menu.select_keys, string("      ").c_str()); 
 		  else
             std::strcpy(context->menu.select_keys, select_keys.c_str());
         }
         Config* config = schema->config();
         an<ConfigList>  select_labels = config->GetList("menu/alternative_select_labels");
-        string labels[] = {"£¶","£·","£¸","£¹","£°"};
+        string labels[] = {"6 ","7 ","8 ","9 ","0 "};
         if (select_labels && (size_t)page_size <= select_labels->size()) {
           context->select_labels = new char*[page_size];
           for (size_t i = 0; i < (size_t)page_size; ++i) {
@@ -353,16 +345,10 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
               std::strcpy(context->select_labels[i], " "); // hack for sbxlm
 			else if (!select_keys.compare(" aeuio") &&
 				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4
-					&& boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]x$")) 
+					&& boost::regex_match(schema->schema_id(), boost::regex("^sbfx$")) 
 					&& string("aeuio").find(ctx->input()[2]) == string::npos && string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) == string::npos
 					)))
-				std::strcpy(context->select_labels[i], " ");  // hack for sb[fk]x
-			else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[fk]z$")) && !ctx->IsSelect())
-              std::strcpy(context->select_labels[i], labels[i].c_str());
-			else if (boost::regex_match(schema->schema_id(), boost::regex("^sbjz|sbpy$")) && !ctx->IsSixth())
-				std::strcpy(context->select_labels[i], labels[i].c_str());
-			else if (boost::regex_match(schema->schema_id(), boost::regex("^sb[hz]z$")) && !ctx->IsFourth())
-				std::strcpy(context->select_labels[i], labels[i].c_str());
+				std::strcpy(context->select_labels[i], " ");  // hack for sbfx
 			else
               std::strcpy(context->select_labels[i], label.c_str());
           }
@@ -405,16 +391,8 @@ RIME_API Bool RimeGetCommit(RimeSessionId session_id, RimeCommit* commit) {
     return False;
   const string& commit_text(session->commit_text());
   if (!commit_text.empty()) {
-  //  size_t pos = commit_text.find_first_of(' ');
-  //  if (boost::regex_match(session->schema()->schema_id(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbsp|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$"))
-		//&& pos != string::npos && commit_text.length() > pos && !isascii(commit_text[pos + 1])) {
-  //    commit->text = new char[commit_text.length() - pos];
-  //    std::strcpy(commit->text, commit_text.c_str() + pos + 1);
-  //  }
-  //  else {
       commit->text = new char[commit_text.length() + 1];
       std::strcpy(commit->text, commit_text.c_str());
-    //}
     
     session->ResetCommitText();
     return True;

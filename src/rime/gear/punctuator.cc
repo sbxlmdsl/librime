@@ -74,7 +74,7 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   }
   
   string schema = engine_->schema()->schema_id();
-  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sb[fk][mdsx]|sbjm|sbdp|sbkp|sbjk|sb[fkhz]j|sbzr|sbsp|sbxh|sb[hz]s|sbpy|sb[fkhzjd]z$"));
+  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mdx]|sbjm|sbsp|sbpy$"));
   if (is_sbxlm && ctx->HasMenu()) {
 	  ctx->ConfirmCurrentSelection();
 	  ctx->Commit();

@@ -187,19 +187,18 @@ void Editor::DeleteCandidate(Context* ctx) {
 	Composition comp = ctx->composition();
 	size_t comfirmed_pos = comp.GetConfirmedPosition();
 	size_t len = ctx->input().length() - comfirmed_pos;
-	if (boost::regex_match(schema, boost::regex("^sb[djhzfk]z$")))
-		ctx->DeleteCurrentSelection();
-	if (boost::regex_match(schema, boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sbsp|sb[fk][jsmx]$"))) {
+
+	if (boost::regex_match(schema, boost::regex("^sbjm|sbsp|sbf[mx]$"))) {
 		size_t len = ctx->input().length();
 		if (len >= 1 && string("aeuio").find(ctx->input()[comfirmed_pos + 0]) != string::npos)
 			return; 
 		if (len <= 2) 
 			return; 
 		if (len >= 2 && string("aeuio").find(ctx->input()[comfirmed_pos + 1]) != string::npos
-			&& boost::regex_match(schema, boost::regex("^sbjm|sbdp$"))) 
+			&& boost::regex_match(schema, boost::regex("^sbjm$"))) 
 			return;
 		if (len >= 3 && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos
-			&& boost::regex_match(schema, boost::regex("^sb[hz][js]|sbxh|sbzr|sbsp|sb[fk][jsmx]$")))
+			&& boost::regex_match(schema, boost::regex("^sbsp|sbf[mx]$")))
 			return;
 	}
 	ctx->DeleteCurrentSelection();
