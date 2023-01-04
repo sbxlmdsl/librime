@@ -260,7 +260,9 @@ namespace rime {
 		}
 
 		if (is_popped && (ctx->OkSy() || ctx->OkSsy() || ctx->OkSssy() || ctx->OkSsss())
-			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
+			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
+			&& ctx->input().length() == ctx->caret_pos()
+			) {
 			ctx->ConfirmCurrentSelection();
 			if (!is_buffered)
 				ctx->Commit();
@@ -275,6 +277,7 @@ namespace rime {
 			if (string("aeuio").find(input[comfirmed_pos + len - 1]) != string::npos
 				&& string("aeuio").find(input[comfirmed_pos + len - 2]) != string::npos
 				&& string("aeuio").find(input[comfirmed_pos + len - 3]) == string::npos
+				&& caret_pos == input.length()
 				) {
 				for (i = 1; i < 5; i++) {
 					if (string("aeuio").find(input[comfirmed_pos + i]) == string::npos)
