@@ -22,15 +22,13 @@ namespace rime {
 	void CommitEntry::Clear() {
 		text.clear();
 		code.clear();
+		custom_code.clear();
 		elements.clear();
 	}
 
 	void CommitEntry::AppendPhrase(const an<Phrase>& phrase) {
-		string name = phrase->language()->name();
-		if (boost::regex_match(name, boost::regex("^pygd|pyn|sbpy$")))
-			printf(name.c_str());
-		if (phrase->language() && boost::regex_match(name
-				, boost::regex("^sss|sb|ss|jm3|jmn|sn1|sn2|jmsbb|fmsbb|spszb|fmzdy|jmzdy|spzdy|pyzdy|pygd|pyn|sxs|sbs|sbsb|sps|spsb|sps_b$"))) {
+		if (phrase->language() && boost::regex_match(phrase->language()->name()
+				, boost::regex("^sss|sb|ss|jm3|jmn|sn1|sn2|jmsbb|fmsbb|spszb|fmzdy|jmzdy|spzdy|pygd|pyn|sxs|sbs|sbsb|sps|spsb|sps_b$"))) {
 			phrase->set_comment("sbxlm_fixed_entry");
 		}
 		text += phrase->text();
@@ -113,17 +111,32 @@ namespace rime {
 			return;
 		StartSession();
 		CommitEntry commit_entry(this);
+		string& text = commit_entry.text;
+		string& custom_code = commit_entry.custom_code;
+		size_t pos = 0;
 		for (auto& seg : ctx->composition()) {
-			auto phrase = As<Phrase>(Candidate::GetGenuineCandidate(
-				seg.GetSelectedCandidate()));
+			auto phrase = As<Phrase>(Candidate::GetGenuineCandidate(seg.GetSelectedCandidate()));
 			bool recognized = Language::intelligible(phrase, this);
-			if (phrase && phrase->language() && this && this->language()
-				&& boost::regex_match(phrase->language()->name()
-					, boost::regex("^sss|sb|ss|jm3|jmn|sn1|sn2|jmsbb|fmsbb|spszb|fmzdy|jmzdy|spzdy|pyzdy|pygd|pyn|sxs|sbs|sbsb|sps|sps_b|spsb$"))) {
+			string name = phrase->language()->name();
+			if (phrase && phrase->language() && this && this->language() && boost::regex_match(name
+					, boost::regex("^sss|sb|ss|jm3|jmn|sn1|sn2|jmsbb|fmsbb|spszb|fmzdy|jmzdy|spzdy|pygd|pyn|sxs|sbs|sbsb|sps|sps_b|spsb$"))) {
 				recognized = true;
 			}
 			if (recognized) {
-				commit_entry.AppendPhrase(phrase);
+				if (name == "sbpy") {
+					text += phrase->text();
+					string code_str = commit_entry.custom_code;
+					user_dict_->TranslateCodeToString(phrase->code(), &custom_code);
+					custom_code = code_str + custom_code;
+				}
+				else if (boost::regex_match(name, boost::regex("^pygd|pyn$"))) {
+					pos = phrase->text().find_last_of(' ');
+					text += phrase->text().substr(pos + 1);
+					string code_str = phrase->text().substr(0, pos + 1);
+					custom_code += code_str;
+				}
+				else
+					commit_entry.AppendPhrase(phrase);
 			}
 			if (!recognized || seg.status >= Segment::kConfirmed) {
 				if (seg.end == ctx->input().length()) {

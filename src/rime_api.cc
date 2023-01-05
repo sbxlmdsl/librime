@@ -238,7 +238,7 @@ static void rime_candidate_copy(RimeCandidate* dest, const an<Candidate>& src) {
 
 static void rime_candidate_copy2(RimeCandidate* dest, const an<Candidate>& src) {
   size_t m = src->text().length();
-  size_t n = src->text().find_first_of(' ');
+  size_t n = src->text().find_last_of(' ');
   if (n != string::npos) {
     dest->text = new char[m - n + 1];
     // dest->text = strchr(dest->text, ' ') + 1;

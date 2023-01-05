@@ -410,15 +410,15 @@ namespace rime {
             }
             if (phrase.empty()) {
               phrase = it->text;  // last word
-              pos = phrase.find_first_of(' ');
-              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbsp|sbf[mx]$")) 
+              pos = phrase.find_last_of(' ');
+              if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|pyn|sbjm|sbsp|sbf[mx]$")) 
 				  && pos != string::npos) {
                 phrase = phrase.substr(pos + 1);
               }
               continue;
             }
-            pos = it->text.find_first_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm||sbsp|sbf[xm]$"))
+            pos = it->text.find_last_of(' ');
+            if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|pyn|sbjm||sbsp|sbf[xm]$"))
 				&& pos != string::npos) {
               phrase = it->text.substr(pos + 1) + phrase;
             } else {

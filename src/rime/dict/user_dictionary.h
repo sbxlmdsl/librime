@@ -84,7 +84,7 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
   bool RevertRecentTransaction();
   bool CommitPendingTransaction();
 
-    
+  bool TranslateCodeToString(const Code& code, string* result);
 
   const string& name() const { return name_; }
   TickCount tick() const { return tick_; }
@@ -101,7 +101,6 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
  protected:
   bool Initialize();
   bool FetchTickCount();
-  bool TranslateCodeToString(const Code& code, string* result);
   void DfsLookup(const SyllableGraph& syll_graph, size_t current_pos,
                  const string& current_prefix,
                  DfsState* state);
