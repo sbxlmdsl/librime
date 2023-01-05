@@ -28,7 +28,7 @@ namespace rime {
 
 	void CommitEntry::AppendPhrase(const an<Phrase>& phrase) {
 		if (phrase->language() && boost::regex_match(phrase->language()->name()
-				, boost::regex("^sss|sb|ss|jm3|jmn|sn1|sn2|jmsbb|fmsbb|spszb|fmzdy|jmzdy|spzdy|pygd|pyn|sxs|sbs|sbsb|sps|spsb|sps_b$"))) {
+				, boost::regex("^sss|sb|ss|jm3|jmn|sn1|sn2|jmsbb|fmsbb|spszb|fmzdy|jmzdy|spzdy|pygd|sxs|sbs|sbsb|sps|spsb|sps_b$"))) {
 			phrase->set_comment("sbxlm_fixed_entry");
 		}
 		text += phrase->text();
@@ -119,7 +119,7 @@ namespace rime {
 			bool recognized = Language::intelligible(phrase, this);
 			string name = phrase && phrase->language() && this && this->language() ? phrase->language()->name() : "";
 			if (boost::regex_match(name
-					, boost::regex("^sss|sb|ss|jm3|jmn|sn1|sn2|jmsbb|fmsbb|spszb|fmzdy|jmzdy|spzdy|pygd|pyn|sxs|sbs|sbsb|sps|sps_b|spsb$"))) {
+					, boost::regex("^sss|sb|ss|jm3|jmn|sn1|sn2|jmsbb|fmsbb|spszb|fmzdy|jmzdy|spzdy|pygd|sxs|sbs|sbsb|sps|sps_b|spsb$"))) {
 				recognized = true;
 			}
 			if (recognized) {
@@ -129,7 +129,7 @@ namespace rime {
 					user_dict_->TranslateCodeToString(phrase->code(), &custom_code);
 					custom_code = code_str + custom_code;
 				}
-				else if (boost::regex_match(name, boost::regex("^pygd|pyn$"))) {
+				else if (boost::regex_match(name, boost::regex("^pygd$"))) {
 					pos = phrase->text().find_last_of(' ');
 					text += phrase->text().substr(pos + 1);
 					string code_str = phrase->text().substr(0, pos + 1);

@@ -273,7 +273,7 @@ namespace rime {
 		&& code.length() < dict_->name().length() && ctx->get_option("is_hidden"))
 		;
 	else if (!ctx->get_option("is_fixed") && engine_->schema()->schema_id() == "sbpy" &&
-		boost::regex_match(dict_->name(), boost::regex("^ss|sss|pygd|pygd_lookup|pyn$")))
+		boost::regex_match(dict_->name(), boost::regex("^pygd|pygd_lookup$")))
 		;
 	else
 		if (enable_completion_) {
@@ -411,14 +411,14 @@ namespace rime {
             if (phrase.empty()) {
               phrase = it->text;  // last word
               pos = phrase.find_last_of(' ');
-              if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|pyn|sbjm|sbsp|sbf[mx]$")) 
+              if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm|sbsp|sbf[mx]$")) 
 				  && pos != string::npos) {
                 phrase = phrase.substr(pos + 1);
               }
               continue;
             }
             pos = it->text.find_last_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|pyn|sbjm||sbsp|sbf[xm]$"))
+            if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm||sbsp|sbf[xm]$"))
 				&& pos != string::npos) {
               phrase = it->text.substr(pos + 1) + phrase;
             } else {
