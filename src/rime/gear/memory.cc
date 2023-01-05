@@ -117,8 +117,8 @@ namespace rime {
 		for (auto& seg : ctx->composition()) {
 			auto phrase = As<Phrase>(Candidate::GetGenuineCandidate(seg.GetSelectedCandidate()));
 			bool recognized = Language::intelligible(phrase, this);
-			string name = phrase->language()->name();
-			if (phrase && phrase->language() && this && this->language() && boost::regex_match(name
+			string name = phrase && phrase->language() && this && this->language() ? phrase->language()->name() : "";
+			if (boost::regex_match(name
 					, boost::regex("^sss|sb|ss|jm3|jmn|sn1|sn2|jmsbb|fmsbb|spszb|fmzdy|jmzdy|spzdy|pygd|pyn|sxs|sbs|sbsb|sps|sps_b|spsb$"))) {
 				recognized = true;
 			}
