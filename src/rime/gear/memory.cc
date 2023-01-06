@@ -125,6 +125,8 @@ namespace rime {
 			}
 			if (recognized) {
 				if (name == "sbpy") {
+					if (comment == string("sbxlm_fixed_entry"))
+						comment = text.empty();
 					text += phrase->text();
 					string code_str = commit_entry.custom_code;
 					user_dict_->TranslateCodeToString(phrase->code(), &custom_code);
