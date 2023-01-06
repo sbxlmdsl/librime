@@ -113,6 +113,7 @@ namespace rime {
 		CommitEntry commit_entry(this);
 		string& text = commit_entry.text;
 		string& custom_code = commit_entry.custom_code;
+		string& comment = commit_entry.comment;
 		size_t pos = 0;
 		for (auto& seg : ctx->composition()) {
 			auto phrase = As<Phrase>(Candidate::GetGenuineCandidate(seg.GetSelectedCandidate()));
@@ -130,6 +131,10 @@ namespace rime {
 					custom_code = code_str + custom_code;
 				}
 				else if (boost::regex_match(name, boost::regex("^pygd$"))) {
+					if (text.empty())
+						comment = string("sbxlm_fixed_entry");
+					else
+						comment = text.empty();
 					pos = phrase->text().find_last_of(' ');
 					text += phrase->text().substr(pos + 1);
 					string code_str = phrase->text().substr(0, pos + 1);
