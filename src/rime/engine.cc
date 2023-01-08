@@ -257,16 +257,25 @@ void ConcreteEngine::OnSelect(Context* ctx) {
       ctx->composition().Forward();
   }
   else {
-    bool reached_caret_pos = (seg.end >= ctx->caret_pos());
-    ctx->composition().Forward();
-    if (reached_caret_pos) {
-      // finished converting current segment
-      // move caret to the end of input
-      ctx->set_caret_pos(ctx->input().length());
-    }
-    else {
-      Compose(ctx);
-    }
+	  bool reached_caret_pos = (seg.end >= ctx->caret_pos());
+	  ctx->composition().Forward();
+	  Segment previous_segment = ctx->composition().back();
+	  if (reached_caret_pos) {
+		  // finished converting current segment
+		  // move caret to the end of input
+		  ctx->set_caret_pos(ctx->input().length());
+	  }
+	  else {
+		  if (schema_->schema_id() == "sbpy"
+			  && string("aeuio").find(ctx->input()[previous_segment.start]) != string::npos) {
+			  ctx->ClearPreviousSegment();
+			  if (previous_segment.end == ctx->input().length()) {
+				  ctx->Commit();
+				  return;
+			  }
+		  }
+		  Compose(ctx);
+	  }
   }
 }
 

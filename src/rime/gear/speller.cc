@@ -277,11 +277,21 @@ namespace rime {
 			if (string("aeuio").find(input[comfirmed_pos + len - 1]) != string::npos
 				&& string("aeuio").find(input[comfirmed_pos + len - 2]) != string::npos
 				&& string("aeuio").find(input[comfirmed_pos + len - 3]) == string::npos
-				&& caret_pos == input.length()
+				&& (caret_pos == input.length() || caret_pos == comfirmed_pos + 5)
 				) {
-				for (i = 1; i < 5; i++) {
+				for (i = 1; i < 6; i++) {
 					if (string("aeuio").find(input[comfirmed_pos + i]) == string::npos)
 						break;
+				}
+				if (i == 5 && string("aeuio").find(input[comfirmed_pos + 4]) != string::npos) {
+					ctx->ConfirmCurrentSelection();
+					if (input.length() == comfirmed_pos + i + 3)
+						ctx->set_caret_pos(comfirmed_pos + i + 3);
+					else
+						ctx->set_caret_pos(comfirmed_pos + i + 1);
+					ctx->PushInput(ch);
+					ctx->set_caret_pos(input.length() + 1);
+					return kAccepted;
 				}
 				if (i < 5) {
 					ctx->set_caret_pos(comfirmed_pos + i);
