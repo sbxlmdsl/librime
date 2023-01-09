@@ -296,7 +296,7 @@ namespace rime {
 				if (i < 5) {
 					ctx->set_caret_pos(comfirmed_pos + i);
 					ctx->PushInput(ch);
-					if (i < 4)
+					if (i < 4 && caret_pos != comfirmed_pos + 5)
 						ctx->set_caret_pos(comfirmed_pos + caret_pos + i);
 					return kAccepted;
 				}

@@ -266,9 +266,16 @@ void ConcreteEngine::OnSelect(Context* ctx) {
 		  ctx->set_caret_pos(ctx->input().length());
 	  }
 	  else {
+		  string input = ctx->input();
+		  size_t i = 0;
 		  if (schema_->schema_id() == "sbpy"
 			  && string("aeuio").find(ctx->input()[previous_segment.start]) != string::npos) {
-			  ctx->ClearPreviousSegment();
+			  for (i = previous_segment.start; i < input.length(); i++) {
+				  if (string("aeuio").find(input[i]) == string::npos)
+					  break;
+			  }
+			  if (i == input.length())
+				ctx->ClearPreviousSegment();
 			  if (previous_segment.end == ctx->input().length()) {
 				  ctx->Commit();
 				  return;
