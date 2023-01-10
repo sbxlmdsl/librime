@@ -270,10 +270,17 @@ namespace rime {
 	else if (boost::regex_match(dict_->name(), boost::regex("^sbsb|spsb|sps_b$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^sb|sbsb|spsb|sps_b$"))
+		&& engine_->schema()->schema_id() != "sbjm"
 		&& code.length() < dict_->name().length() && ctx->get_option("is_hidden"))
+		;
+	else if (ctx->get_option("is_enhanced") && engine_->schema()->schema_id() == "sbjm" &&
+		boost::regex_match(dict_->name(), boost::regex("^jmnts$")) && ctx->get_option("is_hidden"))
 		;
 	else if (!ctx->get_option("is_fixed") && engine_->schema()->schema_id() == "sbpy" &&
 		boost::regex_match(dict_->name(), boost::regex("^pygd|pygd_lookup$")))
+		;
+	else if (!ctx->get_option("is_enhanced") && engine_->schema()->schema_id() == "sbjm" &&
+		boost::regex_match(dict_->name(), boost::regex("^jmn|jmn_lookup$")))
 		;
 	else
 		if (enable_completion_) {

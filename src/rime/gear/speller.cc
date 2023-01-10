@@ -147,7 +147,7 @@ namespace rime {
 			return kAccepted;
 		}
 
-		if (isdigit(ch) && is_enhanced && 2 == len && belongs_to(c1, initials_) && num_pop 
+		if (isdigit(ch) && is_enhanced && 2 == len && belongs_to(c1, initials_) && num_pop && schema != "sbjm"
 				&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 1]) == string::npos) {
 			if (is_buffered) {
 				ctx->set_caret_pos(ctx->caret_pos() - 1);
