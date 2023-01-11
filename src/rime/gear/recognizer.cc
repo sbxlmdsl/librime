@@ -92,7 +92,7 @@ ProcessResult Recognizer::ProcessKeyEvent(const KeyEvent& key_event) {
     input += ch;
     auto match = patterns_.GetMatch(input, ctx->composition());
     if (match.found()) {
-		bool is_sbjm = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm|sbdp$"));
+		bool is_sbjm = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm$"));
 		bool third_pop = ctx->get_option("third_pop");
 		bool is_buffered = ctx->get_option("is_buffered");
 		if (is_sbjm && third_pop && input.length() == 4	&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {

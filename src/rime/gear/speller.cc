@@ -183,6 +183,25 @@ namespace rime {
 			return kAccepted;
 		}
 
+		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_) && num_pop && schema == "sbjm" 
+			&& string("aeuio").find(ctx->input()[comfirmed_pos + 1]) == string::npos
+			&& string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos) {
+			if (is_buffered) {
+				ctx->set_caret_pos(ctx->caret_pos() - 2);
+				ctx->ConfirmCurrentSelection();
+				ctx->set_caret_pos(ctx->caret_pos() + 2);
+			}
+			else {
+				string rest = ctx->input().substr(1, 2);
+				ctx->set_input(ctx->input().substr(0, 1));
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
+				ctx->set_input(rest);
+			}
+			ctx->PushInput(tolower(ch));
+			return kAccepted;
+		}
+
 		if (string("AEUIO").find(ch) != string::npos && 3 == len
 			&& boost::regex_match(schema, boost::regex("^sbf[mxd]|sbsp$"))) {
 			if (is_buffered) {
@@ -202,7 +221,7 @@ namespace rime {
 		}
 
         if (is_initial && 3 == len && belongs_to(c1, initials_)
-			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$")))
+			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm$")))
 			&& string("aeuio").find(ch) == string::npos) {
             ctx->ConfirmCurrentSelection();
 			if (!is_buffered) {
@@ -214,7 +233,7 @@ namespace rime {
         }
 
         if (3 == len && belongs_to(c1, initials_)
-			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm|sbdp$")))) {
+			&& (third_pop && boost::regex_match(schema, boost::regex("^sbjm$")))) {
 			if (isupper(ch)) {
 				ctx->PushInput(tolower(ch));
 				return kAccepted;
