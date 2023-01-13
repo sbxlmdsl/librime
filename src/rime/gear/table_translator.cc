@@ -177,9 +177,6 @@ namespace rime {
   bool LazyTableTranslation::FetchMoreTableEntries() {
     if (!dict_ || limit_ == 0)
       return false;
-    //if (boost::regex_match(dict_->name(), boost::regex("^sbfdgd$")) && (input_.length() == 1
-    //                                                                       || input_.length() == 2 && string("_aeuio").find(input_[1]) == string::npos))
-    //  return false;
     size_t previous_entry_count = iter_.entry_count();
     DLOG(INFO) << "fetching more table entries: limit = " << limit_
     << ", count = " << previous_entry_count;
@@ -260,7 +257,7 @@ namespace rime {
     
     an<Translation> translation;
 	if (dict_ && dict_->loaded()
-		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sn1|sn2|jmn|jmnts$"))
+		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sn1|sn2|snts|jmn|jmnts$"))
 			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3|jmsbb$")))
 		|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3|jmsbb$"))
 		|| ctx->get_option("slow_adjust") && (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
@@ -269,12 +266,14 @@ namespace rime {
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^sbsb|spsb|sps_b$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
 		;
+	else if (boost::regex_match(dict_->name(), boost::regex("^fjcz$")) && code.length() < 4)
+		; //for sbfj words
 	else if (boost::regex_match(dict_->name(), boost::regex("^sb|sbsb|spsb|sps_b$"))
 		&& engine_->schema()->schema_id() != "sbjm"
 		&& code.length() < dict_->name().length() && ctx->get_option("is_hidden"))
 		;
-	else if (ctx->get_option("is_enhanced") && engine_->schema()->schema_id() == "sbjm" &&
-		boost::regex_match(dict_->name(), boost::regex("^jmnts$")) && ctx->get_option("is_hidden"))
+	else if (ctx->get_option("is_enhanced") && ctx->get_option("is_hidden")
+		&& boost::regex_match(dict_->name(), boost::regex("^jmnts|snts$")))
 		;
 	else if (!ctx->get_option("is_fixed") && engine_->schema()->schema_id() == "sbpy" &&
 		boost::regex_match(dict_->name(), boost::regex("^pygd|pygd_lookup$")))
@@ -375,9 +374,12 @@ namespace rime {
 			UnityTableEncoder::RemovePrefix(&blessed.custom_code);
 			user_dict_->UpdateEntry(blessed, 1);
 		}
-		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbf[mdx]$"))
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbf[mx]$"))
 			&& 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
-			; //no change for sbf*
+			; //no change for chars
+		}
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbfj$"))) {
+			; //no change for sbfj
 		}
 		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbsp|sbf[mx]$"))
 			&& e->preedit.length() < 4)

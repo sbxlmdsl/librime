@@ -343,6 +343,10 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
 			else if (!select_keys.compare(" aeuio") &&
 				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() <= 3)))
               std::strcpy(context->select_labels[i], " "); // hack for sbxlm
+			else if (!select_keys.compare(" aeuio") && islower(c1) && ctx->input().length() == 4
+				&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[2]) != string::npos
+				&& boost::regex_match(schema->schema_id(), boost::regex("^sbfj$")))
+				std::strcpy(context->select_labels[i], " "); // hack for fjcz
 			else if (!select_keys.compare(" aeuio") &&
 				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4
 					&& boost::regex_match(schema->schema_id(), boost::regex("^sbfx$")) 

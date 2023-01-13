@@ -324,7 +324,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
 	an<DbAccessor> accessor;
 	static char words[7][256];
 
-	if (input.length() == 1 && boost::regex_match(name_, boost::regex("^sbf[mxd]|sbjm|sbsp$"))) {
+	if (input.length() == 1 && boost::regex_match(name_, boost::regex("^sbf[mx]|sbjm|sbsp$"))) {
 		for (int i = 0; i < 7; i++)
 			std::strcpy(words[i], "");
 	}
