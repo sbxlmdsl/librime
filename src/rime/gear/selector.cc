@@ -125,6 +125,9 @@ namespace rime {
 					;
 				else if (len == 5 && boost::regex_match(schema, boost::regex("^sbfx$")) && current_segment.HasTag("paging"))
 					;
+				else if (len == 5 && boost::regex_match(schema, boost::regex("^sbfj$")) 
+					&& string("aeuio").find(ctx->input()[comfirmed_pos + 2]) == string::npos)
+					;
 				else if (len == 4) {
 					if (current_segment.HasTag("paging"))
 						;
