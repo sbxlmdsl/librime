@@ -290,8 +290,7 @@ namespace rime {
 			return kAccepted;
 		}
 
-		if (is_popped && (ctx->OkSsss() || ctx->OkSssy() || ctx->OkSsy()
-			|| ctx->OkSyxsysysys() || ctx->OkSyxsysys() || ctx->OkSyxsys() || ctx->OkSyxs() || ctx->OkSy())
+		if (is_popped && (ctx->OkSsss() || ctx->OkSssy() || ctx->OkSsy() || ctx->OkSy())
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
 			&& ctx->input().length() == ctx->caret_pos()
 			) {
