@@ -34,6 +34,10 @@ enum KeyBindingCondition {
   kWhenIsSixth,    // for sbjz
   kWhenIsSelect,    // for sbkz and sbfz
   kWhenOkSy,
+  kWhenOkSyxs,
+  kWhenOkSyxsys,
+  kWhenOkSyxsysys,
+  kWhenOkSyxsysysys,
   kWhenOkSsy,
   kWhenOkSssy,
   kWhenOkSsss,
@@ -63,6 +67,10 @@ static struct KeyBindingConditionDef {
   { kWhenIsSixth,   "is_sixth" },
   { kWhenIsSelect,   "is_select" },
   { kWhenOkSy,   "ok_sy" },
+  { kWhenOkSyxs,   "ok_syxs" },
+  { kWhenOkSyxsys,   "ok_syxsys" },
+  { kWhenOkSyxsysys,   "ok_syxsysys" },
+  { kWhenOkSyxsysysys,   "ok_syxsysysys" },
   { kWhenOkSsy,   "ok_ssy" },
   { kWhenOkSssy,   "ok_sssy" },
   { kWhenOkSsss,   "ok_ssss" },
@@ -257,6 +265,18 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
   
   if (ctx->OkSy() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenOkSy);
+  }
+  if (ctx->OkSyxs() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSyxs);
+  }
+  if (ctx->OkSyxsys() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSyxsys);
+  }
+  if (ctx->OkSyxsysys() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSyxsysys);
+  }
+  if (ctx->OkSyxsysysys() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSyxsysysys);
   }
   if (ctx->OkSsy() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenOkSsy);

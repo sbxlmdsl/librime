@@ -106,7 +106,8 @@ namespace rime {
             return kNoop;
         }
 
-        string schema = engine_->schema()->schema_id();
+		static bool is_short = false;
+		string schema = engine_->schema()->schema_id();
 		Composition comp = ctx->composition();
 		size_t comfirmed_pos = comp.GetConfirmedPosition();
 		size_t len = ctx->input().length() - comfirmed_pos;
@@ -119,8 +120,14 @@ namespace rime {
 		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm$"));
 		bool is_popped = ctx->get_option("is_popped") && ctx->get_option("is_fixed") 
 			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
-		bool is_appendable = is_popped && len >= 4 && !is_initial;
+		bool is_appendable = is_popped && len >= 4 && !is_initial && is_short;
 
+		if (len == 1 && is_popped) {
+			if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos)
+				is_short = true;
+			else
+				is_short = false;
+		}
 
         if (len == 1 && !islower(c1) && is_sbxlm) {
 			ctx->ConfirmCurrentSelection();
@@ -283,7 +290,8 @@ namespace rime {
 			return kAccepted;
 		}
 
-		if (is_popped && (ctx->OkSy() || ctx->OkSsy() || ctx->OkSssy() || ctx->OkSsss())
+		if (is_popped && (ctx->OkSsss() || ctx->OkSssy() || ctx->OkSsy()
+			|| ctx->OkSyxsysysys() || ctx->OkSyxsysys() || ctx->OkSyxsys() || ctx->OkSyxs() || ctx->OkSy())
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
 			&& ctx->input().length() == ctx->caret_pos()
 			) {

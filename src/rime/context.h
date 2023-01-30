@@ -45,6 +45,11 @@ class Context {
   bool IsSixth() const;
   bool IsSelect() const;
   bool OkSy() const;
+  bool OkSyxs() const;
+  bool OkSyxsys() const;
+  bool OkSyxsysys() const;
+  bool OkSyxsysysys() const;
+  bool OkSyxsysysysys() const;
   bool OkSsy() const;
   bool OkSssy() const;
   bool OkSsss() const;
