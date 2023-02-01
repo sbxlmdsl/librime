@@ -123,8 +123,9 @@ namespace rime {
 		bool is_appendable = is_popped && len >= 4 && !is_initial && is_short;
 
 		if (len == 1 && is_popped) {
-			if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos)
+			if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
 				is_short = true;
+			}
 			else
 				is_short = false;
 		}
