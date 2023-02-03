@@ -76,6 +76,10 @@ void ReverseLookupFilter::Process(const an<Candidate>& cand) {
 		&& engine_->schema()->schema_id() == "sbpy") {
 		return;
 	}
+	if ((!engine_->context()->get_option("slow_adjust") || engine_->context()->get_option("third_pop"))
+		&& name_space_ == "jmgd_reverse_lookup" && engine_->schema()->schema_id() == "sbjm") {
+		return;
+	}
 	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "jmn_reverse_lookup"
 		&& engine_->schema()->schema_id() == "sbjm") {
 		return;

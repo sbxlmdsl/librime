@@ -155,6 +155,10 @@ bool Context::OkSy() const {
 	auto seg = composition_.back();
 
 	if (seg.length >= 2 && string("aeuio").find(input_[seg.start + 1]) != string::npos) {
+		if (seg.length == 2 && !get_option("single_pop") 
+			&& string("aeuio").find(input_[seg.start]) == string::npos) {
+			return false;
+		}
 		if (seg.length == 3 && string("aeuio").find(input_[seg.start + 2]) != string::npos) {
 			if (get_option("is_popped") && get_option("is_fixed") && get_option("single_pop")
 				&& string("aeuio").find(input_[seg.start]) == string::npos)
@@ -178,6 +182,18 @@ bool Context::OkSy() const {
 					}
 				}
 			}
+		}
+		else if (seg.length >= 4 && seg.length % 2 == 0 && seg.length < 9
+			&& string("aeuio").find(input_[seg.length - 1]) != string::npos) {
+			if (string("aeuio").find(input_[seg.length - 2]) != string::npos)
+				return true;
+			return false;
+		}
+		else if (seg.length == 9 && string("aeuio").find(input_[seg.length - 1]) == string::npos) {
+			return false;
+		}
+		else if (seg.length > 9) {
+			return false;
 		}
 		return true;
 	}

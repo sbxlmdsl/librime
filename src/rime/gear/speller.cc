@@ -106,7 +106,6 @@ namespace rime {
             return kNoop;
         }
 
-		static bool is_short = false;
 		string schema = engine_->schema()->schema_id();
 		Composition comp = ctx->composition();
 		size_t comfirmed_pos = comp.GetConfirmedPosition();
@@ -120,15 +119,7 @@ namespace rime {
 		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm$"));
 		bool is_popped = ctx->get_option("is_popped") && ctx->get_option("is_fixed") 
 			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
-		bool is_appendable = is_popped && len >= 4 && !is_initial && is_short;
-
-		if (len == 1 && is_popped) {
-			if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
-				is_short = true;
-			}
-			else
-				is_short = false;
-		}
+		bool is_appendable = is_popped && len >= 4 && !is_initial;
 
         if (len == 1 && !islower(c1) && is_sbxlm) {
 			ctx->ConfirmCurrentSelection();
