@@ -72,8 +72,8 @@ an<Translation> ReverseLookupFilter::Apply(
 }
 
 void ReverseLookupFilter::Process(const an<Candidate>& cand) {
-	if (!engine_->context()->get_option("is_fixed") && name_space_ == "pygd_reverse_lookup"
-		&& engine_->schema()->schema_id() == "sbpy") {
+	if ((!engine_->context()->get_option("is_fixed") || engine_->context()->get_option("is_hidden"))
+		&& name_space_ == "pygd_reverse_lookup" && engine_->schema()->schema_id() == "sbpy") {
 		return;
 	}
 	if ((!engine_->context()->get_option("slow_adjust") || engine_->context()->get_option("third_pop"))

@@ -216,7 +216,7 @@ bool Context::OkSyxs() const {
 	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
 		return false;
 	auto seg = composition_.back();
-	return seg.length == 4
+	return seg.length >= 4 && seg.length <= 5
 		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
 		&& string("aeuio").find(input_[seg.start + 2]) != string::npos
 		&& string("aeuio").find(input_[seg.start + 3]) == string::npos
