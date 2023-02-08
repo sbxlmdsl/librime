@@ -7,6 +7,7 @@
 #include <rime/candidate.h>
 #include <rime/engine.h>
 #include <rime/schema.h>
+#include <rime/context.h>
 #include <rime/translation.h>
 #include <rime/dict/reverse_lookup_dictionary.h>
 #include <rime/gear/reverse_lookup_filter.h>
@@ -46,6 +47,7 @@ void ReverseLookupFilter::Initialize() {
   if (!engine_)
     return;
   Ticket ticket(engine_, name_space_);
+
   if (auto c = ReverseLookupDictionary::Require("reverse_lookup_dictionary")) {
     rev_dict_.reset(c->Create(ticket));
     if (rev_dict_ && !rev_dict_->Load()) {
@@ -70,6 +72,19 @@ an<Translation> ReverseLookupFilter::Apply(
 }
 
 void ReverseLookupFilter::Process(const an<Candidate>& cand) {
+	if ((!engine_->context()->get_option("is_fixed") || engine_->context()->get_option("is_hidden"))
+		&& name_space_ == "pygd_reverse_lookup" && engine_->schema()->schema_id() == "sbpy") {
+		return;
+	}
+	if ((!engine_->context()->get_option("slow_adjust") || engine_->context()->get_option("third_pop"))
+		&& name_space_ == "jmgd_reverse_lookup" && engine_->schema()->schema_id() == "sbjm") {
+		return;
+	}
+	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "jmn_reverse_lookup"
+		&& engine_->schema()->schema_id() == "sbjm") {
+		return;
+	}
+
   if (!overwrite_comment_ && !cand->comment().empty())
     return;
   auto phrase = As<Phrase>(Candidate::GetGenuineCandidate(cand));

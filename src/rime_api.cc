@@ -22,6 +22,7 @@
 #include <rime/signature.h>
 #include <rime/switches.h>
 #include <rime_api.h>
+#include <boost/regex.hpp>
 
 using namespace rime;
 using namespace std::placeholders;
@@ -230,134 +231,130 @@ static void rime_candidate_copy(RimeCandidate* dest, const an<Candidate>& src) {
 }
 
 static void rime_candidate_copy2(RimeCandidate* dest, const an<Candidate>& src) {
-	size_t m = src->text().length();
-	size_t n = src->text().find_first_of(' ');
-	if (n != string::npos) {
-		dest->text = new char[m - n + 1];
-		// dest->text = strchr(dest->text, ' ') + 1;
-		std::strcpy(dest->text, src->text().substr(n + 1).c_str());
-	}
-	else {
-		dest->text = new char[src->text().length() + 1];
-		std::strcpy(dest->text, src->text().c_str());
-	}
-	string comment(src->comment());
-	if (!comment.empty()) {
-		dest->comment = new char[comment.length() + 1];
-		std::strcpy(dest->comment, comment.c_str());
-	}
-	else {
-		dest->comment = nullptr;
-	}
-	dest->reserved = nullptr;
+  size_t m = src->text().length();
+  size_t n = src->text().find_last_of(' ');
+  if (n != string::npos) {
+    dest->text = new char[m - n + 1];
+    // dest->text = strchr(dest->text, ' ') + 1;
+    std::strcpy(dest->text, src->text().substr(n + 1).c_str());
+  } else {
+    dest->text = new char[src->text().length() + 1];
+    std::strcpy(dest->text, src->text().c_str());
+  }
+  string comment(src->comment());
+  if (!comment.empty()) {
+    dest->comment = new char[comment.length() + 1];
+    std::strcpy(dest->comment, comment.c_str());
+  }
+  else {
+    dest->comment = nullptr;
+  }
+  dest->reserved = nullptr;
 }
 
 RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
-	if (!context || context->data_size <= 0)
-		return False;
-	RIME_STRUCT_CLEAR(*context);
-	an<Session> session(Service::instance().GetSession(session_id));
-	if (!session)
-		return False;
-	Context *ctx = session->context();
-	if (!ctx)
-		return False;
-	if (ctx->IsComposing()) {
-		Preedit preedit = ctx->GetPreedit();
-		context->composition.length = preedit.text.length();
-		context->composition.preedit = new char[preedit.text.length() + 1];
-		std::strcpy(context->composition.preedit, preedit.text.c_str());
-		context->composition.cursor_pos = preedit.caret_pos;
-		context->composition.sel_start = preedit.sel_start;
-		context->composition.sel_end = preedit.sel_end;
-		if (RIME_STRUCT_HAS_MEMBER(*context, context->commit_text_preview)) {
-			string commit_text(ctx->GetCommitText());
-			if (!commit_text.empty()) {
-				context->commit_text_preview = new char[commit_text.length() + 1];
-				std::strcpy(context->commit_text_preview, commit_text.c_str());
+  if (!context || context->data_size <= 0)
+    return False;
+  RIME_STRUCT_CLEAR(*context);
+  an<Session> session(Service::instance().GetSession(session_id));
+  if (!session)
+    return False;
+  Context *ctx = session->context();
+  if (!ctx)
+    return False;
+  if (ctx->IsComposing()) {
+    Preedit preedit = ctx->GetPreedit();
+    context->composition.length = preedit.text.length();
+    context->composition.preedit = new char[preedit.text.length() + 1];
+    std::strcpy(context->composition.preedit, preedit.text.c_str());
+    context->composition.cursor_pos = preedit.caret_pos;
+    context->composition.sel_start = preedit.sel_start;
+    context->composition.sel_end = preedit.sel_end;
+    if (RIME_STRUCT_HAS_MEMBER(*context, context->commit_text_preview)) {
+      string commit_text(ctx->GetCommitText());
+      if (!commit_text.empty()) {
+          context->commit_text_preview = new char[commit_text.length() + 1];
+          std::strcpy(context->commit_text_preview, commit_text.c_str());
+      }
+    }
+  }
+  if (ctx->HasMenu()) {
+    Segment &seg(ctx->composition().back());
+    int page_size = 5;
+    Schema *schema = session->schema();
+    if (schema)
+      page_size = schema->page_size();
+    int selected_index = seg.selected_index;
+    int page_no = selected_index / page_size;
+    
+    the<Page> page(seg.menu->CreatePage(page_size, page_no));
+    if (page) {
+      context->menu.page_size = page_size;
+      context->menu.page_no = page_no;
+      context->menu.is_last_page = Bool(page->is_last_page);
+      context->menu.highlighted_candidate_index = selected_index % page_size;
+      int i = 0;
+      context->menu.num_candidates = page->candidates.size();
+      context->menu.candidates = new RimeCandidate[page->candidates.size()];
+      for (const an<Candidate> &cand : page->candidates) {
+        RimeCandidate* dest = &context->menu.candidates[i++];
+        if (boost::regex_match(schema->schema_id(), boost::regex("^sbpy|sbjm|sbsp|sbf[mx]$"))) {
+          rime_candidate_copy2(dest, cand);
+        } else {
+          rime_candidate_copy(dest, cand);
+        }
+      }
+      if (schema) {
+        const string& select_keys(schema->select_keys());
+		const char c1 = ctx->input()[0];
+        if (!select_keys.empty()) {
+          context->menu.select_keys = new char[select_keys.length() + 1];
+          if (!select_keys.compare(" aeuio") &&!ctx->HasMore())
+            std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
+		  else if (!select_keys.compare(" aeuio") &&
+			  (!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4 
+				  && boost::regex_match(schema->schema_id(), boost::regex("^sbfx$")) 
+				  && string("aeuio").find(ctx->input()[2]) == string::npos && string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) == string::npos
+				  ))) // hack for sbfx
+			  std::strcpy(context->menu.select_keys, string("      ").c_str()); 
+		  else
+            std::strcpy(context->menu.select_keys, select_keys.c_str());
+        }
+        Config* config = schema->config();
+        an<ConfigList>  select_labels = config->GetList("menu/alternative_select_labels");
+        string labels[] = {"6 ","7 ","8 ","9 ","0 "};
+        if (select_labels && (size_t)page_size <= select_labels->size()) {
+          context->select_labels = new char*[page_size];
+          for (size_t i = 0; i < (size_t)page_size; ++i) {
+            an<ConfigValue> value = select_labels->GetValueAt(i);
+            string label = value->str();
+            context->select_labels[i] = new char[label.length() + 1];
+			if (!select_keys.compare(" aeuio") && ctx->input().length() > 1
+				&& string("uo").find(c1) != string::npos
+				&& string("aeuio_").find(ctx->input()[1]) == string::npos) {
+				std::strcpy(context->select_labels[i], label.c_str());
 			}
-		}
-	}
-	if (ctx->HasMenu()) {
-		Segment &seg(ctx->composition().back());
-		int page_size = 5;
-		Schema *schema = session->schema();
-		if (schema)
-			page_size = schema->page_size();
-		int selected_index = seg.selected_index;
-		int page_no = selected_index / page_size;
-		string id = schema->schema_id();
-
-		the<Page> page(seg.menu->CreatePage(page_size, page_no));
-		if (page) {
-			context->menu.page_size = page_size;
-			context->menu.page_no = page_no;
-			context->menu.is_last_page = Bool(page->is_last_page);
-			context->menu.highlighted_candidate_index = selected_index % page_size;
-			int i = 0;
-			context->menu.num_candidates = page->candidates.size();
-			context->menu.candidates = new RimeCandidate[page->candidates.size()];
-			for (const an<Candidate> &cand : page->candidates) {
-				RimeCandidate* dest = &context->menu.candidates[i++];
-				if (id == "sbjm" || id == "sbpy" || id == "sbxh" || id == "sbzr"
-					|| id == "sbfm" || id == "sbfx" || id == "sbkm" || id == "sbkx") {
-					rime_candidate_copy2(dest, cand);
-				}
-				else {
-					rime_candidate_copy(dest, cand);
-				}
-			}
-			if (schema) {
-				const string& select_keys(schema->select_keys());
-				const char c1 = ctx->input()[0];
-				if (!select_keys.empty()) {
-					context->menu.select_keys = new char[select_keys.length() + 1];
-					if (!select_keys.compare(" aeuio") && !ctx->HasMore())
-						std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
-					else if (!select_keys.compare(" aeuio") &&
-						(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4
-							&& (id == "sbfx" || id == "sbkx") && string("aeuio").find(ctx->input()[2]) == string::npos 
-							&& string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) == string::npos))) 
-						std::strcpy(context->menu.select_keys, string("      ").c_str());
-					else
-						std::strcpy(context->menu.select_keys, select_keys.c_str());
-				}
-				Config* config = schema->config();
-				an<ConfigList>  select_labels = config->GetList("menu/alternative_select_labels");
-				string labels[] = { "6 ","7 ","8 ","9 ","0 " };
-				if (select_labels && (size_t)page_size <= select_labels->size()) {
-					context->select_labels = new char*[page_size];
-					for (size_t i = 0; i < (size_t)page_size; ++i) {
-						an<ConfigValue> value = select_labels->GetValueAt(i);
-						string label = value->str();
-						context->select_labels[i] = new char[label.length() + 1];
-						if (!select_keys.compare(" aeuio") && ctx->input().length() > 1
-							&& string("uo").find(c1) != string::npos
-							&& string("aeuio_").find(ctx->input()[1]) == string::npos) {
-							std::strcpy(context->select_labels[i], label.c_str());
-						}
-						else if (!select_keys.compare(" aeuio") &&
-							(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() <= 3)))
-							std::strcpy(context->select_labels[i], " "); // hack for sbxlm
-						else if (!select_keys.compare(" aeuio") &&
-							(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4
-								&& (id == "sbfx" || id == "sbkx") && string("aeuio").find(ctx->input()[2]) == string::npos 
-								&& string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) == string::npos)))
-							std::strcpy(context->select_labels[i], " ");  // hack for sb[fk]x
-						else if ((id == "sbfz" || id == "sbkz") && !ctx->IsSelect())
-							std::strcpy(context->select_labels[i], labels[i].c_str());
-						else if (id == "sbpy" && !ctx->IsSixth())
-							std::strcpy(context->select_labels[i], labels[i].c_str());
-						else if ((id == "sbhz" || id == "sbzz") && !ctx->IsFourth())
-							std::strcpy(context->select_labels[i], labels[i].c_str());
-						else
-							std::strcpy(context->select_labels[i], label.c_str());
-					}
-				}
-			}
-		}
-	}
-	return True;
+			else if (!select_keys.compare(" aeuio") &&
+				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() <= 3)))
+              std::strcpy(context->select_labels[i], " "); // hack for sbxlm
+			else if (!select_keys.compare(" aeuio") && islower(c1) && ctx->input().length() == 4
+				&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[2]) != string::npos
+				&& boost::regex_match(schema->schema_id(), boost::regex("^sbfj$")))
+				std::strcpy(context->select_labels[i], " "); // hack for fjcz
+			else if (!select_keys.compare(" aeuio") &&
+				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4
+					&& boost::regex_match(schema->schema_id(), boost::regex("^sbfx$")) 
+					&& string("aeuio").find(ctx->input()[2]) == string::npos && string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) == string::npos
+					)))
+				std::strcpy(context->select_labels[i], " ");  // hack for sbfx
+			else
+              std::strcpy(context->select_labels[i], label.c_str());
+          }
+        }
+      }
+    }
+  }
+  return True;
 }
 
 RIME_API Bool RimeFreeContext(RimeContext* context) {
@@ -392,8 +389,8 @@ RIME_API Bool RimeGetCommit(RimeSessionId session_id, RimeCommit* commit) {
     return False;
   const string& commit_text(session->commit_text());
   if (!commit_text.empty()) {
-    commit->text = new char[commit_text.length() + 1];
-    std::strcpy(commit->text, commit_text.c_str());
+      commit->text = new char[commit_text.length() + 1];
+      std::strcpy(commit->text, commit_text.c_str());
     session->ResetCommitText();
     return True;
   }

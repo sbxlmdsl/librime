@@ -16,6 +16,7 @@
 #include <rime/switcher.h>
 #include <rime/switches.h>
 #include <rime/gear/key_binder.h>
+#include <boost/regex.hpp>
 
 using namespace std::placeholders;
 
@@ -34,7 +35,13 @@ enum KeyBindingCondition {
   kWhenIsFifth,    // for sbjz
   kWhenIsSixth,    // for sbjz
   kWhenIsSelect,    // for sbkz and sbfz
-  kWhenOkFirst,		// the first code char is ok for sb[fk]m*
+  kWhenOkSy,
+  kWhenOkSys,
+  kWhenOkSyxs,
+  kWhenOkSsy,
+  kWhenOkSssy,
+  kWhenOkSsss,
+  kWhenOkFirst,		// the first code char is ok for sbfm*
   kWhenOkSecond, 
   kWhenOkThird,
   kWhenOkFourth,
@@ -59,6 +66,12 @@ static struct KeyBindingConditionDef {
   { kWhenIsFifth,   "is_fifth" },
   { kWhenIsSixth,   "is_sixth" },
   { kWhenIsSelect,   "is_select" },
+  { kWhenOkSy,   "ok_sy" },
+  { kWhenOkSys,   "ok_sys" },
+  { kWhenOkSyxs,   "ok_syxs" },
+  { kWhenOkSsy,   "ok_ssy" },
+  { kWhenOkSssy,   "ok_sssy" },
+  { kWhenOkSsss,   "ok_ssss" },
   { kWhenOkFirst,   "ok_first" },
   { kWhenOkSecond,   "ok_second" },
   { kWhenOkThird,   "ok_third" },
@@ -320,6 +333,25 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
     insert(kWhenIsSelect);
   }
   
+  if (ctx->OkSy() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSy);
+  }
+  if (ctx->OkSys() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSys);
+  }
+  if (ctx->OkSyxs() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSyxs);
+  }
+  if (ctx->OkSsy() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSsy);
+  }
+  if (ctx->OkSssy() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSssy);
+  }
+  if (ctx->OkSsss() && !ctx->get_option("ascii_mode")) {
+	  insert(kWhenOkSsss);
+  }
+
   if (ctx->OkFirst() && !ctx->get_option("ascii_mode")) {
 	  insert(kWhenOkFirst);
   }
@@ -392,6 +424,8 @@ void KeyBinder::LoadConfig() {
 bool KeyBinder::ReinterpretPagingKey(const KeyEvent& key_event) {
   if (key_event.release())
     return false;
+  if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxj]|sbjm|sbsp|sbpy$")))
+	  return false;
   bool ret = false; 
   int ch = (key_event.modifier() == 0) ? key_event.keycode() : 0;
   // reinterpret period key followed by alphabetic keys

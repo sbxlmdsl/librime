@@ -80,6 +80,7 @@ class Phrase : public Candidate {
         entry_(entry) {
   }
   const string& text() const { return entry_->text; }
+  string& custom_code() const { return entry_->custom_code; }
   string comment() const { return entry_->comment; }
   string preedit() const { return entry_->preedit; }
   void set_comment(const string& comment) {

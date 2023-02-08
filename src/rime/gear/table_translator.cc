@@ -178,9 +178,6 @@ namespace rime {
   bool LazyTableTranslation::FetchMoreTableEntries() {
     if (!dict_ || limit_ == 0)
       return false;
-    if (boost::regex_match(dict_->name(), boost::regex("^sb[fk]dgd$")) && (input_.length() == 1
-                                                                           || input_.length() == 2 && string("_aeuio").find(input_[1]) == string::npos))
-      return false;
     size_t previous_entry_count = iter_.entry_count();
     DLOG(INFO) << "fetching more table entries: limit = " << limit_
     << ", count = " << previous_entry_count;
@@ -260,14 +257,34 @@ namespace rime {
     boost::trim_right_if(code, boost::is_any_of(delimiters_));
     
     an<Translation> translation;
-	if (dict_ && dict_->loaded() 
-		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sn1|sn2$"))
-			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3$")))
-			|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3$")))
+	if (dict_ && dict_->loaded()
+		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sn1|sn2|snts|jmn|jmnts$"))
+			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3|jmsbb$")))
+		|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3|jmsbb$"))
+		|| ctx->get_option("slow_adjust") && (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
+		;
+	else if (boost::regex_match(dict_->name(), boost::regex("^spzdy|fmzdy|jmzdy$")) && code.length() == 1)
+		;
+	else if (boost::regex_match(dict_->name(), boost::regex("^sbsb|spsb|sps_b$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
+		;
+	else if (boost::regex_match(dict_->name(), boost::regex("^fjcz$")) && code.length() < 4)
+		; //for sbfj words
+	else if (boost::regex_match(dict_->name(), boost::regex("^sb|sbsb|spsb|sps_b$"))
+		&& engine_->schema()->schema_id() != "sbjm"
+		&& code.length() < dict_->name().length() && ctx->get_option("is_hidden"))
+		;
+	else if (ctx->get_option("is_enhanced") && ctx->get_option("is_hidden")
+		&& boost::regex_match(dict_->name(), boost::regex("^jmnts|snts$")))
+		;
+	else if (!ctx->get_option("is_fixed") && engine_->schema()->schema_id() == "sbpy" &&
+		boost::regex_match(dict_->name(), boost::regex("^pygd|pygd_lookup$")))
+		;
+	else if (!ctx->get_option("is_enhanced") && engine_->schema()->schema_id() == "sbjm" &&
+		boost::regex_match(dict_->name(), boost::regex("^jmn|jmn_lookup$")))
 		;
 	else
 		if (enable_completion_) {
-      translation = Cached<LazyTableTranslation>(
+			translation = Cached<LazyTableTranslation>(
                                                  this,
                                                  code,
                                                  segment.start,
@@ -277,16 +294,16 @@ namespace rime {
     }
     else {
       DictEntryIterator iter;
-      if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))) {
-			  dict_->LookupWords(&iter, code, false);
+      if (dict_ && dict_->loaded() && !boost::regex_match(dict_->name(), boost::regex("^sbjm$"))) {
+		  dict_->LookupWords(&iter, code, false);
       }
       UserDictEntryIterator uter;
       if (enable_user_dict) {
-		  if (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
+		  if (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sbjm$"))
 			  && ((code.length() == 3 && string("1234567890").find(code[2]) != string::npos)
 				  || (code.length() == 2 && string("1234567890").find(code[1]) != string::npos)))
 			  ;
-		  else if (boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$")) && code.length() == 3) {
+		  else if (boost::regex_match(dict_->name(), boost::regex("^sbjm$")) && code.length() == 3) {
 			  if (ctx->get_option("third_pop"))
 				  user_dict_->LookupWords(&uter, code, false);
 			  else if (!ctx->get_option("slow_adjust") && string("aeuio").find(code[2]) != string::npos)
@@ -297,13 +314,10 @@ namespace rime {
 		  else
 			  user_dict_->LookupWords(&uter, code, false);
         if (encoder_ && encoder_->loaded()) {
-          if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sb[fkhz]j|sb[fk]mk|sb[fk]x$"))
+          if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbfx$"))
               && (code.length() < 3 || (code.length() == 3 && uter.cache_size() == 1)))
             ;	// do nothing
-          else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjk|sbkp|sb[fk]ms|sb[fk]s|sb[hz]s$"))
-                   && (code.length() < 4))
-            ;  // do nothing
-		  else if (!ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm|sbdp$"))
+		  else if (!ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sbjm$"))
 			  && code.length() == 3)
 			  ;
 		  else
@@ -359,13 +373,16 @@ namespace rime {
 		if (is_constructed(e)) {
 			DictEntry blessed(*e);
 			UnityTableEncoder::RemovePrefix(&blessed.custom_code);
-			user_dict_->UpdateEntry(blessed, 888);
+			user_dict_->UpdateEntry(blessed, 1);
 		}
-		else if (boost::regex_match(user_dict_->name(), boost::regex("^sb[fk][jmdsx]$"))
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbf[mx]$"))
 			&& 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
-			; //no change for sb[fk]*
+			; //no change for chars
 		}
-		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sb[fkhz]j|sbxh|sbzr|sbjk|sbkp|sb[fk]m|sbdp|sb[fk]m[ks]|sb[fk][sx]|sb[hz]s$"))
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbfj$"))) {
+			; //no change for sbfj
+		}
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbsp|sbf[mx]$"))
 			&& e->preedit.length() < 4)
 			; //no change when size is below 4 
       else {
@@ -403,15 +420,15 @@ namespace rime {
             }
             if (phrase.empty()) {
               phrase = it->text;  // last word
-              pos = phrase.find_first_of(' ');
-              if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sb[fk][jsxm]$")) 
+              pos = phrase.find_last_of(' ');
+              if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm|sbsp|sbf[mx]$")) 
 				  && pos != string::npos) {
                 phrase = phrase.substr(pos + 1);
               }
               continue;
             }
-            pos = it->text.find_first_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbdp|sbjk|sbkp|sb[hz][js]|sbxh|sbzr|sb[fk][jsxm]$"))
+            pos = it->text.find_last_of(' ');
+            if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm||sbsp|sbf[xm]$"))
 				&& pos != string::npos) {
               phrase = it->text.substr(pos + 1) + phrase;
             } else {
