@@ -322,12 +322,13 @@ namespace rime {
 					else
 						ctx->set_caret_pos(comfirmed_pos + i);
 					ctx->PushInput(ch);
-					if (i < 4)
+					if (i < 4) {
 						if (caret_pos == comfirmed_pos + 5 && caret_pos != input.length())
 							ctx->set_caret_pos(comfirmed_pos + i + 3);
 						else
 							ctx->set_caret_pos(comfirmed_pos + caret_pos + i);
-					return kAccepted;
+						return kAccepted;
+					}
 				}
 			}
 		}
