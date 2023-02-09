@@ -119,7 +119,7 @@ namespace rime {
 		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm$"));
 		bool is_popped = ctx->get_option("is_popped") && ctx->get_option("is_fixed") 
 			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
-		bool is_appendable = is_popped && len >= 4 && !is_initial;
+		bool is_editable = is_popped && len >= 4 && !is_initial;
 
         if (len == 1 && !islower(c1) && is_sbxlm) {
 			ctx->ConfirmCurrentSelection();
@@ -293,7 +293,7 @@ namespace rime {
 			return kAccepted;
 		}
 
-		if (is_appendable) {
+		if (is_editable) {
 			string input = ctx->input();
 			size_t i = 0;
 			auto caret_pos = ctx->caret_pos();
@@ -327,8 +327,8 @@ namespace rime {
 							ctx->set_caret_pos(comfirmed_pos + i + 3);
 						else
 							ctx->set_caret_pos(comfirmed_pos + caret_pos + i);
-						return kAccepted;
 					}
+					return kAccepted;
 				}
 			}
 		}
