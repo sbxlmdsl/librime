@@ -257,7 +257,7 @@ namespace rime {
     
     an<Translation> translation;
 	if (dict_ && dict_->loaded()
-		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sn1|sn2|snts|jmn|jmnts$"))
+		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sn|snts|fmn|fmnts|spn||spnts|jmn|jmnts$"))
 			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3|jmsbb$")))
 		|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3|jmsbb$"))
 		|| ctx->get_option("slow_adjust") && (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
@@ -273,7 +273,7 @@ namespace rime {
 		&& code.length() < dict_->name().length() && ctx->get_option("is_hidden"))
 		;
 	else if (ctx->get_option("is_enhanced") && ctx->get_option("is_hidden")
-		&& boost::regex_match(dict_->name(), boost::regex("^jmnts|snts$")))
+		&& boost::regex_match(dict_->name(), boost::regex("^jmnts|snts|fmnts|spnts$")))
 		;
 	else if (!ctx->get_option("is_fixed") && engine_->schema()->schema_id() == "sbpy" &&
 		boost::regex_match(dict_->name(), boost::regex("^pygd|pygd_lookup$")))
