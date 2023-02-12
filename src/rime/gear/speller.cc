@@ -310,8 +310,17 @@ namespace rime {
 					ctx->ConfirmCurrentSelection();
 					if (input.length() == comfirmed_pos + i + 3)
 						ctx->set_caret_pos(comfirmed_pos + i + 3);
-					else
+					else if (string("aeuio").find(input[comfirmed_pos + i + 1]) == string::npos)
 						ctx->set_caret_pos(comfirmed_pos + i + 1);
+					else {
+						for (int j = 2; j < 6; j++) {
+							if (string("aeuio").find(input[comfirmed_pos + i + j]) == string::npos)
+							{
+								ctx->set_caret_pos(comfirmed_pos + i + j);
+								break;
+							}
+						}
+					}
 					ctx->PushInput(ch);
 					ctx->set_caret_pos(input.length() + 1);
 					return kAccepted;
