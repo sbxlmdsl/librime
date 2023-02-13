@@ -11,7 +11,7 @@ endif
 export SDKROOT ?= $(shell xcrun --sdk macosx --show-sdk-path)
 
 # https://cmake.org/cmake/help/latest/envvar/MACOSX_DEPLOYMENT_TARGET.html
-export MACOSX_DEPLOYMENT_TARGET ?= 10.9
+export MACOSX_DEPLOYMENT_TARGET ?= $$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)
 
 ifdef BUILD_UNIVERSAL
 # https://cmake.org/cmake/help/latest/envvar/CMAKE_OSX_ARCHITECTURES.html
@@ -80,7 +80,7 @@ distclean: clean
 	rm -rf "$(dist_dir)" > /dev/null 2>&1 || true
 
 test: release
-	(cd $(build)/test; LD_LIBRARY_PATH=../lib/Release Release/rime_test)
+	(cd $(build)/test; DYLD_LIBRARY_PATH=../lib/Release Release/rime_test)
 
 test-debug: debug
 	(cd $(build)/test; Debug/rime_test)
