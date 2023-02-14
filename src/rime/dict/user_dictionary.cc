@@ -783,7 +783,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     auto en = result->Peek();
                     if (!en)
                         break;
-					for (int j = 1; j < 7, j <= i; j++) {
+					for (int j = 1; j <= i; j++) {
 						if (!std::strcmp(words[j], en->text.c_str())) {
 							result->Next();
 							en = result->Peek();
