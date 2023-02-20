@@ -276,8 +276,9 @@ namespace rime {
 	else if (ctx->get_option("is_enhanced") && ctx->get_option("is_hidden")
 		&& boost::regex_match(dict_->name(), boost::regex("^jmnts|snts|fmnts|spnts$")))
 		;
-	else if (!ctx->get_option("is_fixed") && engine_->schema()->schema_id() == "sbpy" &&
-		boost::regex_match(dict_->name(), boost::regex("^pygd|pygd_lookup$")))
+	else if (!(ctx->get_option("fixed") || ctx->get_option("mixed") || ctx->get_option("single"))
+		&& engine_->schema()->schema_id() == "sbpy" 
+		&& boost::regex_match(dict_->name(), boost::regex("^pygd|pygd_lookup$")))
 		;
 	else if (!ctx->get_option("is_enhanced") && engine_->schema()->schema_id() == "sbjm" &&
 		boost::regex_match(dict_->name(), boost::regex("^jmn|jmn_lookup$")))

@@ -117,7 +117,7 @@ namespace rime {
 		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sbf[mxj]|sbjm|sbsp$"));
 		bool num_pop = ctx->get_option("num_pop") && boost::regex_match(schema, boost::regex("^sbf[mxj]|sbjm|sbsp$"));
 		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm$"));
-		bool is_popped = ctx->get_option("is_popped") && ctx->get_option("is_fixed") 
+		bool is_popped = (ctx->get_option("mixed") || ctx->get_option("single")) 
 			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
 		bool is_editable = is_popped && len >= 4 && !is_initial;
 
@@ -150,24 +150,6 @@ namespace rime {
 			&& boost::regex_match(schema, boost::regex("^sbf[mxj]|sbjm|sbsp|spzdy|fmzdy|jmzdy$"))) {
 			return kNoop;
 		}
-
-		//if (isdigit(ch) && is_enhanced && 2 == len && belongs_to(c1, initials_) && num_pop && schema != "sbjm"
-		//		&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 1]) == string::npos) {
-		//	if (is_buffered) {
-		//		ctx->set_caret_pos(ctx->caret_pos() - 1);
-		//		ctx->ConfirmCurrentSelection();
-		//		ctx->set_caret_pos(ctx->caret_pos() + 1);
-		//	}
-		//	else {
-		//		string rest = ctx->input().substr(1, 1);
-		//		ctx->set_input(ctx->input().substr(0, 1));
-		//		ctx->ConfirmCurrentSelection();
-		//		ctx->Commit();
-		//		ctx->set_input(rest);
-		//	}
-		//	ctx->PushInput(tolower(ch));
-		//	return kAccepted;
-		//}
 
 		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_) && num_pop
 			&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 2]) == string::npos) {
