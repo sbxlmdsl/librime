@@ -56,7 +56,10 @@ bool Context::HasMenu() const {
 bool Context::HasMore() const {
   if (composition_.empty())
     return false;
-  const auto& menu(composition_.back().menu);
+  auto seg = composition_.back();
+  if (seg.length == 2)
+	  return false;
+  const auto& menu(seg.menu);
   return menu && menu->candidate_count() > 1;
 }
 

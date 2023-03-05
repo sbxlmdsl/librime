@@ -144,7 +144,7 @@ ProcessResult AsciiComposer::ProcessKeyEvent(const KeyEvent& key_event) {
   const char c1 = ctx->input()[comfirmed_pos];
   bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mxj]|sbjm|sbsp|sbpy$"));
 
-  if (!ascii_mode && is_sbxlm && len == 1 && islower(c1) && ch == XK_Return ) {
+  if (!ascii_mode && is_sbxlm && len == 1 && islower(c1) && ch == XK_Tab ) {
 	  if (!key_event.release()) {
 		  SwitchAsciiMode(true, kAsciiModeSwitchInline);
 		  return kAccepted;
