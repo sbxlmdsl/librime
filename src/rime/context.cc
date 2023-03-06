@@ -57,7 +57,7 @@ bool Context::HasMore() const {
   if (composition_.empty())
     return false;
   auto seg = composition_.back();
-  if (seg.length == 2)
+  if (seg.length >= 2 && seg.length <= 3)
 	  return false;
   const auto& menu(seg.menu);
   return menu && menu->candidate_count() > 1;
