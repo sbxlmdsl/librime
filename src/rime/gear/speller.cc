@@ -115,7 +115,7 @@ namespace rime {
 		bool pro_char = ctx->get_option("pro_char") && boost::regex_match(schema, boost::regex("^sbf[mxj]|sbsp$"));
 		bool is_buffered = ctx->get_option("is_buffered") && boost::regex_match(schema, boost::regex("^sbf[mxj]|sbjm|sbsp$"));
 		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sbf[mxj]|sbjm|sbsp$"));
-		bool num_pop = ctx->get_option("num_pop") && boost::regex_match(schema, boost::regex("^sbf[mxj]|sbjm|sbsp$"));
+		//bool num_pop = ctx->get_option("num_pop") && boost::regex_match(schema, boost::regex("^sbf[mxj]|sbjm|sbsp$"));
 		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm$"));
 		bool is_popped = (ctx->get_option("mixed") || ctx->get_option("single")) 
 			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
@@ -151,42 +151,42 @@ namespace rime {
 			return kNoop;
 		}
 
-		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_) && num_pop
-			&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 2]) == string::npos) {
-			if (is_buffered) {
-				ctx->set_caret_pos(ctx->caret_pos() - 1);
-				ctx->ConfirmCurrentSelection();
-				ctx->set_caret_pos(ctx->caret_pos() + 1);
-			}
-			else {
-				string rest = ctx->input().substr(2, 1);
-				ctx->set_input(ctx->input().substr(0, 2));
-				ctx->ConfirmCurrentSelection();
-				ctx->Commit();
-				ctx->set_input(rest);
-			}
-			ctx->PushInput(tolower(ch));
-			return kAccepted;
-		}
+		//if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_) && num_pop
+		//	&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 2]) == string::npos) {
+		//	if (is_buffered) {
+		//		ctx->set_caret_pos(ctx->caret_pos() - 1);
+		//		ctx->ConfirmCurrentSelection();
+		//		ctx->set_caret_pos(ctx->caret_pos() + 1);
+		//	}
+		//	else {
+		//		string rest = ctx->input().substr(2, 1);
+		//		ctx->set_input(ctx->input().substr(0, 2));
+		//		ctx->ConfirmCurrentSelection();
+		//		ctx->Commit();
+		//		ctx->set_input(rest);
+		//	}
+		//	ctx->PushInput(tolower(ch));
+		//	return kAccepted;
+		//}
 
-		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_) && num_pop && schema == "sbjm" 
-			&& string("aeuio").find(ctx->input()[comfirmed_pos + 1]) == string::npos
-			&& string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos) {
-			if (is_buffered) {
-				ctx->set_caret_pos(ctx->caret_pos() - 2);
-				ctx->ConfirmCurrentSelection();
-				ctx->set_caret_pos(ctx->caret_pos() + 2);
-			}
-			else {
-				string rest = ctx->input().substr(1, 2);
-				ctx->set_input(ctx->input().substr(0, 1));
-				ctx->ConfirmCurrentSelection();
-				ctx->Commit();
-				ctx->set_input(rest);
-			}
-			ctx->PushInput(tolower(ch));
-			return kAccepted;
-		}
+		//if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_) && num_pop && schema == "sbjm" 
+		//	&& string("aeuio").find(ctx->input()[comfirmed_pos + 1]) == string::npos
+		//	&& string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos) {
+		//	if (is_buffered) {
+		//		ctx->set_caret_pos(ctx->caret_pos() - 2);
+		//		ctx->ConfirmCurrentSelection();
+		//		ctx->set_caret_pos(ctx->caret_pos() + 2);
+		//	}
+		//	else {
+		//		string rest = ctx->input().substr(1, 2);
+		//		ctx->set_input(ctx->input().substr(0, 1));
+		//		ctx->ConfirmCurrentSelection();
+		//		ctx->Commit();
+		//		ctx->set_input(rest);
+		//	}
+		//	ctx->PushInput(tolower(ch));
+		//	return kAccepted;
+		//}
 
 		if (string("AEUIO").find(ch) != string::npos && 3 == len
 			&& boost::regex_match(schema, boost::regex("^sbf[mxj]|sbsp$"))) {
@@ -322,6 +322,19 @@ namespace rime {
 					return kAccepted;
 				}
 			}
+		}
+
+		if (4 == len && belongs_to(c1, initials_) 
+			&& boost::regex_match(schema, boost::regex("^sbfx$"))
+			&& isdigit(ctx->input()[comfirmed_pos + 3])) {
+			ctx->ConfirmCurrentSelection();
+			if (!is_buffered) {
+				ctx->Commit();
+			}
+			if (isdigit(ch))
+				return kNoop;
+			ctx->PushInput(ch);
+			return kAccepted;
 		}
 
         if (4 == len && (isupper(ch) || !ctx->HasMenu()) && belongs_to(c1, initials_)
