@@ -257,7 +257,7 @@ namespace rime {
     
     an<Translation> translation;
 	if (dict_ && dict_->loaded()
-		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^sn|snts|fmn|fmnts|spn||spnts|jmn|jmnts$"))
+		&& (!ctx->get_option("is_enhanced") && boost::regex_match(dict_->name(), boost::regex("^fmn|fmnts|spn||spnts|jmn|jmnts$"))
 			|| ctx->get_option("third_pop") && boost::regex_match(dict_->name(), boost::regex("^sss|jm3|jmsbb$")))
 		|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3|jmsbb$"))
 		|| ctx->get_option("slow_adjust") && (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
@@ -273,7 +273,12 @@ namespace rime {
 		&& code.length() < dict_->name().length() && ctx->get_option("is_hidden"))
 		;
 	else if (ctx->get_option("is_enhanced") && ctx->get_option("is_hidden")
-		&& boost::regex_match(dict_->name(), boost::regex("^jmnts|snts|fmnts|spnts$")))
+		&& boost::regex_match(dict_->name(), boost::regex("^jmnts|fmnts|spnts$")))
+		;
+	else if (ctx->get_option("is_enhanced") && !ctx->get_option("is_hidden")
+		&& boost::regex_match(dict_->name(), boost::regex("^fmnts|spnts$"))
+		&& code.length() == 2 && string("aeuio").find(code[1]) != string::npos
+		)
 		;
 	else if (!(ctx->get_option("fixed") || ctx->get_option("mixed") || ctx->get_option("single"))
 		&& engine_->schema()->schema_id() == "sbpy" 
