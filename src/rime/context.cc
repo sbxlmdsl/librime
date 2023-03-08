@@ -302,9 +302,9 @@ bool Context::OkFourth() const {
 	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
 		return false;
 	auto seg = composition_.back();
-	return islower(input_[seg.start]) && seg.length == 4 
-		&& string("aeuio").find(input_[2]) == string::npos
-		&& islower(input_[seg.start + 3]);
+	return islower(input_[seg.start]) && seg.length == 4
+		&& string("aeuio").find(input_[2]) == string::npos;
+		//&& islower(input_[seg.start + 3]);
 }
 
 bool Context::OkFifth() const {
