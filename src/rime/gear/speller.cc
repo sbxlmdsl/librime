@@ -146,6 +146,12 @@ namespace rime {
 			return kAccepted;
 		}
 
+		if (string("AEUIO").find(ch) != string::npos && 2 == len
+			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
+			ctx->PushInput(tolower(ch));
+			return kAccepted;
+		}
+
 		if (isdigit(ch) && !ctx->get_option("is_enhanced") && 1 <= len && belongs_to(c1, initials_)
 			&& boost::regex_match(schema, boost::regex("^sbf[mxj]|sbjm|sbsp|spzdy|fmzdy|jmzdy$"))) {
 			return kNoop;
