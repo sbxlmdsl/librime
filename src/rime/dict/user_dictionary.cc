@@ -554,7 +554,9 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     if (enable_filtering_ &&
                         9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
                         continue;
-                    if (!single_selection_ ) {
+					if (e->text == string(words[0]))
+						continue;
+					if (!single_selection_ ) {
                         if (prefixed && len == 10 && delete_threshold_ > 0) {
                             if (!DeleteEntry(e))
                                 result->Add(e);
@@ -725,7 +727,9 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
             ++count;
             ++exact_match_count;
             if (boost::regex_match(name_, boost::regex("^sbfx$"))) {
-                if (len == 5 || (prefixed && len == 10))
+				if (len == 4 || (prefixed && len == 9))
+					std::strcpy(words[0], e_holder->text.c_str());
+				else if (len == 5 || (prefixed && len == 10))
                     std::strcpy(words[0], e_holder->text.c_str());
                 else if (len == 6 || (prefixed && len == 11))
                     std::strcpy(words[1], e_holder->text.c_str());
