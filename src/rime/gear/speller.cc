@@ -254,7 +254,7 @@ namespace rime {
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
 			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
 			if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
-				|| islower(ch) && ctx->get_option("is_enhanced")) {
+				|| islower(ch) && ctx->get_option("is_enhanced") && !ctx->get_option("mixed_pop")) {
 				if (is_buffered) {
 					ctx->set_caret_pos(ctx->caret_pos() - 1);
 					ctx->ConfirmCurrentSelection();
@@ -271,14 +271,6 @@ namespace rime {
 				return kAccepted;
 			}
 			else if (string("23789").find(ch) != string::npos && ctx->get_option("is_enhanced")) {
-				//char c = ' ';
-				//switch (ch) {
-				//case '2': c = 'a'; break;
-				//case '3': c = 'e'; break;
-				//case '7': c = 'u'; break;
-				//case '8': c = 'i'; break;
-				//case '9': c = 'o'; break;
-				//}
 				ctx->PushInput(ch);
 				return kAccepted;
 			}
