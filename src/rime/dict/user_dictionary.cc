@@ -156,10 +156,10 @@ namespace rime {
 
     UserDictionary::UserDictionary(const string &name, an<Db> db, const string &schema, const int &delete_threshold,
                                    const bool &enable_filtering, const bool &forced_selection,
-                                   const bool &single_selection, const bool &strong_mode, const bool &lower_case)
+                                   const bool &single_selection, const bool &lower_case)
             : name_(name), db_(db), schema_(schema), delete_threshold_(delete_threshold),
               enable_filtering_(enable_filtering),
-              forced_selection_(forced_selection), single_selection_(single_selection), strong_mode_(strong_mode),
+              forced_selection_(forced_selection), single_selection_(single_selection),
               lower_case_(lower_case) {
     }
 
@@ -335,8 +335,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
             if (len < 3) {
                 accessor = db_->Query(input);
             } else if (prefixed) {
-                if (boost::regex_match(name_, boost::regex("^sbjm$")) && strong_mode_ ||
-                    boost::regex_match(name_, boost::regex("^sbfx$"))
+                if (boost::regex_match(name_, boost::regex("^sbfx$"))
                     && len >= 8 && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
                     if (len == 8)
                         return 0;
@@ -346,8 +345,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     return 0;
                 accessor = db_->Query(input.substr(0, 8));
             } else {
-                if (boost::regex_match(name_, boost::regex("^sbjm$")) && strong_mode_ ||
-                    boost::regex_match(name_, boost::regex("^sbfx$"))
+                if (boost::regex_match(name_, boost::regex("^sbfx$"))
                     && len >= 3 && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
                     if (len == 3)
                         return 0;
@@ -524,7 +522,8 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                 if (boost::regex_match(name_, boost::regex("^sbfx$")) && 
                     string("aeuio").find(input[l]) != string::npos && last_key[l + 3] != ' ')
                     continue;
-                if (e->text == string(words[0]))
+				if (e->text == string(words[0])
+					&& !boost::regex_match(name_, boost::regex("^sbfx$")))
                     continue;
                 else if (boost::regex_match(name_, boost::regex("^sbjm|sbsp|sbf[mx]$")) &&
                          !single_selection_ && string("23789").find(input[l]) == string::npos) {
@@ -730,9 +729,9 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
 				if (len == 4 || (prefixed && len == 9))
 					std::strcpy(words[0], e_holder->text.c_str());
 				else if (len == 5 || (prefixed && len == 10))
-                    std::strcpy(words[0], e_holder->text.c_str());
-                else if (len == 6 || (prefixed && len == 11))
                     std::strcpy(words[1], e_holder->text.c_str());
+                else if (len == 6 || (prefixed && len == 11))
+                    std::strcpy(words[2], e_holder->text.c_str());
             } else {
                 if (len == 3 || (prefixed && len == 8))
                     std::strcpy(words[0], e_holder->text.c_str());
@@ -1078,13 +1077,11 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
         config->GetBool(ticket.name_space + "/forced_selection", &forced_selection);
         bool single_selection = false;
         config->GetBool(ticket.name_space + "/single_selection", &single_selection);
-        bool strong_mode = false;
-        config->GetBool(ticket.name_space + "/strong_mode", &strong_mode);
         bool lower_case = false;
         config->GetBool(ticket.name_space + "/lower_case", &lower_case);
 
         return new UserDictionary(dict_name, db, ticket.schema->schema_id(), delete_threshold, enable_filtering,
-                                  forced_selection, single_selection, strong_mode, lower_case);
+                                  forced_selection, single_selection, lower_case);
     }
 
 }  // namespace rime
