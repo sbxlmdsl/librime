@@ -56,7 +56,7 @@ class UserDictionary : public Class<UserDictionary, const Ticket&> {
  public:
 	 UserDictionary(const string& name, an<Db> db, const string& schema);
 	 UserDictionary(const string& name, an<Db> db, const string& schema, const int& delete_threshold, const bool& enable_filtering, 
-		 const bool& forced_seletion, const bool& single_selection, const bool& strong_mode, const bool& lower_case);
+		 const bool& forced_seletion, const bool& single_selection, const bool& lower_case);
 	 virtual ~UserDictionary();
 
   void Attach(const an<Table>& table, const an<Prism>& prism);
