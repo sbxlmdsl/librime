@@ -329,11 +329,6 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
 			  || islower(c1) && ctx->input().length() <= 3)) {
 			  std::strcpy(context->menu.select_keys, replace_select_keys.c_str());
 		  }
-		  else if (islower(c1) && ctx->input().length() == 4
-			  && string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[2]) != string::npos
-			  && boost::regex_match(schema->schema_id(), boost::regex("^sbfj$"))) {
-			  std::strcpy(context->menu.select_keys, replace_select_keys.c_str());
-		  }
 		  else {
 			  std::strcpy(context->menu.select_keys, sbxlm_select_keys.c_str()); //fallback to sbxlm
 		  }
