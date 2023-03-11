@@ -313,49 +313,30 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       if (schema) {
         const string& select_keys(schema->select_keys());
 		const char c1 = ctx->input()[0];
+		string sbxlm_select_keys = string(" aeuio");
+		string replace_select_keys = string("      ");
         if (!select_keys.empty()) {
           context->menu.select_keys = new char[select_keys.length() + 1];
-          if (!select_keys.compare(" aeuio") &&!ctx->HasMore())
-            std::strcpy(context->menu.select_keys, string("      ").c_str()); // hack for sbxlm
-		  else if (!select_keys.compare(" aeuio") &&
-			  (!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4 
-				  && boost::regex_match(schema->schema_id(), boost::regex("^sbfx$")) 
-				  && string("aeuio").find(ctx->input()[2]) == string::npos && string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) == string::npos
-				  ))) // hack for sbfx
-			  std::strcpy(context->menu.select_keys, string("      ").c_str()); 
-		  else
-            std::strcpy(context->menu.select_keys, select_keys.c_str());
-        }
-        Config* config = schema->config();
-        an<ConfigList>  select_labels = config->GetList("menu/alternative_select_labels");
-        string labels[] = {"6 ","7 ","8 ","9 ","0 "};
-        if (select_labels && (size_t)page_size <= select_labels->size()) {
-          context->select_labels = new char*[page_size];
-          for (size_t i = 0; i < (size_t)page_size; ++i) {
-            an<ConfigValue> value = select_labels->GetValueAt(i);
-            string label = value->str();
-            context->select_labels[i] = new char[label.length() + 1];
-			if (!select_keys.compare(" aeuio") && ctx->input().length() > 1
-				&& string("uo").find(c1) != string::npos
-				&& string("aeuio_").find(ctx->input()[1]) == string::npos) {
-				std::strcpy(context->select_labels[i], label.c_str());
-			}
-			else if (!select_keys.compare(" aeuio") &&
-				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() <= 3)))
-              std::strcpy(context->select_labels[i], " "); // hack for sbxlm
-			else if (!select_keys.compare(" aeuio") && islower(c1) && ctx->input().length() == 4
-				&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[2]) != string::npos
-				&& boost::regex_match(schema->schema_id(), boost::regex("^sbfj$")))
-				std::strcpy(context->select_labels[i], " "); // hack for fjcz
-			else if (!select_keys.compare(" aeuio") &&
-				(!ctx->HasMore() || (string("aeuio").find(c1) != string::npos || islower(c1) && ctx->input().length() == 4
-					&& boost::regex_match(schema->schema_id(), boost::regex("^sbfx$")) 
-					&& string("aeuio").find(ctx->input()[2]) == string::npos && string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[3]) == string::npos
-					)))
-				std::strcpy(context->select_labels[i], " ");  // hack for sbfx
-			else
-              std::strcpy(context->select_labels[i], label.c_str());
-          }
+		  if (select_keys.compare(sbxlm_select_keys)) //not sbxlm
+			  std::strcpy(context->menu.select_keys, select_keys.c_str());
+		  else if (ctx->input().length() > 1
+			  && string("uo").find(c1) != string::npos
+			  && string("aeuio").find(ctx->input()[1]) == string::npos) {
+			  std::strcpy(context->menu.select_keys, sbxlm_select_keys.c_str());
+		  }
+		  else if (!ctx->HasMore()
+			  || (string("aeuio").find(c1) != string::npos
+			  || islower(c1) && ctx->input().length() <= 3)) {
+			  std::strcpy(context->menu.select_keys, replace_select_keys.c_str());
+		  }
+		  else if (islower(c1) && ctx->input().length() == 4
+			  && string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[2]) != string::npos
+			  && boost::regex_match(schema->schema_id(), boost::regex("^sbfj$"))) {
+			  std::strcpy(context->menu.select_keys, replace_select_keys.c_str());
+		  }
+		  else {
+			  std::strcpy(context->menu.select_keys, sbxlm_select_keys.c_str()); //fallback to sbxlm
+		  }
         }
       }
     }
