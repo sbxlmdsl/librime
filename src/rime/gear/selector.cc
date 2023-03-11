@@ -152,61 +152,58 @@ ProcessResult Selector::ProcessKeyEvent(const KeyEvent& key_event) {
   size_t len = ctx->input().length() - comfirmed_pos;
   const char c1 = ctx->input()[comfirmed_pos];
 
-  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mxj]|sbjm|sbsp|sbpy$"));
-  
-  if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
-	  if (len == 1 && c1 == '\\' && string("aeuio").find(ch) != string::npos)
-		  return kNoop;
-	  else {
-		  size_t pos = select_keys.find((char)ch);
-		  if (pos != string::npos) {
-			  index = static_cast<int>(pos);
-		  }
-	  }
-  }
-  else if (ch >= XK_0 && ch <= XK_9)
-    index = ((ch - XK_0) + 9) % 10;
-  else if (ch >= XK_KP_0 && ch <= XK_KP_9)
-    index = ((ch - XK_KP_0) + 9) % 10;
-  if (index >= 0) {
-	  if (is_sbxlm && len > 0 && islower(c1)) {
-		  if (key_event.ctrl() && (ch >= XK_0 && ch <= XK_9 || ch >= XK_KP_0 && ch <= XK_KP_9))
-			  ;
-		  else if (boost::regex_match(schema, boost::regex("^sbpy$")))
-			  ;
-		  else if (len == 1)
-			  return kNoop;
-		  else if (string("aeuio").find(c1) != string::npos) {
-			  if (string("aei").find(c1) != string::npos)
-				  return kNoop;
-			  else if (string("aeuio").find(ctx->input()[comfirmed_pos + 1]) != string::npos)
-				  return kNoop;
-		  }
-		  else if (len == 7 && boost::regex_match(schema, boost::regex("^sbfx$")))
-			  ;
-		  else if (len == 6 && !boost::regex_match(schema, boost::regex("^sbfx$")))
-			  ;
-		  else if (len == 5 && boost::regex_match(schema, boost::regex("^sbfx$")) && current_segment.HasTag("paging"))
-			  ;
-		  else if (len == 5 && boost::regex_match(schema, boost::regex("^sbfj$"))
-			  && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) == string::npos)
-			  ;
-		  else if (len == 4) {
-			  if (current_segment.HasTag("paging"))
-				  ;
-			  else if (boost::regex_match(schema, boost::regex("^sbjm$"))) {
-				  return kNoop;
-			  }
-			  else if (string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[comfirmed_pos + 3]) != string::npos)
-				  ;
-			  else if (string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos)
-				  ;
-			  else
-				  return kNoop;
-		  }
-		  else
-			  return kNoop;
-	  }
+		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mx]|sbjm|sbsp|sbpy$"));
+
+		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
+			if (len == 1 && c1 == '\\' && string("aeuio").find(ch) != string::npos)
+				return kNoop;
+			else {
+				size_t pos = select_keys.find((char)ch);
+				if (pos != string::npos) {
+					index = static_cast<int>(pos);
+				}
+			}
+        }
+        else if (ch >= XK_0 && ch <= XK_9)
+            index = ((ch - XK_0) + 9) % 10;
+        else if (ch >= XK_KP_0 && ch <= XK_KP_9)
+            index = ((ch - XK_KP_0) + 9) % 10;
+        if (index >= 0) {
+			if (is_sbxlm && len > 0 && islower(c1)) {
+				if (key_event.ctrl() && (ch >= XK_0 && ch <= XK_9 || ch >= XK_KP_0 && ch <= XK_KP_9))
+					;
+				else if (boost::regex_match(schema, boost::regex("^sbpy$")))
+					;
+				else if (len == 1)
+					return kNoop;
+				else if (string("aeuio").find(c1) != string::npos) {
+					if (string("aei").find(c1) != string::npos)
+						return kNoop;
+					else if (string("aeuio").find(ctx->input()[comfirmed_pos + 1]) != string::npos)
+						return kNoop;
+				}
+				else if (len == 7 && boost::regex_match(schema, boost::regex("^sbfx$")))
+					;
+				else if (len == 6 && !boost::regex_match(schema, boost::regex("^sbfx$")))
+					;
+				else if (len == 5 && boost::regex_match(schema, boost::regex("^sbfx$")) && current_segment.HasTag("paging"))
+					;
+				else if (len == 4) {
+					if (current_segment.HasTag("paging"))
+						;
+					else if (boost::regex_match(schema, boost::regex("^sbjm$"))) {
+						return kNoop;
+					}
+					else if (string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[comfirmed_pos + 3]) != string::npos)
+						;
+					else if (string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos)
+						;
+					else
+						return kNoop;
+				}
+				else
+					return kNoop;
+			}
 
 	  SelectCandidateAt(ctx, index);
 	  return kAccepted;

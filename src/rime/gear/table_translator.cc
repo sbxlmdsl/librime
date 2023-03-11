@@ -263,12 +263,10 @@ namespace rime {
 		|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3|jmsbb$"))
 		|| ctx->get_option("slow_adjust") && (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
 		;
-	else if (boost::regex_match(dict_->name(), boost::regex("^spzdy|fmzdy|jmzdy$")) && code.length() == 1)
+	else if (boost::regex_match(dict_->name(), boost::regex("^spzdy|fmzdy|fxzdy|jmzdy$")) && code.length() == 1)
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^sbsb|spsb|sps_b$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
 		;
-	else if (boost::regex_match(dict_->name(), boost::regex("^fjcz$")) && code.length() < 4)
-		; //for sbfj words
 	else if (boost::regex_match(dict_->name(), boost::regex("^sb|sbsb|spsb|sps_b$"))
 		&& engine_->schema()->schema_id() != "sbjm"
 		&& code.length() < dict_->name().length() && ctx->get_option("is_hidden"))
@@ -390,9 +388,6 @@ namespace rime {
 		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbf[mx]$"))
 			&& 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
 			; //no change for chars
-		}
-		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbfj$"))) {
-			; //no change for sbfj
 		}
 		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbsp|sbf[mx]$"))
 			&& e->preedit.length() < 4)
