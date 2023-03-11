@@ -262,7 +262,7 @@ namespace rime {
 		|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3|jmsbb$"))
 		|| ctx->get_option("slow_adjust") && (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
 		;
-	else if (boost::regex_match(dict_->name(), boost::regex("^spzdy|fmzdy|jmzdy$")) && code.length() == 1)
+	else if (boost::regex_match(dict_->name(), boost::regex("^spzdy|fmzdy|fxzdy|jmzdy$")) && code.length() == 1)
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^sbsb|spsb|sps_b$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
 		;

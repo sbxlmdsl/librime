@@ -153,7 +153,7 @@ namespace rime {
 		}
 
 		if (isdigit(ch) && !ctx->get_option("is_enhanced") && 1 <= len && belongs_to(c1, initials_)
-			&& boost::regex_match(schema, boost::regex("^sbf[mx]|sbjm|sbsp|spzdy|fmzdy|jmzdy$"))) {
+			&& boost::regex_match(schema, boost::regex("^sbf[mx]|sbjm|sbsp|spzdy|fmzdy|fxzdy|jmzdy$"))) {
 			return kNoop;
 		}
 
