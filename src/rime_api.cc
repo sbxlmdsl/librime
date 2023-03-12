@@ -307,7 +307,7 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       if (schema) {
         const string& select_keys(schema->select_keys());
 		const char c1 = ctx->input()[0];
-		string sbxlm_select_keys = string(" aeuio");
+		string sbxlm_select_keys = string("_aeuio");
 		string replace_select_keys = string("      ");
         if (!select_keys.empty()) {
           context->menu.select_keys = new char[select_keys.length() + 1];
