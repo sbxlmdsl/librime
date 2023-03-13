@@ -525,15 +525,12 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
 				if (e->text == string(words[0])
 					&& !boost::regex_match(name_, boost::regex("^sbfx$")))
                     continue;
-                else if (boost::regex_match(name_, boost::regex("^sbjm|sbsp|sbf[mx]$")) && !single_selection_) {
-                    if (boost::regex_match(name_, boost::regex("^sbjm$")) && enable_filtering_ 
-						&& string("aeuio").find(input[l]) != string::npos
+                else if (boost::regex_match(name_, boost::regex("^sbjm|sbsp|sbf[mx]$")) &&
+                         !single_selection_ && string("23789").find(input[l]) == string::npos) {
+                    if (boost::regex_match(name_, boost::regex("^sbjm$")) && enable_filtering_ &&
+                        string("aeuio").find(input[l]) != string::npos
                         && 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
                         continue;
-					else if (boost::regex_match(name_, boost::regex("^sbfx$")) && enable_filtering_ 
-						&& string("23789").find(input[l]) != string::npos 
-						&& 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
-						continue;
 					else if (prefixed && len == 9 && delete_threshold_ > 0) {
                         if (!DeleteEntry(e))
                             result->Add(e);
