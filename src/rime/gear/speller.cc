@@ -114,7 +114,7 @@ namespace rime {
 		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mx]|sbjm|sbsp|sbpy$"));
 		bool pro_char = ctx->get_option("pro_char") && boost::regex_match(schema, boost::regex("^sbf[mx]|sbsp$"));
 		bool is_buffered = ctx->get_option("is_buffered") && boost::regex_match(schema, boost::regex("^sbf[mx]|sbjm|sbsp$"));
-		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sbfm]|sbjm|sbsp$"));
+		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sbfm|sbjm|sbsp$"));
 		bool no_num_pop = ctx->get_option("no_num_pop") && boost::regex_match(schema, boost::regex("^sbfm|sbjm|sbsp$"));
 		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm$"));
 		bool is_popped = (ctx->get_option("mixed") || ctx->get_option("single")) 
@@ -171,7 +171,7 @@ namespace rime {
 				ctx->Commit();
 				ctx->set_input(rest);
 			}
-			ctx->PushInput(tolower(ch));
+			ctx->PushInput(ch);
 			return kAccepted;
 		}
 
@@ -190,7 +190,7 @@ namespace rime {
 				ctx->Commit();
 				ctx->set_input(rest);
 			}
-			ctx->PushInput(tolower(ch));
+			ctx->PushInput(ch);
 			return kAccepted;
 		}
 
