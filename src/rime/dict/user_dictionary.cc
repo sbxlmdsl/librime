@@ -537,24 +537,11 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
             } else if (boost::regex_match(name_, boost::regex("^sbjm|sbsp|sbf[mx]$")) 
 				&& (!prefixed && len == 4 || (prefixed && len == 9))) {
                 int l = len == 4 ? 3 : 8;
-                //if (boost::regex_match(name_, boost::regex("^sbfx$")) && 
-                //    string("aeuio").find(input[l]) != string::npos && last_key[l + 3] != ' ')
-                //    continue;
-				//if (boost::regex_match(name_, boost::regex("^sbfx$")) 
-				//	&& enable_filtering_
-				//	&& string("23789").find(input[l]) != string::npos
-				//	&& string("QWRTSDFGZXCVBYPHJKLNM").find(last_key[l + 6]) != string::npos)
-				//	continue;
 				if (e->text == string(words[0])
 					&& !boost::regex_match(name_, boost::regex("^sbfx$")))
                     continue;
                 else if (boost::regex_match(name_, boost::regex("^sbjm|sbsp|sbf[mx]$")) &&
                          !single_selection_ && string("23789").find(input[l]) == string::npos) {
-     //               if (boost::regex_match(name_, boost::regex("^sbjm$")) && enable_filtering_ &&
-     //                   string("aeuio").find(input[l]) != string::npos
-     //                   && 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
-     //                   continue;
-					//else 
 					if (prefixed && len == 9 && delete_threshold_ > 0) {
                         if (!DeleteEntry(e))
                             result->Add(std::move(e));
@@ -574,9 +561,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                                           boost::regex("^sbjm|sbsp|sbf[mx]$")) &&
                        (!prefixed && len == 5 || (prefixed && len == 10))) {
                 if (boost::regex_match(name_, boost::regex("^sbfx$"))) {
-                    //if (enable_filtering_ &&
-                    //    9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
-                    //    continue;
+
 					if (e->text == string(words[0]))
 						continue;
 					if (!single_selection_ ) {
@@ -644,9 +629,6 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                                           boost::regex("^sbjm|sbsp|sbf[mx]$")) &&
                        (!prefixed && len == 6 || (prefixed && len == 11))) {
                 if (boost::regex_match(name_, boost::regex("^sbfx$"))) {
-                    //if (enable_filtering_ &&
-                    //    9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
-                    //    continue;
                     if (!single_selection_) {
                         int i = 0;
                         int j = (len == 6) ? 5 : 10;
@@ -706,13 +688,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     }
                     if (i < j)
                         continue;
-                    //int l = len == 6 ? 3 : 8;
-                    //if (boost::regex_match(name_, boost::regex("^sbjm$")) && enable_filtering_ &&
-                    //    string("aeuio").find(input[l]) != string::npos
-                    //    && 9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
-                    //    continue;
-                    //else
-                        result->Add(e);
+                        result->Add(std::move(e));
                 }
             } else if (boost::regex_match(name_, boost::regex("^sbfx$")) && (len == 7 || (prefixed && len == 12))) {
                 int i;
@@ -729,7 +705,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
                     continue;
                 else
-                    result->Add(e);
+                    result->Add(std::move(e));
             } else {
                 if (prefixed && delete_threshold_ > 0) {
                     if (!DeleteEntry(e))
