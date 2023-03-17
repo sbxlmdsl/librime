@@ -689,7 +689,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     }
                     if (i < j)
                         continue;
-                    result->Add(e);
+                    result->Add(std::move(e));
                 }
             } else if (boost::regex_match(name_, boost::regex("^sbfx$")) && (len == 7 || (prefixed && len == 12))) {
                 int i;
@@ -702,7 +702,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                 }
                 if (i < j)
                     continue;
-                result->Add(e);
+                result->Add(std::move(e));
             } else {
                 if (prefixed && delete_threshold_ > 0) {
                     if (!DeleteEntry(e))
