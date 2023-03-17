@@ -334,25 +334,27 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
             if (len < 3) {
                 accessor = db_->Query(input);
             } else if (prefixed) {
-                if (boost::regex_match(name_, boost::regex("^sbfx$"))
-                    && len >= 8 && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
-                    if (len == 8)
-                        return 0;
-                } else if (len == 9 && boost::regex_match(name_, boost::regex("^sbfx$"))
-                           && string("aeuio").find(input[8]) != string::npos &&
-                           string("qwrtsdfgzxcvbyphjklnm").find(input[9]) != string::npos)
-                    return 0;
+				if (boost::regex_match(name_, boost::regex("^sbfx$"))
+					&& len >= 8 && string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos) {
+					if (len == 8)
+						return 0;
+					else if (len == 9 && boost::regex_match(name_, boost::regex("^sbfx$"))
+						&& string("qwrtsdfgzxcvbyphjklnm").find(input[8]) != string::npos &&
+						string("aeuio").find(input[9]) != string::npos)
+						return 0;
+				}
                 accessor = db_->Query(input.substr(0, 8));
             } else {
-                if (boost::regex_match(name_, boost::regex("^sbfx$"))
-                    && len >= 3 && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
-                    if (len == 3)
-                        return 0;
-                } else if (len == 4 && boost::regex_match(name_, boost::regex("^sbfx$"))
-                           && string("aeuio").find(input[2]) != string::npos &&
-                           string("qwrtsdfgzxcvbyphjklnm").find(input[3]) != string::npos)
-                    return 0;
-                accessor = db_->Query(input.substr(0, 3));
+				if (boost::regex_match(name_, boost::regex("^sbfx$"))
+					&& len >= 3 && string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos) {
+					if (len == 3)
+						return 0;
+					else if (len == 4 && boost::regex_match(name_, boost::regex("^sbfx$"))
+						&& string("qwrtsdfgzxcvbyphjklnm").find(input[2]) != string::npos 
+						&& string("aeuio").find(input[3]) != string::npos)
+						return 0;
+				}
+				accessor = db_->Query(input.substr(0, 3));
             }
         } else if (boost::regex_match(name_, boost::regex("^sbsp|sbfm$"))) {
             if (len < 4) {
@@ -561,7 +563,6 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                                           boost::regex("^sbjm|sbsp|sbf[mx]$")) &&
                        (!prefixed && len == 5 || (prefixed && len == 10))) {
                 if (boost::regex_match(name_, boost::regex("^sbfx$"))) {
-
 					if (e->text == string(words[0]))
 						continue;
 					if (!single_selection_ ) {
@@ -688,7 +689,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     }
                     if (i < j)
                         continue;
-                        result->Add(std::move(e));
+                    result->Add(e);
                 }
             } else if (boost::regex_match(name_, boost::regex("^sbfx$")) && (len == 7 || (prefixed && len == 12))) {
                 int i;
@@ -701,11 +702,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                 }
                 if (i < j)
                     continue;
-                if (enable_filtering_ &&
-                    9 <= utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length()))
-                    continue;
-                else
-                    result->Add(std::move(e));
+                result->Add(e);
             } else {
                 if (prefixed && delete_threshold_ > 0) {
                     if (!DeleteEntry(e))
