@@ -264,6 +264,9 @@ namespace rime {
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^spzdy|fmzdy|fxzdy|jmzdy$")) && code.length() == 1)
 		;
+	else if (ctx->get_option("fast_pop") && engine_->schema()->schema_id() == "sbfx" 
+		&& boost::regex_match(dict_->name(), boost::regex("^fmn|fmnts|fxn$")))
+		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^sbsb|spsb|sps_b$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^sb|sbsb|spsb|sps_b$"))

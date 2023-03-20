@@ -114,7 +114,8 @@ namespace rime {
 		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mx]|sbjm|sbsp|sbpy$"));
 		bool pro_char = ctx->get_option("pro_char") && boost::regex_match(schema, boost::regex("^sbf[mx]|sbsp$"));
 		bool is_buffered = ctx->get_option("is_buffered") && boost::regex_match(schema, boost::regex("^sbf[mx]|sbjm|sbsp$"));
-		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sbfm|sbjm|sbsp$"));
+		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sbfm|sbjm|sbsp$"))
+			|| ctx->get_option("fast_pop") && boost::regex_match(schema, boost::regex("^sbfx$"));
 		bool no_num_pop = ctx->get_option("no_num_pop") && boost::regex_match(schema, boost::regex("^sbfm|sbjm|sbsp$"));
 		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm$"));
 		bool is_popped = (ctx->get_option("mixed") || ctx->get_option("single")) 
@@ -150,6 +151,32 @@ namespace rime {
 			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
 			ctx->PushInput(tolower(ch));
 			return kAccepted;
+		}
+
+		if (3 == len && belongs_to(c1, initials_)
+			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
+			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
+			if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
+				|| islower(ch) && is_enhanced && !ctx->get_option("mixed_pop")) {
+				if (is_buffered) {
+					ctx->set_caret_pos(ctx->caret_pos() - 1);
+					ctx->ConfirmCurrentSelection();
+					ctx->set_caret_pos(ctx->caret_pos() + 1);
+				}
+				else {
+					string rest = ctx->input().substr(2, 1);
+					ctx->set_input(ctx->input().substr(0, 2));
+					ctx->ConfirmCurrentSelection();
+					ctx->Commit();
+					ctx->set_input(rest);
+				}
+				ctx->PushInput(ch);
+				return kAccepted;
+			}
+			else if (string("23789").find(ch) != string::npos && is_enhanced) {
+				ctx->PushInput(ch);
+				return kAccepted;
+			}
 		}
 
 		if (isdigit(ch) && !ctx->get_option("is_enhanced") && 1 <= len && belongs_to(c1, initials_)
@@ -248,32 +275,6 @@ namespace rime {
 				ctx->Commit();
 			ctx->PushInput(tolower(ch));
 			return kAccepted;
-		}
-
-		if (3 == len && belongs_to(c1, initials_)
-			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
-			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
-			if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
-				|| islower(ch) && ctx->get_option("is_enhanced") && !ctx->get_option("mixed_pop")) {
-				if (is_buffered) {
-					ctx->set_caret_pos(ctx->caret_pos() - 1);
-					ctx->ConfirmCurrentSelection();
-					ctx->set_caret_pos(ctx->caret_pos() + 1);
-				}
-				else {
-					string rest = ctx->input().substr(2, 1);
-					ctx->set_input(ctx->input().substr(0, 2));
-					ctx->ConfirmCurrentSelection();
-					ctx->Commit();
-					ctx->set_input(rest);
-				}
-				ctx->PushInput(ch);
-				return kAccepted;
-			}
-			else if (string("23789").find(ch) != string::npos && ctx->get_option("is_enhanced")) {
-				ctx->PushInput(ch);
-				return kAccepted;
-			}
 		}
 
 		if (is_popped && (ctx->OkSsss() || ctx->OkSssy() || ctx->OkSsy() || ctx->OkSy())
