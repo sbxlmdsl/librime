@@ -55,7 +55,7 @@ class Context {
   bool OkThird() const;
   bool OkFourth() const;
   bool OkFifth() const;
-  bool LastPunct() const;
+  bool FourthDigit() const;
   int CountLength() const;
   int CountLength2() const;
 

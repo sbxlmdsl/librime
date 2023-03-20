@@ -339,8 +339,8 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
 					if (len == 8)
 						return 0;
 					else if (len == 9 && boost::regex_match(name_, boost::regex("^sbfx$"))
-						&& string("qwrtsdfgzxcvbyphjklnm").find(input[8]) != string::npos &&
-						string("aeuio").find(input[9]) != string::npos)
+						&& string("qwrtsdfgzxcvbyphjklnm").find(input[7]) != string::npos &&
+						string("aeuio").find(input[8]) != string::npos)
 						return 0;
 				}
                 accessor = db_->Query(input.substr(0, 8));

@@ -304,6 +304,7 @@ bool Context::OkFourth() const {
 		return false;
 	auto seg = composition_.back();
 	return islower(input_[seg.start]) && seg.length == 4
+		&& !get_option("fast_pop")
 		&& string("aeuio").find(input_[2]) == string::npos;
 		//&& islower(input_[seg.start + 3]);
 }
@@ -319,11 +320,11 @@ bool Context::OkFifth() const {
 		&& islower(input_[seg.start + 3]);
 }
 
-bool Context::LastPunct() const {
+bool Context::FourthDigit() const {
 	if (composition_.empty())
 		return false;
 	int len = input_.length();
-	return (len > 1 
+	return (len == 4 && get_option("fast_pop")
 		&& string("1234567890").find(input_[len - 1]) != string::npos
 		&& string("aeuio").find(input_[0]) == string::npos);
 }
