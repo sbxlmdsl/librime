@@ -304,9 +304,10 @@ bool Context::OkFourth() const {
 		return false;
 	auto seg = composition_.back();
 	return islower(input_[seg.start]) && seg.length == 4
-		&& !get_option("fast_pop")
-		&& string("aeuio").find(input_[2]) == string::npos;
-		//&& islower(input_[seg.start + 3]);
+		&& string("aeuio").find(input_[2]) == string::npos
+		&& (islower(input_[3]) 
+			|| string("1234567890").find(input_[3]) != string::npos
+			&& get_option("is_enhanced"));
 }
 
 bool Context::OkFifth() const {
@@ -324,9 +325,9 @@ bool Context::FourthDigit() const {
 	if (composition_.empty())
 		return false;
 	int len = input_.length();
-	return (len == 4 && get_option("fast_pop")
+	return len == 4 && get_option("fast_pop") && !get_option("is_enhanced")
 		&& string("1234567890").find(input_[len - 1]) != string::npos
-		&& string("aeuio").find(input_[0]) == string::npos);
+		&& string("aeuio").find(input_[0]) == string::npos;
 }
 
 an<Candidate> Context::GetSelectedCandidate() const {
