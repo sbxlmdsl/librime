@@ -224,6 +224,28 @@ namespace rime {
 			return kAccepted;
 		}
 
+		if (isdigit(ch) && is_enhanced && 4 == len && belongs_to(c1, initials_) && !no_num_pop 
+			&& boost::regex_match(schema, boost::regex("^sbf[mx]|sbsp|sbjm$"))
+			&& islower(ctx->input()[comfirmed_pos + 1])
+			&& string("aeuio").find(ctx->input()[comfirmed_pos + 2]) == string::npos
+			&& islower(ctx->input()[comfirmed_pos + 3])
+			) {
+			if (is_buffered) {
+				ctx->set_caret_pos(ctx->caret_pos() - 2);
+				ctx->ConfirmCurrentSelection();
+				ctx->set_caret_pos(ctx->caret_pos() + 2);
+			}
+			else {
+				string rest = ctx->input().substr(2, 2);
+				ctx->set_input(ctx->input().substr(0, 2));
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
+				ctx->set_input(rest);
+			}
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
+
 		if (string("AEUIO").find(ch) != string::npos && 3 == len
 			&& boost::regex_match(schema, boost::regex("^sbf[mx]|sbsp$"))) {
 			if (is_buffered) {
