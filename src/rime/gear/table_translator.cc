@@ -444,7 +444,8 @@ namespace rime {
               phrase = it->text + phrase;  // prepend another word
             }
             size_t phrase_length = utf8::unchecked::distance(phrase.c_str(), phrase.c_str() + phrase.length());
-            if (static_cast<int>(phrase_length) > max_phrase_length_)
+            if (static_cast<int>(phrase_length) > max_phrase_length_
+				&& !engine_->context()->get_option("is_buffered"))
               break;
             DLOG(INFO) << "phrase: " << phrase;
             encoder_->EncodePhrase(phrase, "0");
