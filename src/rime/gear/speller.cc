@@ -309,9 +309,8 @@ namespace rime {
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
 			&& ctx->input().length() == ctx->caret_pos()
 			) {
-			ctx->ConfirmCurrentSelection();
 			if (!is_buffered)
-				ctx->Commit();
+				ctx->ConfirmCurrentSelection(); //don't use commit for ScriptTranslator
 			ctx->PushInput(ch);
 			return kAccepted;
 		}
