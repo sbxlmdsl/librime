@@ -101,10 +101,6 @@ namespace rime {
             return kNoop;
         Context *ctx = engine_->context();
         bool is_initial = belongs_to(ch, initials_);
-        if (!is_initial &&
-            expecting_an_initial(ctx, alphabet_, finals_)) {
-            return kNoop;
-        }
 
 		string schema = engine_->schema()->schema_id();
 		Composition comp = ctx->composition();
@@ -121,11 +117,21 @@ namespace rime {
 			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
 		bool is_editable = is_popped && len >= 4 && !is_initial;
 
+		if (ctx->input().length() == 1 && ctx->input()[0] == 'e' && is_sbxlm
+			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
+			ctx->set_option("is_buffered", true);
+			ctx->Clear();
+		}
+
+		if (!is_initial &&
+			expecting_an_initial(ctx, alphabet_, finals_)) {
+			return kNoop;
+		}
+
         if (len == 1 && !islower(c1) && is_sbxlm) {
 			ctx->ConfirmCurrentSelection();
 			if (!is_buffered) {
 				ctx->Commit();
-				ctx->Clear();
 			}
 			ctx->PushInput(ch);
 			return kAccepted;
@@ -135,7 +141,6 @@ namespace rime {
 			ctx->ConfirmCurrentSelection();
 			if (!is_buffered) {
 				ctx->Commit();
-				ctx->Clear();
 			}
 			ctx->PushInput(ch);
 			return kAccepted;
@@ -270,7 +275,6 @@ namespace rime {
             ctx->ConfirmCurrentSelection();
 			if (!is_buffered) {
 				ctx->Commit();
-				ctx->Clear();
 			}
             ctx->PushInput(ch);
             return kAccepted;
@@ -287,7 +291,6 @@ namespace rime {
 				ctx->ConfirmCurrentSelection();
 				if (!is_buffered) {
 					ctx->Commit();
-					ctx->Clear();
 				}
 				ctx->PushInput(ch);
 				return kAccepted;
@@ -306,9 +309,8 @@ namespace rime {
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
 			&& ctx->input().length() == ctx->caret_pos()
 			) {
-			ctx->ConfirmCurrentSelection();
 			if (!is_buffered)
-				ctx->Commit();
+				ctx->ConfirmCurrentSelection(); //don't use commit for ScriptTranslator
 			ctx->PushInput(ch);
 			return kAccepted;
 		}

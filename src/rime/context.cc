@@ -19,6 +19,8 @@ bool Context::Commit() {
   commit_notifier_(this);
   // start over
   Clear();
+  if (get_option("is_buffered"))
+	  set_option("is_buffered", false);
   return true;
 }
 
@@ -304,9 +306,9 @@ bool Context::OkFourth() const {
 		return false;
 	auto seg = composition_.back();
 	return islower(input_[seg.start]) && seg.length == 4
-		&& string("aeuio").find(input_[2]) == string::npos
+		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
 		&& (islower(input_[3]) 
-			|| string("1234567890").find(input_[3]) != string::npos
+			|| string("1234567890").find(input_[seg.start + 3]) != string::npos
 			&& get_option("is_enhanced"));
 }
 
@@ -317,17 +319,19 @@ bool Context::OkFifth() const {
 		return false;
 	auto seg = composition_.back();
 	return islower(input_[seg.start]) && seg.length == 5
-		&& string("aeuio").find(input_[2]) == string::npos
+		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
 		&& islower(input_[seg.start + 3]);
 }
 
 bool Context::FourthDigit() const {
 	if (composition_.empty())
 		return false;
-	int len = input_.length();
-	return len == 4 && get_option("fast_pop") && !get_option("is_enhanced")
-		&& string("1234567890").find(input_[len - 1]) != string::npos
-		&& string("aeuio").find(input_[0]) == string::npos;
+	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+		return false;
+	auto seg = composition_.back();
+	return seg.length == 4 && get_option("fast_pop") && !get_option("is_enhanced")
+		&& string("1234567890").find(input_[seg.length - 1]) != string::npos
+		&& string("aeuio").find(input_[seg.start]) == string::npos;
 }
 
 an<Candidate> Context::GetSelectedCandidate() const {

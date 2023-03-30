@@ -87,6 +87,18 @@ void ReverseLookupFilter::Process(const an<Candidate>& cand) {
 		&& engine_->schema()->schema_id() == "sbjm") {
 		return;
 	}
+	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "fmjmn_reverse_lookup"
+		&& engine_->schema()->schema_id() == "sbfm") {
+		return;
+	}
+	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "fxjmn_reverse_lookup"
+		&& engine_->schema()->schema_id() == "sbfx") {
+		return;
+	}
+	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "spjmn_reverse_lookup"
+		&& engine_->schema()->schema_id() == "sbsp") {
+		return;
+	}
 
   if (!overwrite_comment_ && !cand->comment().empty())
     return;
