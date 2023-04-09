@@ -161,12 +161,12 @@ bool Context::OkSy() const {
 	auto seg = composition_.back();
 
 	if (seg.length >= 2 && string("aeuio").find(input_[seg.start + 1]) != string::npos) {
-		if (seg.length == 2 && !get_option("single") 
+		if (seg.length == 2 && !get_option("popping") 
 			&& string("aeuio").find(input_[seg.start]) == string::npos) {
 			return false;
 		}
 		if (seg.length == 3 && string("aeuio").find(input_[seg.start + 2]) != string::npos) {
-			if (get_option("single")
+			if (get_option("popping")
 				&& string("aeuio").find(input_[seg.start]) == string::npos)
 				return true;
 			return false;
