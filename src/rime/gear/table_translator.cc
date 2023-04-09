@@ -283,7 +283,7 @@ namespace rime {
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^fxn$")) && code.length() < 3)
 		;
-	else if (!(ctx->get_option("fixed") || ctx->get_option("mixed") || ctx->get_option("single"))
+	else if (!(ctx->get_option("fixed") || ctx->get_option("mixed") || ctx->get_option("popping"))
 		&& engine_->schema()->schema_id() == "sbpy" 
 		&& boost::regex_match(dict_->name(), boost::regex("^pygd|pygd_lookup$")))
 		;

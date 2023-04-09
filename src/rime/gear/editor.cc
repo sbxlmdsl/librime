@@ -120,27 +120,34 @@ void Editor::CommitRawInput(Context* ctx) {
 }
 
 void Editor::CommitRawInput2(Context* ctx) {
-	ctx->ClearNonConfirmedComposition();
-	// bool ascii_mode = ctx->get_option("ascii_mode");
-	string s(ctx->input());
-	if (s.length() > 0 && isalpha(s[0])) {
-		s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
-		ctx->set_input(s);
-	}	
-	engine_->sink()(s);
+	string schema = engine_->schema()->schema_id();
+	if (boost::regex_match(schema, boost::regex("^sbpy|sbjm|sbsp|sbf[mx]$"))) {
+		ctx->ClearNonConfirmedComposition();
+		string s(ctx->input());
+		if (s.length() > 0 && isalpha(s[0])) {
+			s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
+			ctx->set_input(s);
+		}
+		engine_->sink()(s);
+	} else 
+		engine_->sink()(ctx->GetScriptText());
 	ctx->Clear();
 }
 
 void Editor::CommitRawInput3(Context* ctx) {
-	ctx->ClearNonConfirmedComposition();
-	//bool ascii_mode = ctx->get_option("ascii_mode");
-	string s(ctx->input());
-	if (s.length() > 0 && isalpha(s[0])) {
-		for (int i = 0; i < s.length(); i++)
-			s[i] = toupper(s[i]);
-		ctx->set_input(s);
+	string schema = engine_->schema()->schema_id();
+	if (boost::regex_match(schema, boost::regex("^sbpy|sbjm|sbsp|sbf[mx]$"))) {
+		ctx->ClearNonConfirmedComposition();
+		string s(ctx->input());
+		if (s.length() > 0 && isalpha(s[0])) {
+			for (int i = 0; i < s.length(); i++)
+				s[i] = toupper(s[i]);
+			ctx->set_input(s);
+		}
+		engine_->sink()(s);
 	}
-	engine_->sink()(s);
+	else
+		engine_->sink()(ctx->GetScriptText());
 	ctx->Clear();
 }
 

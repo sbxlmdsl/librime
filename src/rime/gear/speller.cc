@@ -113,7 +113,7 @@ namespace rime {
 		bool is_enhanced = ctx->get_option("is_enhanced") && boost::regex_match(schema, boost::regex("^sbf[mx]|sbjm|sbsp$"));
 		bool no_num_pop = ctx->get_option("no_num_pop") && boost::regex_match(schema, boost::regex("^sbfm|sbjm|sbsp$"));
 		bool third_pop = ctx->get_option("third_pop") && boost::regex_match(schema, boost::regex("^sbjm$"));
-		bool is_popped = (ctx->get_option("mixed") || ctx->get_option("single")) 
+		bool is_popped = (ctx->get_option("mixed") || ctx->get_option("popping")) 
 			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
 		bool is_editable = is_popped && len >= 4 && !is_initial;
 
