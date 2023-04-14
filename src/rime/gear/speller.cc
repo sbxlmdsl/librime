@@ -194,36 +194,33 @@ namespace rime {
 
 		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_) && !no_num_pop
 			&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 2]) == string::npos) {
-			if (is_buffered) {
-				ctx->set_caret_pos(ctx->caret_pos() - 1);
-				ctx->ConfirmCurrentSelection();
-				ctx->set_caret_pos(ctx->caret_pos() + 1);
+			if (string("aeuio").find(ctx->input()[comfirmed_pos + 1]) == string::npos) {
+				if (is_buffered) {
+					ctx->set_caret_pos(ctx->caret_pos() - 2);
+					ctx->ConfirmCurrentSelection();
+					ctx->set_caret_pos(ctx->caret_pos() + 2);
+				}
+				else {
+					string rest = ctx->input().substr(1, 2);
+					ctx->set_input(ctx->input().substr(0, 1));
+					ctx->ConfirmCurrentSelection();
+					ctx->Commit();
+					ctx->set_input(rest);
+				}
 			}
 			else {
-				string rest = ctx->input().substr(2, 1);
-				ctx->set_input(ctx->input().substr(0, 2));
-				ctx->ConfirmCurrentSelection();
-				ctx->Commit();
-				ctx->set_input(rest);
-			}
-			ctx->PushInput(ch);
-			return kAccepted;
-		}
-
-		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_) && !no_num_pop && schema == "sbjm" 
-			&& string("aeuio").find(ctx->input()[comfirmed_pos + 1]) == string::npos
-			&& string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos) {
-			if (is_buffered) {
-				ctx->set_caret_pos(ctx->caret_pos() - 2);
-				ctx->ConfirmCurrentSelection();
-				ctx->set_caret_pos(ctx->caret_pos() + 2);
-			}
-			else {
-				string rest = ctx->input().substr(1, 2);
-				ctx->set_input(ctx->input().substr(0, 1));
-				ctx->ConfirmCurrentSelection();
-				ctx->Commit();
-				ctx->set_input(rest);
+				if (is_buffered) {
+					ctx->set_caret_pos(ctx->caret_pos() - 1);
+					ctx->ConfirmCurrentSelection();
+					ctx->set_caret_pos(ctx->caret_pos() + 1);
+				}
+				else {
+					string rest = ctx->input().substr(2, 1);
+					ctx->set_input(ctx->input().substr(0, 2));
+					ctx->ConfirmCurrentSelection();
+					ctx->Commit();
+					ctx->set_input(rest);
+				}
 			}
 			ctx->PushInput(ch);
 			return kAccepted;
