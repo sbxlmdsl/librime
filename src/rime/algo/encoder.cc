@@ -248,7 +248,7 @@ namespace rime {
 		size_t phrase_length = utf8::unchecked::distance(
 			phrase.c_str(), phrase.c_str() + phrase.length());
 		if (static_cast<int>(phrase_length) > max_phrase_length_)
-			return false;
+			return false; 
 
 		RawCode code;
 		int limit = kEncoderDfsLimit;
