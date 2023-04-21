@@ -125,7 +125,7 @@ bool Editor::CommitRawInput(Context* ctx) {
 	return true;
 }
 
-void Editor::CommitRawInput2(Context* ctx) {
+bool Editor::CommitRawInput2(Context* ctx) {
 	string schema = engine_->schema()->schema_id();
 	if (boost::regex_match(schema, boost::regex("^sbpy|sbjm|sbsp|sbf[mx]$"))) {
 		ctx->ClearNonConfirmedComposition();
@@ -141,7 +141,7 @@ void Editor::CommitRawInput2(Context* ctx) {
 	return true;
 }
 
-void Editor::CommitRawInput3(Context* ctx) {
+bool Editor::CommitRawInput3(Context* ctx) {
 	string schema = engine_->schema()->schema_id();
 	if (boost::regex_match(schema, boost::regex("^sbpy|sbjm|sbsp|sbf[mx]$"))) {
 		ctx->ClearNonConfirmedComposition();
