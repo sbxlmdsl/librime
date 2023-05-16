@@ -117,11 +117,11 @@ namespace rime {
 			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
 		bool is_editable = is_popped && len >= 4 && !is_initial;
 
-		if (ctx->input().length() == 1 && ctx->input()[0] == 'e' && is_sbxlm
-			&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
-			ctx->set_option("is_buffered", true);
-			ctx->Clear();
-		}
+		//if (ctx->input().length() == 1 && ctx->input()[0] == 'e' && is_sbxlm
+		//	&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
+		//	ctx->set_option("is_buffered", true);
+		//	ctx->Clear();
+		//}
 
 		if (!is_initial &&
 			expecting_an_initial(ctx, alphabet_, finals_)) {
