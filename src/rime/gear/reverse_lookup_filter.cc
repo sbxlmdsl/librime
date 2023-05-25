@@ -88,7 +88,7 @@ void ReverseLookupFilter::Process(const an<Candidate>& cand) {
 		return;
 	}
 	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "fmjmn_reverse_lookup"
-		&& engine_->schema()->schema_id() == "sbfm") {
+		&& (engine_->schema()->schema_id() == "sbfm" || engine_->schema()->schema_id() == "sbfd")) {
 		return;
 	}
 	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "fxjmn_reverse_lookup"

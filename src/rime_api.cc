@@ -304,7 +304,7 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       context->menu.candidates = new RimeCandidate[page->candidates.size()];
       for (const an<Candidate> &cand : page->candidates) {
         RimeCandidate* dest = &context->menu.candidates[i++];
-        if (boost::regex_match(schema->schema_id(), boost::regex("^sbpy|sbjm|sbsp|sbf[mx]$"))) {
+        if (boost::regex_match(schema->schema_id(), boost::regex("^sbpy|sbjm|sbsp|sbf[mxd]$"))) {
           rime_candidate_copy2(dest, cand);
         } else {
           rime_candidate_copy(dest, cand);

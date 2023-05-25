@@ -378,7 +378,7 @@ namespace rime {
 	if (stop_change_)
 		return false;
 	if (engine_->context()->get_option("pro_char") //no wording when pro_char
-		&& boost::regex_match(user_dict_->name(), boost::regex("^sbsp|sbf[mx]$"))) {
+		&& boost::regex_match(user_dict_->name(), boost::regex("^sbsp|sbf[mxd]$"))) {
 		return false;
 	}
     for (const DictEntry* e : commit_entry.elements) {
@@ -387,11 +387,11 @@ namespace rime {
 			UnityTableEncoder::RemovePrefix(&blessed.custom_code);
 			user_dict_->UpdateEntry(blessed, 1);
 		}
-		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbf[mx]$"))
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbf[mxd]$"))
 			&& 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
 			; //no change for chars
 		}
-		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbsp|sbf[mx]$"))
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbsp|sbf[mxd]$"))
 			&& e->preedit.length() < 4)
 			; //no change when size is below 4 
       else {
@@ -430,14 +430,14 @@ namespace rime {
             if (phrase.empty()) {
               phrase = it->text;  // last word
               pos = phrase.find_last_of(' ');
-              if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm|sbsp|sbf[mx]$")) 
+              if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm|sbsp|sbf[mxd]$")) 
 				  && pos != string::npos) {
                 phrase = phrase.substr(pos + 1);
               }
               continue;
             }
             pos = it->text.find_last_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm||sbsp|sbf[xm]$"))
+            if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm||sbsp|sbf[mxd]$"))
 				&& pos != string::npos) {
               phrase = it->text.substr(pos + 1) + phrase;
             } else {

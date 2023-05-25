@@ -121,7 +121,7 @@ void Editor::CommitRawInput(Context* ctx) {
 
 void Editor::CommitRawInput2(Context* ctx) {
 	string schema = engine_->schema()->schema_id();
-	if (boost::regex_match(schema, boost::regex("^sbpy|sbjm|sbsp|sbf[mx]$"))) {
+	if (boost::regex_match(schema, boost::regex("^sbpy|sbjm|sbsp|sbf[mxd]$"))) {
 		ctx->ClearNonConfirmedComposition();
 		string s(ctx->input());
 		if (s.length() > 0 && isalpha(s[0])) {
@@ -136,7 +136,7 @@ void Editor::CommitRawInput2(Context* ctx) {
 
 void Editor::CommitRawInput3(Context* ctx) {
 	string schema = engine_->schema()->schema_id();
-	if (boost::regex_match(schema, boost::regex("^sbpy|sbjm|sbsp|sbf[mx]$"))) {
+	if (boost::regex_match(schema, boost::regex("^sbpy|sbjm|sbsp|sbf[mxd]$"))) {
 		ctx->ClearNonConfirmedComposition();
 		string s(ctx->input());
 		if (s.length() > 0 && isalpha(s[0])) {
@@ -194,7 +194,7 @@ void Editor::DeleteCandidate(Context* ctx) {
 	size_t comfirmed_pos = comp.GetConfirmedPosition();
 	size_t len = ctx->input().length() - comfirmed_pos;
 
-	if (boost::regex_match(schema, boost::regex("^sbjm|sbsp|sbf[mx]$"))) {
+	if (boost::regex_match(schema, boost::regex("^sbjm|sbsp|sbf[mxd]$"))) {
 		size_t len = ctx->input().length();
 		if (len >= 1 && string("aeuio").find(ctx->input()[comfirmed_pos + 0]) != string::npos)
 			return; 
@@ -204,7 +204,7 @@ void Editor::DeleteCandidate(Context* ctx) {
 			&& boost::regex_match(schema, boost::regex("^sbjm$"))) 
 			return;
 		if (len >= 3 && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos
-			&& boost::regex_match(schema, boost::regex("^sbsp|sbf[mx]$")))
+			&& boost::regex_match(schema, boost::regex("^sbsp|sbf[mxd]$")))
 			return;
 	}
 	ctx->DeleteCurrentSelection();
