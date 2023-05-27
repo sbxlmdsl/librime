@@ -744,7 +744,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
             result->SortRange(start, exact_match_count);
         }
         if (boost::regex_match(name_, boost::regex("^sbsp|sbjm|sbf[md]$")) && prefixed &&
-            len == 9 && result->size() > 0 && !single_selection_) {
+            len == 9 && result->cache_size() > 0 && !single_selection_) {
             int i = 1;
             while (words[i] != string("")) {
                 result->Next(); 
