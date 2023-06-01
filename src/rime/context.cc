@@ -329,7 +329,7 @@ bool Context::FourthDigit() const {
 	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
 		return false;
 	auto seg = composition_.back();
-	return seg.length == 4 && get_option("fast_pop") && !get_option("is_enhanced")
+	return seg.length == 4 && get_option("is_enhanced")
 		&& string("1234567890").find(input_[seg.length - 1]) != string::npos
 		&& string("aeuio").find(input_[seg.start]) == string::npos;
 }
