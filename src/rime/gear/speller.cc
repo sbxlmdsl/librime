@@ -160,8 +160,8 @@ namespace rime {
 		if (3 == len && belongs_to(c1, initials_)
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
 			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
-			if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos/*
-				|| string("aeuio").find(ch) != string::npos && !ctx->get_option("pro_word")*/) {
+			if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos
+				|| string("aeuio").find(ch) != string::npos && ctx->get_option("fast_pop")) {
 				if (is_buffered) {
 					ctx->set_caret_pos(ctx->caret_pos() - 1);
 					ctx->ConfirmCurrentSelection();
