@@ -147,8 +147,11 @@ ProcessResult AsciiComposer::ProcessKeyEvent(const KeyEvent& key_event) {
   if (!ascii_mode && is_sbxlm && len == 1 && islower(c1) && ch == XK_Tab ) {
 	  if (!key_event.release()) {
 		  if (key_event.shift()) {
-			  ctx->set_option("is_buffered", !ctx->get_option("is_buffered"));
-			  return kAccepted;
+			  if (!ctx->get_option("is_buffered")) {
+				  ctx->set_option("is_buffered", true);
+				  ctx->set_option("_is_buffered", true);
+				  return kAccepted;
+			  }
 		  }
 		  else {
 			  SwitchAsciiMode(true, kAsciiModeSwitchInline);

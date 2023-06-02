@@ -19,8 +19,10 @@ bool Context::Commit() {
   commit_notifier_(this);
   // start over
   Clear();
-  //if (get_option("is_buffered"))
-	 // set_option("is_buffered", false);
+  if (get_option("_is_buffered")) {
+	  set_option("is_buffered", false);
+	  set_option("_is_buffered", false);
+  }
   return true;
 }
 
