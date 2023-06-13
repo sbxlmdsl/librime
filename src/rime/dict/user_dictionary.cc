@@ -406,12 +406,10 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
 			if (boost::regex_match(name_, boost::regex("^sbfx$"))
 				&& (!prefixed && len >= 4 || prefixed && len >= 9) && enable_filtering_) {
 				int l = prefixed ? 8 : 3;
-				//if (string("23789").find(input[l]) != string::npos
-				//	&& string("QWRTSDFGZXCVBYPHJKLNM").find(key[l + 6]) != string::npos) {
-				//	continue;
-				//}
-				//else 
-				if ((!prefixed && len >= 5 || prefixed && len >= 10) 
+				if (string("23789").find(input[l]) != string::npos
+					&& string("QWRTSDFGZXCVBYPHJKLNM").find(key[l + 6]) != string::npos) {
+					continue;
+				} else if ((!prefixed && len >= 5 || prefixed && len >= 10) 
 					&& string("23789").find(input[l]) == string::npos
 					&& string("QWRTSDFGZXCVBYPHJKLNM").find(key[l + 6]) != string::npos) {
 					continue;

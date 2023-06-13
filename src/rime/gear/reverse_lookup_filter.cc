@@ -12,6 +12,7 @@
 #include <rime/dict/reverse_lookup_dictionary.h>
 #include <rime/gear/reverse_lookup_filter.h>
 #include <rime/gear/translator_commons.h>
+#include <boost/regex.hpp>
 
 namespace rime {
 
@@ -88,11 +89,15 @@ void ReverseLookupFilter::Process(const an<Candidate>& cand) {
 		return;
 	}
 	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "fmjmn_reverse_lookup"
-		&& (engine_->schema()->schema_id() == "sbfm" || engine_->schema()->schema_id() == "sbfd")) {
+		&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[md]$"))) {
 		return;
 	}
 	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "fxjmn_reverse_lookup"
 		&& engine_->schema()->schema_id() == "sbfx") {
+		return;
+	}
+	if (engine_->context()->input().length() == 3 && name_space_ == "fmsbb_reverse_lookup"
+		&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]$"))) {
 		return;
 	}
 	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "spjmn_reverse_lookup"
