@@ -181,6 +181,7 @@ void on_message(void* context_object,
 }
 
 int main(int argc, char *argv[]) {
+  system("chcp 65001");
   RimeApi* rime = rime_get_api();
 
   RIME_STRUCT(RimeTraits, traits);

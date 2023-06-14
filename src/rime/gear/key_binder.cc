@@ -424,7 +424,7 @@ void KeyBinder::LoadConfig() {
 bool KeyBinder::ReinterpretPagingKey(const KeyEvent& key_event) {
   if (key_event.release())
     return false;
-  if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]|sbjm|sbsp|sbpy$")))
+  if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]|sbjm|sbzr|sbxh|sbpy$")))
 	  return false;
   bool ret = false; 
   int ch = (key_event.modifier() == 0) ? key_event.keycode() : 0;
