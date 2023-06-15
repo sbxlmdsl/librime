@@ -448,7 +448,7 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     r2 = key_holder.substr(10, 2);
                 else
                     r2 = key_holder.substr(10, len - 8);
-                if (string("qwrtsdfgzxcvbyphjklnm").find(key_holder.substr(8, 1)) != string::npos
+                if (string("qwrtsdfgzxcvbyphjklnm").find(key_holder.substr(10, 1)) != string::npos
                     && boost::regex_match(name_, boost::regex("^sbjm$")) && lower_case_) {
                     r2[0] = key_holder[11];
                 }
