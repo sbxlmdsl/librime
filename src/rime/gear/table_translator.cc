@@ -263,7 +263,7 @@ namespace rime {
 		|| !ctx->get_option("slow_adjust") && boost::regex_match(dict_->name(), boost::regex("^jm3|jmsbb$"))
 		|| ctx->get_option("slow_adjust") && (boost::regex_match(dict_->name(), boost::regex("^jmsbb$")) && code.length() == 1))
 		;
-	else if (boost::regex_match(dict_->name(), boost::regex("^spzdy|fmzdy|fxzdy|jmzdy$")) && code.length() == 1)
+	else if (boost::regex_match(dict_->name(), boost::regex("^zrzdy|xhzdy|fmzdy|fxzdy|jmzdy$")) && code.length() == 1)
 		;
 	else if (ctx->get_option("fast_pop") && !ctx->get_option("is_enhanced") && engine_->schema()->schema_id() == "sbfx"
 		&& boost::regex_match(dict_->name(), boost::regex("^fmn|fmnts|fxn$")))
@@ -379,7 +379,7 @@ namespace rime {
 	if (stop_change_)
 		return false;
 	if (engine_->context()->get_option("pro_char") //no wording when pro_char
-		&& boost::regex_match(user_dict_->name(), boost::regex("^sbsp|sbf[mxd]$"))) {
+		&& boost::regex_match(user_dict_->name(), boost::regex("^sbzr|sbxh|sbf[mxd]$"))) {
 		return false;
 	}
     for (const DictEntry* e : commit_entry.elements) {
@@ -392,7 +392,7 @@ namespace rime {
 			&& 1 == utf8::unchecked::distance(e->text.c_str(), e->text.c_str() + e->text.length())) {
 			; //no change for chars
 		}
-		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbsp|sbf[mxd]$"))
+		else if (boost::regex_match(user_dict_->name(), boost::regex("^sbjm|sbzr|sbxh|sbf[mxd]$"))
 			&& e->preedit.length() < 4)
 			; //no change when size is below 4 
       else {
@@ -431,14 +431,14 @@ namespace rime {
             if (phrase.empty()) {
               phrase = it->text;  // last word
               pos = phrase.find_last_of(' ');
-              if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm|sbsp|sbf[mxd]$")) 
+              if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm|sbzr|sbxh|sbf[mxd]$")) 
 				  && pos != string::npos) {
                 phrase = phrase.substr(pos + 1);
               }
               continue;
             }
             pos = it->text.find_last_of(' ');
-            if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm||sbsp|sbf[mxd]$"))
+            if (boost::regex_match(user_dict_->name(), boost::regex("^pygd|sbjm||sbzr|sbxh|sbf[mxd]$"))
 				&& pos != string::npos) {
               phrase = it->text.substr(pos + 1) + phrase;
             } else {

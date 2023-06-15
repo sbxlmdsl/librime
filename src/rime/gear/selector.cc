@@ -152,7 +152,7 @@ ProcessResult Selector::ProcessKeyEvent(const KeyEvent& key_event) {
   size_t len = ctx->input().length() - comfirmed_pos;
   const char c1 = ctx->input()[comfirmed_pos];
 
-		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mxd]|sbjm|sbsp|sbpy$"));
+		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mxd]|sbjm|sbzr|sbxh|sbpy$"));
 
 		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
 			if (len == 1 && c1 == '\\' && string("aeuio").find(ch) != string::npos)

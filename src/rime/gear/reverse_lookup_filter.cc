@@ -101,7 +101,7 @@ void ReverseLookupFilter::Process(const an<Candidate>& cand) {
 		return;
 	}
 	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "spjmn_reverse_lookup"
-		&& engine_->schema()->schema_id() == "sbsp") {
+		&& engine_->schema()->schema_id() == "sbzr|sbxh") {
 		return;
 	}
 
