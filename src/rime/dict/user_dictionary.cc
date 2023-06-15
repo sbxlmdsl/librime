@@ -396,11 +396,11 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
 					&& boost::regex_match(key.substr(l - 3, 3), boost::regex("^[qwrtsdfgzxcvbyphjklnm]{3}$"))) {
 					continue;
 				}
-				else if ((!prefixed && len >= 4 || prefixed && len >= 9)
-					&& string("qwrtsdfgzxcvbyphjklnm").find(key.substr(l + 2, 1)) != string::npos
-					&& !boost::regex_match(input.substr(l - 3, 4), boost::regex("^[qwrtsdfgzxcvbyphjklnm]{4}$"))) {
-					continue;
-				}
+				//else if ((!prefixed && len >= 4 || prefixed && len >= 9)
+				//	&& string("qwrtsdfgzxcvbyphjklnm").find(key.substr(l + 2, 1)) != string::npos
+				//	&& !boost::regex_match(input.substr(l - 3, 4), boost::regex("^[qwrtsdfgzxcvbyphjklnm]{4}$"))) {
+				//	continue;
+				//}
 			}
 
 			if (boost::regex_match(name_, boost::regex("^sbfx$"))
