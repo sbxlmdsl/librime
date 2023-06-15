@@ -28,7 +28,7 @@ namespace rime {
 
 	void CommitEntry::AppendPhrase(const an<Phrase>& phrase) {
 		if (phrase->language() && boost::regex_match(phrase->language()->name()
-				, boost::regex("^sss|sb|ss|jm3|jmn|fmn|fxn|spn|jmsbb|fmsbb|zrszb|xhszb|fmzdy|fxzdy|jmzdy|zrzdy|xhzdy|pygd|sxs|shx|sbs|sbsb|sps|spsb|sps_b$"))) {
+				, boost::regex("^sss|sb|ss|jm3|jmn|fmn|fxn|spn|jmsbb|fmsbb|zrszb|xhszb|fmzdy|fxzdy|jmzdy|zrzdy|xhzdy|pygd|sxs|shs|sbs|sbsb|sps|spsb|sps_b$"))) {
 			phrase->set_comment("sbxlm_fixed_entry");
 		}
 		text += phrase->text();
@@ -120,7 +120,7 @@ namespace rime {
 			bool recognized = Language::intelligible(phrase, this);
 			string name = phrase && phrase->language() && this->language() ? phrase->language()->name() : "";
 			if (boost::regex_match(name
-					, boost::regex("^sss|sb|ss|jm3|jmn|fmn|fxn|spn|jmsbb|fmsbb|zrszb|xhszb|fmzdy|fxzdy|jmzdy|zrzdy|xhzdy|pygd|sxs|shx|sbs|sbsb|sps|sps_b|spsb$"))) {
+					, boost::regex("^sss|sb|ss|jm3|jmn|fmn|fxn|spn|jmsbb|fmsbb|zrszb|xhszb|fmzdy|fxzdy|jmzdy|zrzdy|xhzdy|pygd|sxs|shs|sbs|sbsb|sps|sps_b|spsb$"))) {
 				recognized = true;
 			}
 			if (recognized) {
