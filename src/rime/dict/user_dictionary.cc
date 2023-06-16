@@ -448,7 +448,8 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     r2 = key_holder.substr(10, 2);
                 else
                     r2 = key_holder.substr(10, len - 8);
-                if (string("qwrtsdfgzxcvbyphjklnm").find(key_holder.substr(10, 1)) != string::npos
+                if (string("qwrtsdfgzxcvbyphjklnm").find(r1[0]) == string::npos
+                    && string("qwrtsdfgzxcvbyphjklnm").find(r2[0]) != string::npos
                     && boost::regex_match(name_, boost::regex("^sbjm$")) && lower_case_) {
                     r2[0] = key_holder[13];
                 }
@@ -489,7 +490,8 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
                     r2 = key_holder.substr(5, 2);
                 else
                     r2 = key_holder.substr(5, len - 3);
-                if (string("qwrtsdfgzxcvbyphjklnm").find(key_holder.substr(5, 1)) != string::npos
+                if (string("qwrtsdfgzxcvbyphjklnm").find(r1[0]) == string::npos
+                    && string("qwrtsdfgzxcvbyphjklnm").find(r2[0]) != string::npos
                     && boost::regex_match(name_, boost::regex("^sbjm$")) && lower_case_) {
                     r2[0] = key_holder[8];
                 }
