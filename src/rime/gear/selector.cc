@@ -191,7 +191,11 @@ ProcessResult Selector::ProcessKeyEvent(const KeyEvent& key_event) {
 				else if (len == 4) {
 					if (current_segment.HasTag("paging"))
 						;
-					else if (boost::regex_match(schema, boost::regex("^sbjm|sbzr|sbxh$"))) {
+                    else if (boost::regex_match(schema, boost::regex("^sbjm$"))
+                        && string("23789").find(ctx->input()[comfirmed_pos + 2]) != string::npos) {
+                        ;
+                    }
+                    else if (boost::regex_match(schema, boost::regex("^sbjm|sbzr|sbxh$"))) {
 						return kNoop;
 					}
 					else if (string("QWRTSDFGZXCVBYPHJKLNM").find(ctx->input()[comfirmed_pos + 3]) != string::npos)
