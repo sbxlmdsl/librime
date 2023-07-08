@@ -527,9 +527,9 @@ namespace rime {
         } else if (5 == len && is_table_entry(cand)
                    && string("aeuio").find(input[comfirmed_pos + 4]) != string::npos
                    && !(string("aeuio").find(input[comfirmed_pos + 1]) != string::npos &&
-                        string("aeuio").find(input[comfirmed_pos + 2]) != string::npos)
+                        string("qwrtsdfgzxcvbyphjklnm").find(input[comfirmed_pos + 2]) == string::npos)
                    && !(string("aeuio").find(input[comfirmed_pos + 1]) == string::npos &&
-                        string("aeuio").find(input[comfirmed_pos + 2]) != string::npos)
+                        string("qwrtsdfgzxcvbyphjklnm").find(input[comfirmed_pos + 2]) == string::npos)
                    && boost::regex_match(schema, boost::regex("^sbf[md]|sbzr|sbxh|sbjm$"))) {
             return FindEarlierMatch(ctx, start, end - 1);
         } else if (is_auto_selectable(previous_segment->GetSelectedCandidate(),
