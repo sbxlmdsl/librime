@@ -277,11 +277,10 @@ namespace rime {
 	else if (ctx->get_option("is_enhanced") && ctx->get_option("is_hidden")
 		&& boost::regex_match(dict_->name(), boost::regex("^jmnts|fmnts|spnts$")))
 		;
-	//else if (ctx->get_option("is_enhanced") && !ctx->get_option("is_hidden")
-	//	&& boost::regex_match(dict_->name(), boost::regex("^fmnts|spnts$"))
-	//	&& code.length() == 2 && string("aeuio").find(code[1]) != string::npos
-	//	)
-	//	;
+	else if (!ctx->get_option("is_enhanced") 
+        && engine_->schema()->schema_id() == "sbjm"
+		&& boost::regex_match(dict_->name(), boost::regex("^sbjf$")))
+		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^fxn$")) && code.length() < 3)
 		;
 	else if (!(ctx->get_option("fixed") || ctx->get_option("mixed") || ctx->get_option("popping"))
