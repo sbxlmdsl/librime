@@ -174,28 +174,30 @@ bool Context::OkSy() const {
 			return false;
 		}
 		else if (seg.length >= 4 && string("aeuio").find(input_[seg.start + 3]) == string::npos) {
-			if (seg.length == 5 && string("aeuio").find(input_[seg.start + 4]) != string::npos)
-				return false;
-			else if (seg.length >= 6 && string("aeuio").find(input_[seg.start + 5]) == string::npos) {
-				if (seg.length == 7 && string("aeuio").find(input_[seg.start + 6]) != string::npos)
-					return false;
-				else if (seg.length >= 8 && string("aeuio").find(input_[seg.start + 7]) == string::npos) {
-					if (seg.length == 9 && string("aeuio").find(input_[seg.start + 8]) != string::npos)
-						return false;
-					else if (seg.length >= 10 && string("aeuio").find(input_[seg.start + 9]) == string::npos) {
-						if (seg.length == 11 && string("aeuio").find(input_[seg.start + 10]) != string::npos)
-							return false;
-						else if (seg.length >= 10)
-							return false;
-					}
-				}
-			}
+			//if (seg.length == 5 && string("aeuio").find(input_[seg.start + 4]) != string::npos)
+			//	return false;
+			//else if (seg.length >= 6 && string("aeuio").find(input_[seg.start + 5]) == string::npos) {
+			//	if (seg.length == 7 && string("aeuio").find(input_[seg.start + 6]) != string::npos)
+			//		return false;
+			//	else if (seg.length >= 8 && string("aeuio").find(input_[seg.start + 7]) == string::npos) {
+			//		if (seg.length == 9 && string("aeuio").find(input_[seg.start + 8]) != string::npos)
+			//			return false;
+			//		else if (seg.length >= 10 && string("aeuio").find(input_[seg.start + 9]) == string::npos) {
+			//			if (seg.length == 11 && string("aeuio").find(input_[seg.start + 10]) != string::npos)
+			//				return false;
+			//			else if (seg.length >= 10)
+			//				return false;
+			//		}
+			//	}
+			//}
+			return true;
 		}
 		else if (seg.length >= 4 && seg.length % 2 == 0 && seg.length < 9
 			&& string("aeuio").find(input_[seg.length - 1]) != string::npos) {
-			if (string("aeuio").find(input_[seg.length - 2]) != string::npos)
-				return true;
-			return false;
+			//if (string("aeuio").find(input_[seg.length - 2]) != string::npos)
+			//	return true;
+			//return false;
+			return true;
 		}
 		else if (seg.length == 9 && string("aeuio").find(input_[seg.length - 1]) == string::npos) {
 			return false;
