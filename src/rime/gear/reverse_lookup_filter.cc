@@ -100,7 +100,7 @@ void ReverseLookupFilter::Process(const an<Candidate>& cand) {
 		&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]$"))) {
 		return;
 	}
-	if (engine_->context()->input().length() == 2 
+	if (engine_->context()->input().length() <= 3 
 		&& boost::regex_match(name_space_, boost::regex("^f[mx]jmn_reverse_lookup$"))
 		&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]$"))) {
 		return;
