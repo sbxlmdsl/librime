@@ -378,7 +378,7 @@ namespace rime {
 	if (stop_change_)
 		return false;
 	if (engine_->context()->get_option("pro_char") //no wording when pro_char
-		&& boost::regex_match(user_dict_->name(), boost::regex("^sbzr|sbxh|sbf[mxd]$"))) {
+		&& boost::regex_match(user_dict_->name(), boost::regex("^sbfd$"))) {
 		return false;
 	}
     for (const DictEntry* e : commit_entry.elements) {
