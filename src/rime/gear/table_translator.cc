@@ -377,9 +377,6 @@ namespace rime {
       return false;
 	if (stop_change_)
 		return false;
-	if (boost::regex_match(user_dict_->name(), boost::regex("^sbfd$"))) {
-		return false;
-	}
     for (const DictEntry* e : commit_entry.elements) {
 		if (is_constructed(e)) {
 			DictEntry blessed(*e);
