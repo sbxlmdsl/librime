@@ -382,17 +382,24 @@ namespace rime {
             && boost::regex_match(schema, boost::regex("^sbf[mxd]|sbzr|sbxh|sbjm$"))) {
 			if (is_buffered) {
 				ctx->set_caret_pos(ctx->caret_pos() - 2);
+				if (string("AEUIO").find(ch) != string::npos) {
+					ctx->PushInput(tolower(ch));
+				}
 				ctx->ConfirmCurrentSelection();
 				ctx->set_caret_pos(ctx->caret_pos() + 2);
 			}
 			else {
 				string rest = ctx->input().substr(2, 2);
 				ctx->set_input(ctx->input().substr(0, 2));
+				if (string("AEUIO").find(ch) != string::npos) {
+					ctx->PushInput(tolower(ch));
+				}
 				ctx->ConfirmCurrentSelection();
 				ctx->Commit();
 				ctx->set_input(rest);
 			}
-            ctx->PushInput(tolower(ch));
+			if (string("AEUIO").find(ch) == string::npos)
+				ctx->PushInput(tolower(ch));
             return kAccepted;
         }
 
