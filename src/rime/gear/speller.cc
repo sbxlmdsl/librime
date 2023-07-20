@@ -117,12 +117,6 @@ namespace rime {
 			&& boost::regex_match(schema, boost::regex("^sbpy$")) && belongs_to(c1, initials_);
 		bool is_editable = is_popped && len >= 4 && !is_initial;
 
-		//if (ctx->input().length() == 1 && ctx->input()[0] == 'e' && is_sbxlm
-		//	&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
-		//	ctx->set_option("is_buffered", true);
-		//	ctx->Clear();
-		//}
-
 		if (!is_initial &&
 			expecting_an_initial(ctx, alphabet_, finals_)) {
 			return kNoop;
@@ -148,22 +142,6 @@ namespace rime {
 
 		if (isupper(ch) && pro_char && 2 == len && is_sbxlm && belongs_to(c1, initials_)) {
 			ctx->PushInput(tolower(ch));
-			return kAccepted;
-		}
-
-		if (string("AEUIO").find(ch) != string::npos && 2 == len
-			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
-			ctx->PushInput(tolower(ch));
-			return kAccepted;
-		}
-
-		if (2 == len && belongs_to(c1, initials_) && isupper(ch)
-			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
-			ctx->PushInput(tolower(ch));
-			ctx->ConfirmCurrentSelection();
-			if (!is_buffered) {
-				ctx->Commit();
-			}
 			return kAccepted;
 		}
 
