@@ -157,6 +157,16 @@ namespace rime {
 			return kAccepted;
 		}
 
+		if (2 == len && belongs_to(c1, initials_) && isupper(ch)
+			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
+			ctx->PushInput(tolower(ch));
+			ctx->ConfirmCurrentSelection();
+			if (!is_buffered) {
+				ctx->Commit();
+			}
+			return kAccepted;
+		}
+
 		if (3 == len && belongs_to(c1, initials_)
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
 			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
