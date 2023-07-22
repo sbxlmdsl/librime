@@ -402,7 +402,14 @@ namespace rime {
 				ctx->Commit();
 				ctx->set_input(rest);
 			}
-            ctx->PushInput(tolower(ch));
+			ctx->PushInput(tolower(ch));
+			if (boost::regex_match(schema, boost::regex("^sbfx$"))) {
+				ctx->ConfirmCurrentSelection();
+				if (is_buffered) {
+					ctx->Commit();
+				}
+			}
+
             return kAccepted;
         }
 
