@@ -432,7 +432,8 @@ namespace rime {
 				}
 			}
 			else if (string("AEUIO").find(ch) == string::npos) {
-				ctx->PushInput(XK_space);
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
 				ctx->PushInput(tolower(ch));
 			}
 			else {
