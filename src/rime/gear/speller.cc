@@ -431,9 +431,11 @@ namespace rime {
 					}
 				}
 			}
-			else if (string("AEUIO").find(ch) == string::npos) {
-				ctx->ConfirmCurrentSelection();
-				ctx->Commit();
+			else if (isupper(ch)) {
+				if (string("AEUIO").find(ch) == string::npos) {
+					ctx->ConfirmCurrentSelection();
+					ctx->Commit();
+				}
 				ctx->PushInput(tolower(ch));
 			}
 			else {

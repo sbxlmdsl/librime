@@ -213,20 +213,20 @@ ProcessResult Selector::ProcessKeyEvent(const KeyEvent& key_event) {
 	  SelectCandidateAt(ctx, index);
 	  return kAccepted;
   }  // not handled
-        else if (len == 4 && ctx->get_option("pro_char") && ctx->get_option("is_delayed")
-            && string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
-            && string("AEUIO").find(ch) != string::npos
-            && boost::regex_match(schema, boost::regex("^sbfm$"))) {
-            switch (ch) {
-            case 'A': index = 1; break;
-            case 'E': index = 2; break;
-            case 'U': index = 3; break;
-            case 'I': index = 4; break;
-            case 'O': index = 5; break;
-            }
-            SelectCandidateAt(ctx, index);
-            return kAccepted;
-        }
+        //else if (len == 4 && ctx->get_option("pro_char") && ctx->get_option("is_delayed")
+        //    && string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
+        //    && string("AEUIO").find(ch) != string::npos
+        //    && boost::regex_match(schema, boost::regex("^sbfm$"))) {
+        //    switch (ch) {
+        //    case 'A': index = 1; break;
+        //    case 'E': index = 2; break;
+        //    case 'U': index = 3; break;
+        //    case 'I': index = 4; break;
+        //    case 'O': index = 5; break;
+        //    }
+        //    SelectCandidateAt(ctx, index);
+        //    return kAccepted;
+        //}
 
   return kNoop;
 }
