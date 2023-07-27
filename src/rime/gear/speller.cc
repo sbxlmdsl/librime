@@ -410,39 +410,36 @@ namespace rime {
         if (4 == len && (isupper(ch) || !ctx->HasMenu()) && belongs_to(c1, initials_)
             && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) == string::npos
             && boost::regex_match(schema, boost::regex("^sbf[mxd]|sbzr|sbxh|sbjm$"))) {
-			if (!ctx->get_option("is_delayed")) {
-				if (is_buffered) {
-					ctx->set_caret_pos(ctx->caret_pos() - 2);
-					ctx->ConfirmCurrentSelection();
-					ctx->set_caret_pos(ctx->caret_pos() + 2);
-				}
-				else {
-					string rest = ctx->input().substr(2, 2);
-					ctx->set_input(ctx->input().substr(0, 2));
-					ctx->ConfirmCurrentSelection();
-					ctx->Commit();
-					ctx->set_input(rest);
-				}
-				ctx->PushInput(tolower(ch));
-				if (boost::regex_match(schema, boost::regex("^sbfx$"))) {
-					ctx->ConfirmCurrentSelection();
-					if (is_buffered) {
-						ctx->Commit();
-					}
-				}
-			}
-			else if (isupper(ch)) {
+
+			if (isupper(ch) && ctx->get_option("pro_char") && ctx->get_option("is_delayed")
+				&& boost::regex_match(schema, boost::regex("^sbfm$"))) {
 				if (string("AEUIO").find(ch) == string::npos) {
 					ctx->ConfirmCurrentSelection();
 					ctx->Commit();
 				}
 				ctx->PushInput(tolower(ch));
+				return kAccepted;
+			} 
+			if (is_buffered) {
+				ctx->set_caret_pos(ctx->caret_pos() - 2);
+				ctx->ConfirmCurrentSelection();
+				ctx->set_caret_pos(ctx->caret_pos() + 2);
 			}
 			else {
-				return kNoop;
+				string rest = ctx->input().substr(2, 2);
+				ctx->set_input(ctx->input().substr(0, 2));
+				ctx->ConfirmCurrentSelection();
+				ctx->Commit();
+				ctx->set_input(rest);
 			}
-
-            return kAccepted;
+			ctx->PushInput(tolower(ch));
+			if (boost::regex_match(schema, boost::regex("^sbfx$"))) {
+				ctx->ConfirmCurrentSelection();
+				if (is_buffered) {
+					ctx->Commit();
+				}
+			}
+			return kAccepted;        
         }
 
 		if (5 == len && isupper(ch) && belongs_to(c1, initials_)
