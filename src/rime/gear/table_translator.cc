@@ -268,7 +268,7 @@ namespace rime {
 	else if (ctx->get_option("fast_pop") && !ctx->get_option("is_enhanced") && engine_->schema()->schema_id() == "sbfx"
 		&& boost::regex_match(dict_->name(), boost::regex("^fmn|fmnts|fxn$")))
 		;
-	else if (boost::regex_match(dict_->name(), boost::regex("^sbs_b|sps_b$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
+	else if (boost::regex_match(dict_->name(), boost::regex("^s_b|sbs_b|sps_b$")) && code.length() < 3 && !ctx->get_option("is_hidden"))
 		;
 	else if (boost::regex_match(dict_->name(), boost::regex("^sb|sbsb|spsb|sps_b$"))
 		&& engine_->schema()->schema_id() != "sbjm"
