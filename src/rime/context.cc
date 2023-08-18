@@ -125,7 +125,13 @@ int Context::CountLength2() const {
 }
 
 bool Context::IsFirst() const {
-  return CountLength() == 1;
+	if (composition_.empty())
+		return 0;
+	auto seg = composition_.back();
+	if (seg.length == 1 && islower(input_[caret_pos_ - 1]))
+		return 1;
+	else
+		return 0;
 }
 
 bool Context::IsSecond() const {
