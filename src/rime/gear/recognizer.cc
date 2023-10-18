@@ -96,8 +96,8 @@ ProcessResult Recognizer::ProcessKeyEvent(const KeyEvent& key_event) {
 		bool is_sbjm = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm$"));
 		bool third_pop = ctx->get_option("third_pop");
 		bool is_buffered = ctx->get_option("is_buffered");
-		if (is_sbjm && third_pop && input.length() == 4	&& string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
-			if (string("aeuio\\").find(ctx->input()[0]) == string::npos)
+		if (is_sbjm && third_pop && ctx->input().length() > 2) {
+			if (string("aeuio\\").find(ctx->input()[0]) != string::npos)
 				return kNoop;
 			else {
 				ctx->ConfirmCurrentSelection();
