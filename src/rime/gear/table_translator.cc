@@ -377,6 +377,9 @@ namespace rime {
       return false;
 	if (stop_change_)
 		return false;
+    Context* ctx = engine_->context();
+    if (ctx->get_option("is_buffered") && !ctx->get_option("_is_buffered"))
+        return false;
     for (const DictEntry* e : commit_entry.elements) {
 		if (is_constructed(e)) {
 			DictEntry blessed(*e);
