@@ -155,8 +155,14 @@ ProcessResult Selector::ProcessKeyEvent(const KeyEvent& key_event) {
 		bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mxd]|sbjm|sbzr|sbxh|sbpy$"));
 
 		if (!select_keys.empty() && !key_event.ctrl() && ch > 0x20 && ch < 0x7f) {
-			if (len == 1 && c1 == '\\' && string("aeuio").find(ch) != string::npos)
-				return kNoop;
+            if (len == 1 && c1 == '\\' && string("aeuio").find(ch) != string::npos)
+                return kNoop;
+            else if (string("aei").find(c1) != string::npos) {
+                if (ch >= XK_0 && ch <= XK_9)
+                    index = ((ch - XK_0) + 9) % 10;
+                else if (ch >= XK_KP_0 && ch <= XK_KP_9)
+                    index = ((ch - XK_KP_0) + 9) % 10;
+            }
 			else {
 				size_t pos = select_keys.find((char)ch);
 				if (pos != string::npos) {
@@ -174,11 +180,11 @@ ProcessResult Selector::ProcessKeyEvent(const KeyEvent& key_event) {
 					;
 				else if (boost::regex_match(schema, boost::regex("^sbpy$")))
 					;
-				else if (len == 1)
-					return kNoop;
+				//else if (len == 1)
+				//	return kNoop;
 				else if (string("aeuio").find(c1) != string::npos) {
 					if (string("aei").find(c1) != string::npos)
-						return kNoop;
+						/*return kNoop*/;
 					else if (string("aeuio").find(ctx->input()[comfirmed_pos + 1]) != string::npos)
 						return kNoop;
 				}
