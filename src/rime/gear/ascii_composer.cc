@@ -149,10 +149,10 @@ ProcessResult AsciiComposer::ProcessKeyEvent(const KeyEvent& key_event) {
 		  if (key_event.shift()) {
 			  if (!ctx->get_option("is_buffered")) {
 				  ctx->set_option("is_buffered", true);
-				  ctx->set_option("_is_buffered", true);
-				  return kAccepted;
 			  }
-		  }
+              ctx->set_option("_is_buffered", true);
+              return kAccepted;
+          }
 		  else {
 			  SwitchAsciiMode(true, kAsciiModeSwitchInline);
 			  return kAccepted;
