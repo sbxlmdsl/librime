@@ -99,7 +99,7 @@ ProcessResult Recognizer::ProcessKeyEvent(const KeyEvent& key_event) {
 		if (is_sbjm && third_pop && ctx->input().length() > 2) {
 			if (string("aeuio\\").find(ctx->input()[0]) != string::npos)
 				return kNoop;
-			else {
+			else if (string("qwrtsdfgzxcvbyphjklnm").find(ch) != string::npos) {
 				ctx->ConfirmCurrentSelection();
 				if (!is_buffered) {
 					ctx->Commit();
