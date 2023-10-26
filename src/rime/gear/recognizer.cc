@@ -94,7 +94,8 @@ ProcessResult Recognizer::ProcessKeyEvent(const KeyEvent& key_event) {
     auto match = patterns_.GetMatch(input, ctx->composition());
     if (match.found()) {
 		bool is_sbjm = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbjm$"));
-		bool third_pop = ctx->get_option("third_pop");
+        bool is_sbfd = boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbfd$"));
+        bool third_pop = ctx->get_option("third_pop");
 		bool is_buffered = ctx->get_option("is_buffered");
 		if (is_sbjm && third_pop && ctx->input().length() == 3 && islower(ch)) {
 			if (string("aeuio\\").find(ctx->input()[0]) != string::npos)
@@ -107,6 +108,9 @@ ProcessResult Recognizer::ProcessKeyEvent(const KeyEvent& key_event) {
 				}
 			}
 		}		
+        else if (is_sbfd && ctx->get_option("is_delayed") && ctx->input().length() == 3 && islower(ch)) {
+            return kNoop;
+        }
 
 		ctx->PushInput(ch);
 	    return kAccepted;

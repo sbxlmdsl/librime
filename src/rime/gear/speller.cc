@@ -197,6 +197,34 @@ namespace rime {
 			}
 		}
 
+		if (3 == len && belongs_to(c1, initials_)
+			&& ctx->get_option("pro_char") && ctx->get_option("is_delayed")
+			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
+			&& boost::regex_match(schema, boost::regex("^sbfd$"))) {
+			if (islower(ch)) {
+				if (is_buffered) {
+					ctx->set_caret_pos(ctx->caret_pos() - 1);
+					ctx->ConfirmCurrentSelection();
+					ctx->set_caret_pos(ctx->caret_pos() + 1);
+				}
+				else {
+					string rest = ctx->input().substr(2, 1);
+					ctx->set_input(ctx->input().substr(0, 2));
+					ctx->ConfirmCurrentSelection();
+					ctx->Commit();
+					ctx->set_input(rest);
+				}
+				ctx->PushInput(ch);
+				return kAccepted;
+			}
+			else if (isupper(ch))
+			{
+				ctx->PushInput(tolower(ch));
+				return kAccepted;
+
+			}
+		}
+
 		if (4 == len && belongs_to(c1, initials_) && islower(ch)
 			&& ctx->get_option("pro_char") && ctx->get_option("is_delayed")
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
@@ -224,21 +252,21 @@ namespace rime {
 
 		if (isdigit(ch) && is_enhanced && 3 == len && belongs_to(c1, initials_) && !no_num_pop
 			&& string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 2]) == string::npos) {
-			if (string("aeuio").find(ctx->input()[comfirmed_pos + 1]) == string::npos) {
-				if (is_buffered) {
-					ctx->set_caret_pos(ctx->caret_pos() - 2);
-					ctx->ConfirmCurrentSelection();
-					ctx->set_caret_pos(ctx->caret_pos() + 2);
-				}
-				else {
-					string rest = ctx->input().substr(1, 2);
-					ctx->set_input(ctx->input().substr(0, 1));
-					ctx->ConfirmCurrentSelection();
-					ctx->Commit();
-					ctx->set_input(rest);
-				}
-			}
-			else {
+			//if (string("aeuio").find(ctx->input()[comfirmed_pos + 1]) == string::npos) {
+			//	if (is_buffered) {
+			//		ctx->set_caret_pos(ctx->caret_pos() - 2);
+			//		ctx->ConfirmCurrentSelection();
+			//		ctx->set_caret_pos(ctx->caret_pos() + 2);
+			//	}
+			//	else {
+			//		string rest = ctx->input().substr(1, 2);
+			//		ctx->set_input(ctx->input().substr(0, 1));
+			//		ctx->ConfirmCurrentSelection();
+			//		ctx->Commit();
+			//		ctx->set_input(rest);
+			//	}
+			//}
+			//else {
 				if (is_buffered) {
 					ctx->set_caret_pos(ctx->caret_pos() - 1);
 					ctx->ConfirmCurrentSelection();
@@ -251,7 +279,7 @@ namespace rime {
 					ctx->Commit();
 					ctx->set_input(rest);
 				}
-			}
+			//}
 			ctx->PushInput(ch);
 			return kAccepted;
 		}
