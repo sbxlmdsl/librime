@@ -187,10 +187,10 @@ namespace rime {
 				ctx->PushInput(ch);
 				return kAccepted;
 			}
-			else if (isdigit(ch) && ctx->get_option("is_enhanced")) {
-				ctx->PushInput(ch);
-				return kAccepted;
-			}
+			//else if (isdigit(ch) && ctx->get_option("is_enhanced")) {
+			//	ctx->PushInput(ch);
+			//	return kAccepted;
+			//}
 			else if (string("23789").find(ch) != string::npos && ctx->get_option("fast_pop")) {
 				ctx->PushInput(ch);
 				return kAccepted;
