@@ -226,6 +226,19 @@ namespace rime {
 		}
 
 		if (4 == len && belongs_to(c1, initials_) && islower(ch)
+			&& string("1234567890").find(ctx->input()[comfirmed_pos + 2]) != string::npos
+			&& boost::regex_match(schema, boost::regex("^sbfx$"))) {
+			if (is_buffered) {
+				ctx->ConfirmCurrentSelection();
+			}
+			else {
+				ctx->Commit();
+			}
+			ctx->PushInput(ch);
+			return kAccepted;
+		}
+
+		if (4 == len && belongs_to(c1, initials_) && islower(ch)
 			&& ctx->get_option("pro_char") && ctx->get_option("is_delayed")
 			&& string("qwrtsdfgzxcvbyphjklnm").find(ctx->input()[comfirmed_pos + 2]) != string::npos
 			&& boost::regex_match(schema, boost::regex("^sbfm$"))) {
