@@ -88,14 +88,15 @@ void ReverseLookupFilter::Process(const an<Candidate>& cand) {
 		&& engine_->schema()->schema_id() == "sbjm") {
 		return;
 	}
-	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "fmjmn_reverse_lookup"
+	if ((!engine_->context()->get_option("is_enhanced") || engine_->context()->get_option("is_hidden"))
+		&& name_space_ == "fmjmn_reverse_lookup"
 		&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]$"))) {
 		return;
 	}
-	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "fxjmn_reverse_lookup"
-		&& engine_->schema()->schema_id() == "sbfx") {
-		return;
-	}
+	//if (!engine_->context()->get_option("is_enhanced") && name_space_ == "fxjmn_reverse_lookup"
+	//	&& engine_->schema()->schema_id() == "sbfx") {
+	//	return;
+	//}
 	if (engine_->context()->input().length() == 3 && name_space_ == "fmsbb_reverse_lookup"
 		&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]$"))) {
 		return;
