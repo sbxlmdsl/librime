@@ -285,7 +285,8 @@ ProcessResult Speller::ProcessKeyEvent(const KeyEvent& key_event) {
       string("aeuio1234567890").find(ctx->input()[comfirmed_pos + 2]) ==
           string::npos) {
     // if (string("aeuio").find(ctx->input()[comfirmed_pos + 1]) ==
-    // string::npos) { 	if (is_buffered) { 		ctx->set_caret_pos(ctx->caret_pos()
+    // string::npos) { 	if (is_buffered) {
+    // ctx->set_caret_pos(ctx->caret_pos()
     // -
     // 2); 		ctx->ConfirmCurrentSelection();
     // ctx->set_caret_pos(ctx->caret_pos() + 2);

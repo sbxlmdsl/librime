@@ -195,7 +195,7 @@ bool Context::OkSy() const {
       // string::npos) 			return false; 		else if
       // (seg.length >= 10 && string("aeuio").find(input_[seg.start + 9]) ==
       // string::npos) { 			if (seg.length == 11 &&
-      //string("aeuio").find(input_[seg.start + 10]) != string::npos)
+      // string("aeuio").find(input_[seg.start + 10]) != string::npos)
       // return false; 			else if (seg.length >= 10)
       // return false;
       //		}
