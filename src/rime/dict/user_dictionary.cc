@@ -1099,7 +1099,8 @@ an<DictEntry> UserDictionary::CreateDictEntry(const string& key,
 UserDictionaryComponent::UserDictionaryComponent() {}
 
 UserDictionary* UserDictionaryComponent::Create(const string& dict_name,
-                                                const string& db_class) {
+                                                const string& db_class,
+                                                const string& schema) {
   auto db = db_pool_[dict_name].lock();
   if (!db) {
     auto component = Db::Require(db_class);
@@ -1110,7 +1111,7 @@ UserDictionary* UserDictionaryComponent::Create(const string& dict_name,
     db.reset(component->Create(dict_name));
     db_pool_[dict_name] = db;
   }
-  return new UserDictionary(dict_name, db);
+  return new UserDictionary(dict_name, db, schema);
 }
 
 UserDictionary* UserDictionaryComponent::Create(const Ticket& ticket) {
@@ -1137,30 +1138,31 @@ UserDictionary* UserDictionaryComponent::Create(const Ticket& ticket) {
     // user specified db class
   }
   // obtain userdb object
-  return Create(dict_name, db_class);
-}
-}
+  auto db = db_pool_[dict_name].lock();
+  if (!db) {
+    auto component = Db::Require(db_class);
+    if (!component) {
+      LOG(ERROR) << "undefined db class '" << db_class << "'.";
+      return NULL;
+    }
+    db.reset(component->Create(dict_name));
+    db_pool_[dict_name] = db;
+  }
 
-int delete_threshold = 1000;
-config->GetInt(ticket.name_space + "/delete_threshold", &delete_threshold);
-if (delete_threshold < 0)
-  delete_threshold = 0;
-bool enable_filtering = false;
-config->GetBool(ticket.name_space + "/enable_filtering", &enable_filtering);
-bool forced_selection = true;
-config->GetBool(ticket.name_space + "/forced_selection", &forced_selection);
-bool single_selection = false;
-config->GetBool(ticket.name_space + "/single_selection", &single_selection);
-bool lower_case = false;
-config->GetBool(ticket.name_space + "/lower_case", &lower_case);
+  int delete_threshold = 1000;
+  config->GetInt(ticket.name_space + "/delete_threshold", &delete_threshold);
+  if (delete_threshold < 0)
+    delete_threshold = 0;
+  bool enable_filtering = false;
+  config->GetBool(ticket.name_space + "/enable_filtering", &enable_filtering);
+  bool forced_selection = true;
+  config->GetBool(ticket.name_space + "/forced_selection", &forced_selection);
+  bool single_selection = false;
+  config->GetBool(ticket.name_space + "/single_selection", &single_selection);
+  bool lower_case = false;
+  config->GetBool(ticket.name_space + "/lower_case", &lower_case);
 
-return new UserDictionary(dict_name,
-                          db,
-                          ticket.schema->schema_id(),
-                          delete_threshold,
-                          enable_filtering,
-                          forced_selection,
-                          single_selection,
-                          lower_case);
-}
+  return new UserDictionary(dict_name, db, ticket.schema->schema_id(),
+                            delete_threshold, enable_filtering,
+                            forced_selection, single_selection, lower_case);
 }  // namespace rime

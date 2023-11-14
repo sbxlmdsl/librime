@@ -132,7 +132,9 @@ class UserDictionaryComponent : public UserDictionary::Component {
  public:
   UserDictionaryComponent();
   UserDictionary* Create(const Ticket& ticket);
-  UserDictionary* Create(const string& dict_name, const string& db_class);
+  UserDictionary* Create(const string& dict_name,
+                         const string& db_class,
+                         const string& schema);
 
  private:
   map<string, weak<Db>> db_pool_;
