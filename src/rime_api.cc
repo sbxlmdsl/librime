@@ -229,7 +229,8 @@ static void rime_candidate_copy(RimeCandidate* dest, const an<Candidate>& src) {
   dest->reserved = nullptr;
 }
 
-static void rime_candidate_copy2(RimeCandidate* dest, const an<Candidate>& src) {
+static void rime_candidate_copy2(RimeCandidate* dest,
+                                 const an<Candidate>& src) {
   size_t m = src->text().length();
   size_t n = src->text().find_last_of(' ');
   if (n != string::npos) {
@@ -244,8 +245,7 @@ static void rime_candidate_copy2(RimeCandidate* dest, const an<Candidate>& src) 
   if (!comment.empty()) {
     dest->comment = new char[comment.length() + 1];
     std::strcpy(dest->comment, comment.c_str());
-  }
-  else {
+  } else {
     dest->comment = nullptr;
   }
   dest->reserved = nullptr;
@@ -272,8 +272,8 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
     if (RIME_STRUCT_HAS_MEMBER(*context, context->commit_text_preview)) {
       string commit_text(ctx->GetCommitText());
       if (!commit_text.empty()) {
-          context->commit_text_preview = new char[commit_text.length() + 1];
-          std::strcpy(context->commit_text_preview, commit_text.c_str());
+        context->commit_text_preview = new char[commit_text.length() + 1];
+        std::strcpy(context->commit_text_preview, commit_text.c_str());
       }
     }
   }
@@ -285,7 +285,7 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       page_size = schema->page_size();
     int selected_index = seg.selected_index;
     int page_no = selected_index / page_size;
-    
+
     the<Page> page(seg.menu->CreatePage(page_size, page_no));
     if (page) {
       context->menu.page_size = page_size;
@@ -297,7 +297,9 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       context->menu.candidates = new RimeCandidate[page->candidates.size()];
       for (const an<Candidate>& cand : page->candidates) {
         RimeCandidate* dest = &context->menu.candidates[i++];
-        if (boost::regex_match(schema->schema_id(), boost::regex("^sbpy|sbjm|sbzr|sbxh|sbf[mxd]$"))) {
+        if (boost::regex_match(
+                schema->schema_id(),
+                boost::regex("^sbpy|sbjm|sbzr|sbxh|sbf[mxd]$"))) {
           rime_candidate_copy2(dest, cand);
         } else {
           rime_candidate_copy(dest, cand);
@@ -305,26 +307,25 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
       }
       if (schema) {
         const string& select_keys(schema->select_keys());
-		const char c1 = ctx->input()[0];
-		string sbxlm_select_keys = string("_aeuio");
-		string replace_select_keys = string("      ");
+        const char c1 = ctx->input()[0];
+        string sbxlm_select_keys = string("_aeuio");
+        string replace_select_keys = string("      ");
         if (!select_keys.empty()) {
           context->menu.select_keys = new char[select_keys.length() + 1];
-		  if (select_keys.compare(sbxlm_select_keys)) //not sbxlm
-			  std::strcpy(context->menu.select_keys, select_keys.c_str());
-		  else if (ctx->input().length() > 1
-			  && string("uo").find(c1) != string::npos
-			  && string("aeuio").find(ctx->input()[1]) == string::npos) {
-			  std::strcpy(context->menu.select_keys, sbxlm_select_keys.c_str());
-		  }
-		  else if (!ctx->HasMore()
-			  || (string("aeuio").find(c1) != string::npos
-			  || islower(c1) && ctx->input().length() <= 3)) {
-			  std::strcpy(context->menu.select_keys, replace_select_keys.c_str());
-		  }
-		  else {
-			  std::strcpy(context->menu.select_keys, sbxlm_select_keys.c_str()); //fallback to sbxlm
-		  }
+          if (select_keys.compare(sbxlm_select_keys))  // not sbxlm
+            std::strcpy(context->menu.select_keys, select_keys.c_str());
+          else if (ctx->input().length() > 1 &&
+                   string("uo").find(c1) != string::npos &&
+                   string("aeuio").find(ctx->input()[1]) == string::npos) {
+            std::strcpy(context->menu.select_keys, sbxlm_select_keys.c_str());
+          } else if (!ctx->HasMore() ||
+                     (string("aeuio").find(c1) != string::npos ||
+                      islower(c1) && ctx->input().length() <= 3)) {
+            std::strcpy(context->menu.select_keys, replace_select_keys.c_str());
+          } else {
+            std::strcpy(context->menu.select_keys,
+                        sbxlm_select_keys.c_str());  // fallback to sbxlm
+          }
           std::strcpy(context->menu.select_keys, select_keys.c_str());
         }
         Config* config = schema->config();
@@ -378,8 +379,8 @@ RIME_API Bool RimeGetCommit(RimeSessionId session_id, RimeCommit* commit) {
     return False;
   const string& commit_text(session->commit_text());
   if (!commit_text.empty()) {
-      commit->text = new char[commit_text.length() + 1];
-      std::strcpy(commit->text, commit_text.c_str());
+    commit->text = new char[commit_text.length() + 1];
+    std::strcpy(commit->text, commit_text.c_str());
     session->ResetCommitText();
     return True;
   }
