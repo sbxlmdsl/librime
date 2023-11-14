@@ -21,7 +21,7 @@ void ShapeFormatter::Format(string* text) {
     return;
   }
   if (text->length() > 1)
-	  return;
+    return;
   std::ostringstream oss;
   for (char ch : *text) {
     if (ch == 0x20) {

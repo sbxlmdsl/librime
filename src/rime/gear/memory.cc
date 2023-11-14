@@ -19,166 +19,169 @@
 
 namespace rime {
 
-	void CommitEntry::Clear() {
-		text.clear();
-		code.clear();
-		custom_code.clear();
-		elements.clear();
-	}
+void CommitEntry::Clear() {
+  text.clear();
+  code.clear();
+  custom_code.clear();
+  elements.clear();
+}
 
-	void CommitEntry::AppendPhrase(const an<Phrase>& phrase) {
-		if (phrase->language() && boost::regex_match(phrase->language()->name()
-				, boost::regex("^sbjf|sss|sb|ss|jm3|jmn|fmn|fxn|spn|jmsbb|fmsbb|zrszb|xhszb|fmzdy|fxzdy|jmzdy|zrzdy|xhzdy|pygd|sxs|shs|sbs|sbsb|sps|spsb|sps_b$"))) {
-			phrase->set_comment("sbxlm_fixed_entry");
-		}
-		text += phrase->text();
-		code.insert(code.end(),	phrase->code().begin(), phrase->code().end());
+void CommitEntry::AppendPhrase(const an<Phrase>& phrase) {
+  if (phrase->language() &&
+      boost::regex_match(
+          phrase->language()->name(),
+          boost::regex("^sbjf|sss|sb|ss|jm3|jmn|fmn|fxn|spn|jmsbb|fmsbb|zrszb|"
+                       "xhszb|fmzdy|fxzdy|jmzdy|zrzdy|xhzdy|pygd|sxs|shs|sbs|"
+                       "sbsb|sps|spsb|sps_b$"))) {
+    phrase->set_comment("sbxlm_fixed_entry");
+  }
+  text += phrase->text();
+  code.insert(code.end(), phrase->code().begin(), phrase->code().end());
 
-		if (auto sentence = As<Sentence>(phrase)) {
-			for (const DictEntry& e : sentence->components()) {
-				elements.push_back(&e);
-			}
-		}
-		else {
-			elements.push_back(&phrase->entry());
-		}
-	}
+  if (auto sentence = As<Sentence>(phrase)) {
+    for (const DictEntry& e : sentence->components()) {
+      elements.push_back(&e);
+    }
+  } else {
+    elements.push_back(&phrase->entry());
+  }
+}
 
-	bool CommitEntry::Save() const {
-		if (memory && !empty()) {
-			DLOG(INFO) << "memorize commit entry: " << text;
-			return memory->Memorize(*this);
-		}
-		return false;
-	}
+bool CommitEntry::Save() const {
+  if (memory && !empty()) {
+    DLOG(INFO) << "memorize commit entry: " << text;
+    return memory->Memorize(*this);
+  }
+  return false;
+}
 
-	Memory::Memory(const Ticket& ticket) {
-		if (!ticket.engine)
-			return;
+Memory::Memory(const Ticket& ticket) {
+  if (!ticket.engine)
+    return;
 
-		if (auto dictionary = Dictionary::Require("dictionary")) {
-			dict_.reset(dictionary->Create(ticket));
-			if (dict_)
-				dict_->Load();
-		}
+  if (auto dictionary = Dictionary::Require("dictionary")) {
+    dict_.reset(dictionary->Create(ticket));
+    if (dict_)
+      dict_->Load();
+  }
 
-		if (auto user_dictionary = UserDictionary::Require("user_dictionary")) {
-			user_dict_.reset(user_dictionary->Create(ticket));
-			if (user_dict_) {
-				user_dict_->Load();
-				if (dict_)
-					user_dict_->Attach(dict_->primary_table(), dict_->prism());
-			}
-		}
+  if (auto user_dictionary = UserDictionary::Require("user_dictionary")) {
+    user_dict_.reset(user_dictionary->Create(ticket));
+    if (user_dict_) {
+      user_dict_->Load();
+      if (dict_)
+        user_dict_->Attach(dict_->primary_table(), dict_->prism());
+    }
+  }
 
-		// user dictionary is named after language; dictionary name may have an
-		// optional suffix separated from the language component by dot.
-		language_.reset(new Language{
-		  user_dict_ ? user_dict_->name() :
-		  Language::get_language_component(dict_->name())
-			});
+  // user dictionary is named after language; dictionary name may have an
+  // optional suffix separated from the language component by dot.
+  language_.reset(new Language{
+      user_dict_ ? user_dict_->name()
+                 : Language::get_language_component(dict_->name())});
 
-		schema_ = ticket.engine->schema()->schema_id();
-		Context* ctx = ticket.engine->context();
-		commit_connection_ = ctx->commit_notifier().connect(
-			[this](Context* ctx) { OnCommit(ctx); });
-		delete_connection_ = ctx->delete_notifier().connect(
-			[this](Context* ctx) { OnDeleteEntry(ctx); });
-		unhandled_key_connection_ = ctx->unhandled_key_notifier().connect(
-			[this](Context* ctx, const KeyEvent& key) { OnUnhandledKey(ctx, key); });
-	}
+  schema_ = ticket.engine->schema()->schema_id();
+  Context* ctx = ticket.engine->context();
+  commit_connection_ =
+      ctx->commit_notifier().connect([this](Context* ctx) { OnCommit(ctx); });
+  delete_connection_ = ctx->delete_notifier().connect(
+      [this](Context* ctx) { OnDeleteEntry(ctx); });
+  unhandled_key_connection_ = ctx->unhandled_key_notifier().connect(
+      [this](Context* ctx, const KeyEvent& key) { OnUnhandledKey(ctx, key); });
+}
 
-	Memory::~Memory() {
-		commit_connection_.disconnect();
-		delete_connection_.disconnect();
-		unhandled_key_connection_.disconnect();
-	}
+Memory::~Memory() {
+  commit_connection_.disconnect();
+  delete_connection_.disconnect();
+  unhandled_key_connection_.disconnect();
+}
 
-	bool Memory::StartSession() {
-		return user_dict_ && user_dict_->NewTransaction();
-	}
+bool Memory::StartSession() {
+  return user_dict_ && user_dict_->NewTransaction();
+}
 
-	bool Memory::FinishSession() {
-		return user_dict_ && user_dict_->CommitPendingTransaction();
-	}
+bool Memory::FinishSession() {
+  return user_dict_ && user_dict_->CommitPendingTransaction();
+}
 
-	bool Memory::DiscardSession() {
-		return user_dict_ && user_dict_->RevertRecentTransaction();
-	}
+bool Memory::DiscardSession() {
+  return user_dict_ && user_dict_->RevertRecentTransaction();
+}
 
-	void Memory::OnCommit(Context* ctx) {
-		if (!user_dict_ || user_dict_->readonly())
-			return;
-		StartSession();
-		CommitEntry commit_entry(this);
-		string& text = commit_entry.text;
-		string& custom_code = commit_entry.custom_code;
-		string& comment = commit_entry.comment;
-		size_t pos = 0;
-		for (auto& seg : ctx->composition()) {
-			auto phrase = As<Phrase>(Candidate::GetGenuineCandidate(seg.GetSelectedCandidate()));
-			bool recognized = Language::intelligible(phrase, this);
-			string name = phrase && phrase->language() && this->language() ? phrase->language()->name() : "";
-			if (boost::regex_match(name
-					, boost::regex("^sbjf|sss|sb|ss|jm3|jmn|fmn|fxn|spn|jmsbb|fmsbb|zrszb|xhszb|fmzdy|fxzdy|jmzdy|zrzdy|xhzdy|pygd|sxs|shs|sbs|sbsb|sps|sps_b|spsb$"))) {
-				recognized = true;
-			}
-			if (recognized) {
-				if (name == "sbpy") {
-					if (comment == string("sbxlm_fixed_entry"))
-						comment = text.empty();
-					text += phrase->text();
-					string code_str = commit_entry.custom_code;
-					user_dict_->TranslateCodeToString(phrase->code(), &custom_code);
-					custom_code = code_str + custom_code;
-				}
-				else if (boost::regex_match(name, boost::regex("^pygd$"))) {
-					if (text.empty())
-						comment = string("sbxlm_fixed_entry");
-					else
-						comment = text.empty();
-					pos = phrase->text().find_last_of(' ');
-					text += phrase->text().substr(pos + 1);
-					string code_str = phrase->text().substr(0, pos + 1);
-					custom_code += code_str;
-				}
-				else
-					commit_entry.AppendPhrase(phrase);
-			}
-			if (!recognized || seg.status >= Segment::kConfirmed) {
-				if (seg.end == ctx->input().length()) {
-					commit_entry.Save();
-					commit_entry.Clear();
-				}
-			}
-		}
-	}
+void Memory::OnCommit(Context* ctx) {
+  if (!user_dict_ || user_dict_->readonly())
+    return;
+  StartSession();
+  CommitEntry commit_entry(this);
+  string& text = commit_entry.text;
+  string& custom_code = commit_entry.custom_code;
+  string& comment = commit_entry.comment;
+  size_t pos = 0;
+  for (auto& seg : ctx->composition()) {
+    auto phrase =
+        As<Phrase>(Candidate::GetGenuineCandidate(seg.GetSelectedCandidate()));
+    bool recognized = Language::intelligible(phrase, this);
+    string name = phrase && phrase->language() && this->language()
+                      ? phrase->language()->name()
+                      : "";
+    if (boost::regex_match(
+            name,
+            boost::regex("^sbjf|sss|sb|ss|jm3|jmn|fmn|fxn|spn|jmsbb|fmsbb|"
+                         "zrszb|xhszb|fmzdy|fxzdy|jmzdy|zrzdy|xhzdy|pygd|sxs|"
+                         "shs|sbs|sbsb|sps|sps_b|spsb$"))) {
+      recognized = true;
+    }
+    if (recognized) {
+      if (name == "sbpy") {
+        if (comment == string("sbxlm_fixed_entry"))
+          comment = text.empty();
+        text += phrase->text();
+        string code_str = commit_entry.custom_code;
+        user_dict_->TranslateCodeToString(phrase->code(), &custom_code);
+        custom_code = code_str + custom_code;
+      } else if (boost::regex_match(name, boost::regex("^pygd$"))) {
+        if (text.empty())
+          comment = string("sbxlm_fixed_entry");
+        else
+          comment = text.empty();
+        pos = phrase->text().find_last_of(' ');
+        text += phrase->text().substr(pos + 1);
+        string code_str = phrase->text().substr(0, pos + 1);
+        custom_code += code_str;
+      } else
+        commit_entry.AppendPhrase(phrase);
+    }
+    if (!recognized || seg.status >= Segment::kConfirmed) {
+      if (seg.end == ctx->input().length()) {
+        commit_entry.Save();
+        commit_entry.Clear();
+      }
+    }
+  }
+}
 
-	void Memory::OnDeleteEntry(Context* ctx) {
-		if (!user_dict_ ||
-			user_dict_->readonly() ||
-			!ctx ||
-			!ctx->HasMenu())
-			return;
-		auto phrase = As<Phrase>(Candidate::GetGenuineCandidate(
-			ctx->GetSelectedCandidate()));
-		if (Language::intelligible(phrase, this)) {
-			const DictEntry& entry(phrase->entry());
-			LOG(INFO) << "deleting entry: '" << entry.text << "'.";
-			user_dict_->UpdateEntry(entry, -1);  // mark as deleted in user dict
-			ctx->RefreshNonConfirmedComposition();
-		}
-	}
+void Memory::OnDeleteEntry(Context* ctx) {
+  if (!user_dict_ || user_dict_->readonly() || !ctx || !ctx->HasMenu())
+    return;
+  auto phrase =
+      As<Phrase>(Candidate::GetGenuineCandidate(ctx->GetSelectedCandidate()));
+  if (Language::intelligible(phrase, this)) {
+    const DictEntry& entry(phrase->entry());
+    LOG(INFO) << "deleting entry: '" << entry.text << "'.";
+    user_dict_->UpdateEntry(entry, -1);  // mark as deleted in user dict
+    ctx->RefreshNonConfirmedComposition();
+  }
+}
 
-	void Memory::OnUnhandledKey(Context* ctx, const KeyEvent& key) {
-		if (!user_dict_ || user_dict_->readonly())
-			return;
-		if ((key.modifier() & ~kShiftMask) == 0) {
-			if (key.keycode() == XK_BackSpace && DiscardSession()) {
-				return;  // forget about last commit
-			}
-			FinishSession();
-		}
-	}
+void Memory::OnUnhandledKey(Context* ctx, const KeyEvent& key) {
+  if (!user_dict_ || user_dict_->readonly())
+    return;
+  if ((key.modifier() & ~kShiftMask) == 0) {
+    if (key.keycode() == XK_BackSpace && DiscardSession()) {
+      return;  // forget about last commit
+    }
+    FinishSession();
+  }
+}
 
 }  // namespace rime

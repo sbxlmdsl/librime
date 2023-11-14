@@ -410,9 +410,9 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator* result,
       }
       // else if ((!prefixed && len >= 4 || prefixed && len >= 9)
       //	&& string("qwrtsdfgzxcvbyphjklnm").find(key.substr(l + 2, 1)) !=
-      //string::npos
+      // string::npos
       //	&& !boost::regex_match(input.substr(l - 3, 4),
-      //boost::regex("^[qwrtsdfgzxcvbyphjklnm]{4}$"))) { 	continue;
+      // boost::regex("^[qwrtsdfgzxcvbyphjklnm]{4}$"))) { 	continue;
       //}
     }
 
