@@ -1165,4 +1165,5 @@ UserDictionary* UserDictionaryComponent::Create(const Ticket& ticket) {
   return new UserDictionary(dict_name, db, ticket.schema->schema_id(),
                             delete_threshold, enable_filtering,
                             forced_selection, single_selection, lower_case);
+}
 }  // namespace rime
