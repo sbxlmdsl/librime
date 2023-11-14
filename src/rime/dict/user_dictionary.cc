@@ -237,7 +237,9 @@ void UserDictionary::DfsLookup(const SyllableGraph& syll_graph,
                << ", syll_id: " << spelling.first
                << ", num_spellings: " << spelling.second.size();
     state->code.push_back(spelling.first);
-    BOOST_SCOPE_EXIT((&state)) { state->code.pop_back(); }
+    BOOST_SCOPE_EXIT((&state)) {
+      state->code.pop_back();
+    }
     BOOST_SCOPE_EXIT_END
     if (!TranslateCodeToString(state->code, &prefix))
       continue;
@@ -247,7 +249,9 @@ void UserDictionary::DfsLookup(const SyllableGraph& syll_graph,
         continue;
       state->credibility.push_back(state->credibility.back() +
                                    props->credibility);
-      BOOST_SCOPE_EXIT((&state)) { state->credibility.pop_back(); }
+      BOOST_SCOPE_EXIT((&state)) {
+        state->credibility.pop_back();
+      }
       BOOST_SCOPE_EXIT_END
       size_t end_pos = props->end_pos;
       DLOG(INFO) << "edge: [" << current_pos << ", " << end_pos << ")";
