@@ -94,15 +94,12 @@ static KeyBindingCondition translate_condition(const string& str) {
 struct KeyBinding {
   KeyBindingCondition whence;
   KeySequence target;
-  function<void (Engine* engine)> action;
+  function<void(Engine* engine)> action;
 
-  bool operator< (const KeyBinding& o) const {
-    return whence < o.whence;
-  }
+  bool operator<(const KeyBinding& o) const { return whence < o.whence; }
 };
 
-class KeyBindings : public map<KeyEvent,
-                             vector<KeyBinding>> {
+class KeyBindings : public map<KeyEvent, vector<KeyBinding>> {
  public:
   void LoadBindings(const an<ConfigList>& bindings);
   void Bind(const KeyEvent& key, const KeyBinding& binding);
@@ -111,8 +108,7 @@ class KeyBindings : public map<KeyEvent,
 static void radio_select_option(Context* ctx,
                                 const Switches::SwitchOption& the_option) {
   Switches::FindRadioGroupOption(
-      the_option.the_switch,
-      [ctx, &the_option](Switches::SwitchOption option) {
+      the_option.the_switch, [ctx, &the_option](Switches::SwitchOption option) {
         bool value = (option.option_index == the_option.option_index);
         if (ctx->get_option(option.option_name) != value) {
           ctx->set_option(option.option_name, value);
@@ -130,7 +126,8 @@ static Switches::SwitchOption switch_by_index(Switches& switches,
   try {
     size_t index = boost::lexical_cast<size_t>(option.substr(1));
     return switches.ByIndex(index);
-  } catch (...) {}
+  } catch (...) {
+  }
   return {};
 }
 
@@ -139,16 +136,13 @@ static void toggle_option(Engine* engine, const string& option) {
     return;
   Context* ctx = engine->context();
   Switches switches(engine->schema()->config());
-  auto the_option = is_switch_index(option)
-                    ? switch_by_index(switches, option)
-                    : switches.OptionByName(option);
+  auto the_option = is_switch_index(option) ? switch_by_index(switches, option)
+                                            : switches.OptionByName(option);
   if (the_option.found() && the_option.type == Switches::kRadioGroup) {
     auto selected_option = switches.FindRadioGroupOption(
-        the_option.the_switch,
-        [ctx](Switches::SwitchOption option) {
-          return ctx->get_option(option.option_name)
-              ? Switches::kFound
-              : Switches::kContinue;
+        the_option.the_switch, [ctx](Switches::SwitchOption option) {
+          return ctx->get_option(option.option_name) ? Switches::kFound
+                                                     : Switches::kContinue;
         });
     if (!selected_option.found()) {
       // invalid state: none is selected. select the given option.
@@ -205,8 +199,7 @@ static void select_schema(Engine* engine, const string& schema) {
   if (schema == ".next") {
     Switcher switcher(engine);
     switcher.SelectNextSchema();
-  }
-  else {
+  } else {
     engine->ApplySchema(new Schema(schema));
   }
 }
@@ -242,26 +235,20 @@ void KeyBindings::LoadBindings(const an<ConfigList>& bindings) {
         LOG(WARNING) << "invalid key binding #" << i << ".";
         continue;
       }
-    }
-    else if (auto target = map->GetValue("send_sequence")) {
+    } else if (auto target = map->GetValue("send_sequence")) {
       if (!binding.target.Parse(target->str())) {
         LOG(WARNING) << "invalid key sequence #" << i << ".";
         continue;
       }
-    }
-    else if (auto option = map->GetValue("toggle")) {
+    } else if (auto option = map->GetValue("toggle")) {
       binding.action = std::bind(&toggle_option, _1, option->str());
-    }
-    else if (auto option = map->GetValue("set_option")) {
+    } else if (auto option = map->GetValue("set_option")) {
       binding.action = std::bind(&set_option, _1, option->str());
-    }
-    else if (auto option = map->GetValue("unset_option")) {
+    } else if (auto option = map->GetValue("unset_option")) {
       binding.action = std::bind(&unset_option, _1, option->str());
-    }
-    else if (auto schema = map->GetValue("select")) {
+    } else if (auto schema = map->GetValue("select")) {
       binding.action = std::bind(&select_schema, _1, schema->str());
-    }
-    else {
+    } else {
       LOG(WARNING) << "invalid key binding #" << i << ".";
       continue;
     }
@@ -276,10 +263,11 @@ void KeyBindings::Bind(const KeyEvent& key, const KeyBinding& binding) {
   vec.insert(lb, binding);
 }
 
-KeyBinder::KeyBinder(const Ticket& ticket) : Processor(ticket),
-                                             key_bindings_(new KeyBindings),
-                                             redirecting_(false),
-                                             last_key_(0) {
+KeyBinder::KeyBinder(const Ticket& ticket)
+    : Processor(ticket),
+      key_bindings_(new KeyBindings),
+      redirecting_(false),
+      last_key_(0) {
   LoadConfig();
 }
 
@@ -403,8 +391,7 @@ ProcessResult KeyBinder::ProcessKeyEvent(const KeyEvent& key_event) {
 void KeyBinder::PerformKeyBinding(const KeyBinding& binding) {
   if (binding.action) {
     binding.action(engine_);
-  }
-  else {
+  } else {
     redirecting_ = true;
     for (const KeyEvent& key_event : binding.target) {
       engine_->ProcessKey(key_event);

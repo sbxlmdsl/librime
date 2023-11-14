@@ -16,10 +16,7 @@
 namespace rime {
 
 HistoryTranslator::HistoryTranslator(const Ticket& ticket)
-    : Translator(ticket),
-      tag_("abc"),
-      size_(1),
-      initial_quality_(1000) {
+    : Translator(ticket), tag_("abc"), size_(1), initial_quality_(1000) {
   if (ticket.name_space == "translator") {
     name_space_ = "history";
   }
@@ -29,8 +26,7 @@ HistoryTranslator::HistoryTranslator(const Ticket& ticket)
   config->GetString(name_space_ + "/tag", &tag_);
   config->GetString(name_space_ + "/input", &input_);
   config->GetInt(name_space_ + "/size", &size_);
-  config->GetDouble(name_space_ + "/initial_quality",
-                    &initial_quality_);
+  config->GetDouble(name_space_ + "/initial_quality", &initial_quality_);
 }
 
 an<Translation> HistoryTranslator::Query(const string& input,
@@ -56,7 +52,8 @@ an<Translation> HistoryTranslator::Query(const string& input,
     candidate->set_quality(initial_quality_);
     translation->Append(candidate);
     count++;
-    if (size_ == count) break;
+    if (size_ == count)
+      break;
   }
   return translation;
 }

@@ -16,18 +16,20 @@ jobs:
   build:
     runs-on: macos-latest
     env:
-      boost_version: 1.78.0
-      BOOST_ROOT: ${{ github.workspace }}/deps/boost_1_78_0
+      boost_version: 1.83.0
+      BOOST_ROOT: ${{ github.workspace }}/deps/boost_1_83_0
       RIME_PLUGINS: ${{ inputs.rime_plugins }}
     steps:
       - name: Checkout last commit
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repository }}
           submodules: recursive
 
       - name: Configure build environment
         run: |
+          brew install llvm
+          echo "/usr/local/opt/llvm/bin" >> $GITHUB_PATH
           echo git_ref_name="$(git describe --always)" >> $GITHUB_ENV
 
       - name: Configure build variant

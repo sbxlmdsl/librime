@@ -18,29 +18,26 @@
 namespace rime {
 
 static Editor::ActionDef editor_action_definitions[] = {
-  { "confirm",  &Editor::Confirm },
-  { "toggle_selection",  &Editor::ToggleSelection },
-  { "commit_comment", &Editor::CommitComment },
-  { "commit_raw_input", &Editor::CommitRawInput },
-  { "commit_script_text", &Editor::CommitScriptText },
-  { "commit_composition", &Editor::CommitComposition },
-  { "revert", &Editor::RevertLastEdit },
-  { "back", &Editor::BackToPreviousInput },
-  { "back_syllable", &Editor::BackToPreviousSyllable },
-  { "delete_candidate", &Editor::DeleteCandidate },
-  { "delete", &Editor::DeleteChar },
-  { "cancel", &Editor::CancelComposition },
-  Editor::kActionNoop
-};
+    {"confirm", &Editor::Confirm},
+    {"toggle_selection", &Editor::ToggleSelection},
+    {"commit_comment", &Editor::CommitComment},
+    {"commit_raw_input", &Editor::CommitRawInput},
+    {"commit_script_text", &Editor::CommitScriptText},
+    {"commit_composition", &Editor::CommitComposition},
+    {"revert", &Editor::RevertLastEdit},
+    {"back", &Editor::BackToPreviousInput},
+    {"back_syllable", &Editor::BackToPreviousSyllable},
+    {"delete_candidate", &Editor::DeleteCandidate},
+    {"delete", &Editor::DeleteChar},
+    {"cancel", &Editor::CancelComposition},
+    Editor::kActionNoop};
 
 static struct EditorCharHandlerDef {
   const char* name;
   Editor::CharHandlerPtr action;
-} editor_char_handler_definitions[] = {
-  { "direct_commit", &Editor::DirectCommit },
-  { "add_to_input", &Editor::AddToInput },
-  { "noop", nullptr }
-};
+} editor_char_handler_definitions[] = {{"direct_commit", &Editor::DirectCommit},
+                                       {"add_to_input", &Editor::AddToInput},
+                                       {"noop", nullptr}};
 
 Editor::Editor(const Ticket& ticket, bool auto_commit)
     : Processor(ticket), KeyBindingProcessor(editor_action_definitions) {
@@ -53,17 +50,16 @@ ProcessResult Editor::ProcessKeyEvent(const KeyEvent& key_event) {
   int ch = key_event.keycode();
   Context* ctx = engine_->context();
   if (ctx->IsComposing()) {
-    auto result = KeyBindingProcessor::ProcessKeyEvent(
-      key_event, ctx, 0, FallbackOptions::All);
+    auto result = KeyBindingProcessor::ProcessKeyEvent(key_event, ctx, 0,
+                                                       FallbackOptions::All);
     if (result != kNoop) {
       return result;
     }
   }
-  if (char_handler_ &&
-      !key_event.ctrl() && !key_event.alt() && !key_event.super() &&
-      ch > 0x20 && ch < 0x7f) {
-    DLOG(INFO) << "input char: '" << (char)ch << "', " << ch
-               << ", '" << key_event.repr() << "'";
+  if (char_handler_ && !key_event.ctrl() && !key_event.alt() &&
+      !key_event.super() && ch > 0x20 && ch < 0x7f) {
+    DLOG(INFO) << "input char: '" << (char)ch << "', " << ch << ", '"
+               << key_event.repr() << "'";
     return RIME_THIS_CALL(char_handler_)(ctx, ch);
   }
   // not handled
@@ -83,8 +79,7 @@ void Editor::LoadConfig() {
     }
     if (!p->action && p->name != value->str()) {
       LOG(WARNING) << "invalid char_handler: " << value->str();
-    }
-    else {
+    } else {
       char_handler_ = p->action;
     }
   }
@@ -96,8 +91,7 @@ bool Editor::Confirm(Context* ctx) {
 }
 
 bool Editor::ToggleSelection(Context* ctx) {
-  ctx->ReopenPreviousSegment() ||
-      ctx->ConfirmCurrentSelection();
+  ctx->ReopenPreviousSegment() || ctx->ConfirmCurrentSelection();
   return true;
 }
 
@@ -177,8 +171,7 @@ bool Editor::RevertLastEdit(Context* ctx) {
 }
 
 bool Editor::BackToPreviousInput(Context* ctx) {
-  ctx->ReopenPreviousSegment() ||
-      ctx->ReopenPreviousSelection() ||
+  ctx->ReopenPreviousSegment() || ctx->ReopenPreviousSelection() ||
       ctx->PopInput();
   return true;
 }
@@ -246,9 +239,9 @@ ProcessResult Editor::DirectCommit(Context* ctx, int ch) {
 }
 
 ProcessResult Editor::AddToInput(Context* ctx, int ch) {
-    ctx->PushInput(ch);
-    ctx->ConfirmPreviousSelection();
-    return kAccepted;
+  ctx->PushInput(ch);
+  ctx->ConfirmPreviousSelection();
+  return kAccepted;
 }
 
 FluidEditor::FluidEditor(const Ticket& ticket) : Editor(ticket, false) {

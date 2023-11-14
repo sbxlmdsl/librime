@@ -8,6 +8,7 @@
 #include <utf8.h>
 #include <rime/config.h>
 #include <rime/algo/encoder.h>
+#include <rime/algo/strings.h>
 
 namespace rime {
 

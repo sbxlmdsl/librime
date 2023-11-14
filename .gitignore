@@ -13,3 +13,5 @@ node_modules/
 *~
 .*.swp
 .idea
+.cache/
+*.7z

@@ -1038,40 +1038,48 @@ size_t UserDictionary::LookupWords(UserDictEntryIterator *result,
     UserDictionaryComponent::UserDictionaryComponent() {
     }
 
-    UserDictionary *UserDictionaryComponent::Create(const Ticket &ticket) {
-        if (!ticket.schema)
-            return NULL;
-        Config *config = ticket.schema->config();
-        bool enable_user_dict = true;
-        config->GetBool(ticket.name_space + "/enable_user_dict", &enable_user_dict);
-        if (!enable_user_dict)
-            return NULL;
-        string dict_name;
-        if (config->GetString(ticket.name_space + "/user_dict", &dict_name)) {
-            // user specified name
-        } else if (config->GetString(ticket.name_space + "/dictionary", &dict_name)) {
-            // {dictionary: luna_pinyin.extra} implies {user_dict: luna_pinyin}
-            dict_name = Language::get_language_component(dict_name);
-        } else {
-            LOG(ERROR) << ticket.name_space << "/dictionary not specified in schema '"
-                       << ticket.schema->schema_id() << "'.";
-            return NULL;
-        }
-        string db_class("userdb");
-        if (config->GetString(ticket.name_space + "/db_class", &db_class)) {
-            // user specified db class
-        }
-        // obtain userdb object
-        auto db = db_pool_[dict_name].lock();
-        if (!db) {
-            auto component = Db::Require(db_class);
-            if (!component) {
-                LOG(ERROR) << "undefined db class '" << db_class << "'.";
-                return NULL;
-            }
-            db.reset(component->Create(dict_name));
-            db_pool_[dict_name] = db;
-        }
+UserDictionary* UserDictionaryComponent::Create(const string& dict_name,
+                                                const string& db_class) {
+  auto db = db_pool_[dict_name].lock();
+  if (!db) {
+    auto component = Db::Require(db_class);
+    if (!component) {
+      LOG(ERROR) << "undefined db class '" << db_class << "'.";
+      return NULL;
+    }
+    db.reset(component->Create(dict_name));
+    db_pool_[dict_name] = db;
+  }
+  return new UserDictionary(dict_name, db);
+}
+
+UserDictionary* UserDictionaryComponent::Create(const Ticket& ticket) {
+  if (!ticket.schema)
+    return NULL;
+  Config* config = ticket.schema->config();
+  bool enable_user_dict = true;
+  config->GetBool(ticket.name_space + "/enable_user_dict", &enable_user_dict);
+  if (!enable_user_dict)
+    return NULL;
+  string dict_name;
+  if (config->GetString(ticket.name_space + "/user_dict", &dict_name)) {
+    // user specified name
+  } else if (config->GetString(ticket.name_space + "/dictionary", &dict_name)) {
+    // {dictionary: luna_pinyin.extra} implies {user_dict: luna_pinyin}
+    dict_name = Language::get_language_component(dict_name);
+  } else {
+    LOG(ERROR) << ticket.name_space << "/dictionary not specified in schema '"
+               << ticket.schema->schema_id() << "'.";
+    return NULL;
+  }
+  string db_class("userdb");
+  if (config->GetString(ticket.name_space + "/db_class", &db_class)) {
+    // user specified db class
+  }
+  // obtain userdb object
+  return Create(dict_name, db_class);
+}
+}
 
         int delete_threshold = 1000;
         config->GetInt(ticket.name_space + "/delete_threshold", &delete_threshold);
