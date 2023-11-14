@@ -28,6 +28,7 @@ jobs:
     uses: ./.github/workflows/macos-build.yml
 
   windows:
+    needs: lint
     uses: ./.github/workflows/windows-build.yml
 
   docker:
