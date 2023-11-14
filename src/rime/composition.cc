@@ -37,13 +37,13 @@ Preedit Composition::GetPreedit(const string& full_input,
     if (i < size() - 1) {  // converted
       if (cand) {
         end = cand->end();
-		size_t pos = cand->text().find_last_of(' ');
-		if (pos != string::npos && cand->text().length() > pos && !isascii(cand->text()[pos + 1]))
-			preedit.text += cand->text().substr(pos + 1);
-		else
-			preedit.text += cand->text();
-      }
-      else {  // raw input
+        size_t pos = cand->text().find_last_of(' ');
+        if (pos != string::npos && cand->text().length() > pos &&
+            !isascii(cand->text()[pos + 1]))
+          preedit.text += cand->text().substr(pos + 1);
+        else
+          preedit.text += cand->text();
+      } else {  // raw input
         end = at(i).end;
         if (!at(i).HasTag("phony")) {
           preedit.text += input_.substr(start, end - start);
@@ -109,13 +109,13 @@ string Composition::GetCommitText() const {
   for (const Segment& seg : *this) {
     if (auto cand = seg.GetSelectedCandidate()) {
       end = cand->end();
-	  size_t pos = cand->text().find_last_of(' ');
-	  if (pos != string::npos && cand->text().length() > pos && !isascii(cand->text()[pos + 1])) 
-		result += cand->text().substr(pos + 1);
-	  else
-		result += cand->text();
-    }
-    else {
+      size_t pos = cand->text().find_last_of(' ');
+      if (pos != string::npos && cand->text().length() > pos &&
+          !isascii(cand->text()[pos + 1]))
+        result += cand->text().substr(pos + 1);
+      else
+        result += cand->text();
+    } else {
       end = seg.end;
       if (!seg.HasTag("phony")) {
         result += input_.substr(seg.start, seg.end - seg.start);

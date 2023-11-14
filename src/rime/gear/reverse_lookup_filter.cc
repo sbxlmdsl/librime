@@ -73,43 +73,56 @@ an<Translation> ReverseLookupFilter::Apply(an<Translation> translation,
 }
 
 void ReverseLookupFilter::Process(const an<Candidate>& cand) {
-	bool is_fixed = engine_->context()->get_option("fixed")
-		|| engine_->context()->get_option("mixed")
-		|| engine_->context()->get_option("popping");
-	if ((!is_fixed || engine_->context()->get_option("is_hidden"))
-		&& name_space_ == "pygd_reverse_lookup" && engine_->schema()->schema_id() == "sbpy") {
-		return;
-	}
-	if ((!engine_->context()->get_option("slow_adjust") || engine_->context()->get_option("third_pop"))
-		&& name_space_ == "jmgd_reverse_lookup" && engine_->schema()->schema_id() == "sbjm") {
-		return;
-	}
-	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "jmn_reverse_lookup"
-		&& engine_->schema()->schema_id() == "sbjm") {
-		return;
-	}
-	if ((!engine_->context()->get_option("is_enhanced") || engine_->context()->get_option("is_hidden"))
-		&& name_space_ == "fmjmn_reverse_lookup"
-		&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]$"))) {
-		return;
-	}
-	//if (!engine_->context()->get_option("is_enhanced") && name_space_ == "fxjmn_reverse_lookup"
-	//	&& engine_->schema()->schema_id() == "sbfx") {
-	//	return;
-	//}
-	if (engine_->context()->input().length() == 3 && name_space_ == "fmsbb_reverse_lookup"
-		&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]$"))) {
-		return;
-	}
-	if (engine_->context()->input().length() <= 3 
-		&& boost::regex_match(name_space_, boost::regex("^f[mx]jmn_reverse_lookup$"))
-		&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]$"))) {
-		return;
-	}
-	if (!engine_->context()->get_option("is_enhanced") && name_space_ == "spjmn_reverse_lookup"
-		&& boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbzr|sbxh$"))) {
-		return;
-	}
+  bool is_fixed = engine_->context()->get_option("fixed") ||
+                  engine_->context()->get_option("mixed") ||
+                  engine_->context()->get_option("popping");
+  if ((!is_fixed || engine_->context()->get_option("is_hidden")) &&
+      name_space_ == "pygd_reverse_lookup" &&
+      engine_->schema()->schema_id() == "sbpy") {
+    return;
+  }
+  if ((!engine_->context()->get_option("slow_adjust") ||
+       engine_->context()->get_option("third_pop")) &&
+      name_space_ == "jmgd_reverse_lookup" &&
+      engine_->schema()->schema_id() == "sbjm") {
+    return;
+  }
+  if (!engine_->context()->get_option("is_enhanced") &&
+      name_space_ == "jmn_reverse_lookup" &&
+      engine_->schema()->schema_id() == "sbjm") {
+    return;
+  }
+  if ((!engine_->context()->get_option("is_enhanced") ||
+       engine_->context()->get_option("is_hidden")) &&
+      name_space_ == "fmjmn_reverse_lookup" &&
+      boost::regex_match(engine_->schema()->schema_id(),
+                         boost::regex("^sbf[mxd]$"))) {
+    return;
+  }
+  // if (!engine_->context()->get_option("is_enhanced") && name_space_ ==
+  // "fxjmn_reverse_lookup"
+  //	&& engine_->schema()->schema_id() == "sbfx") {
+  //	return;
+  //}
+  if (engine_->context()->input().length() == 3 &&
+      name_space_ == "fmsbb_reverse_lookup" &&
+      boost::regex_match(engine_->schema()->schema_id(),
+                         boost::regex("^sbf[mxd]$"))) {
+    return;
+  }
+  if (engine_->context()->input().length() <= 3 &&
+      boost::regex_match(name_space_,
+                         boost::regex("^f[mx]jmn_reverse_lookup$")) &&
+      boost::regex_match(engine_->schema()->schema_id(),
+                         boost::regex("^sbf[mxd]$"))) {
+    return;
+  }
+  if (!engine_->context()->get_option("is_enhanced") &&
+      name_space_ == "spjmn_reverse_lookup" &&
+      boost::regex_match(engine_->schema()->schema_id(),
+                         boost::regex("^sbzr|sbxh$"))) {
+    return;
+  }
 
   if (!overwrite_comment_ && !cand->comment().empty())
     return;

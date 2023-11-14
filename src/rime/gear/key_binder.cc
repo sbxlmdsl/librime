@@ -24,25 +24,25 @@ namespace rime {
 
 enum KeyBindingCondition {
   kNever,
-  kWhenPaging,     // user has changed page
-  kWhenHasMenu,    // at least one candidate
-  kWhenHasMore,    // at least two candidates
-  kWhenMorePage,    // at least five candidates
-  kWhenIsFirst,    // for sbkz and sbfz
-  kWhenIsSecond,    // for sbkz and sbfz
-  kWhenIsThird,    // for sbkz and sbfz
-  kWhenIsFourth,    // for sbkz and sbfz
-  kWhenIsFifth,    // for sbjz
-  kWhenIsSixth,    // for sbjz
-  kWhenIsSelect,    // for sbkz and sbfz
+  kWhenPaging,    // user has changed page
+  kWhenHasMenu,   // at least one candidate
+  kWhenHasMore,   // at least two candidates
+  kWhenMorePage,  // at least five candidates
+  kWhenIsFirst,   // for sbkz and sbfz
+  kWhenIsSecond,  // for sbkz and sbfz
+  kWhenIsThird,   // for sbkz and sbfz
+  kWhenIsFourth,  // for sbkz and sbfz
+  kWhenIsFifth,   // for sbjz
+  kWhenIsSixth,   // for sbjz
+  kWhenIsSelect,  // for sbkz and sbfz
   kWhenOkSy,
   kWhenOkSys,
   kWhenOkSyxs,
   kWhenOkSsy,
   kWhenOkSssy,
   kWhenOkSsss,
-  kWhenOkFirst,		// the first code char is ok for sbfm*
-  kWhenOkSecond, 
+  kWhenOkFirst,  // the first code char is ok for sbfm*
+  kWhenOkSecond,
   kWhenOkThird,
   kWhenOkFourth,
   kWhenOkFifth,
@@ -54,34 +54,32 @@ enum KeyBindingCondition {
 static struct KeyBindingConditionDef {
   KeyBindingCondition condition;
   const char* name;
-} condition_definitions[] = {
-  { kWhenPaging,    "paging"    },
-  { kWhenHasMenu,   "has_menu"  },
-  { kWhenHasMore,   "has_more"  },
-  { kWhenMorePage,   "more_page"  },
-  { kWhenIsFirst,   "is_first" },
-  { kWhenIsSecond,   "is_second" },
-  { kWhenIsThird,   "is_third" },
-  { kWhenIsFourth,   "is_fourth" },
-  { kWhenIsFifth,   "is_fifth" },
-  { kWhenIsSixth,   "is_sixth" },
-  { kWhenIsSelect,   "is_select" },
-  { kWhenOkSy,   "ok_sy" },
-  { kWhenOkSys,   "ok_sys" },
-  { kWhenOkSyxs,   "ok_syxs" },
-  { kWhenOkSsy,   "ok_ssy" },
-  { kWhenOkSssy,   "ok_sssy" },
-  { kWhenOkSsss,   "ok_ssss" },
-  { kWhenOkFirst,   "ok_first" },
-  { kWhenOkSecond,   "ok_second" },
-  { kWhenOkThird,   "ok_third" },
-  { kWhenOkFourth,   "ok_fourth" },
-  { kWhenOkFifth,   "ok_fifth" },
-  { kWhenFourthDigit,  "fourth_digit"},
-  { kWhenComposing, "composing" },
-  { kAlways,        "always"    },
-  { kNever,         NULL        }
-};
+} condition_definitions[] = {{kWhenPaging, "paging"},
+                             {kWhenHasMenu, "has_menu"},
+                             {kWhenHasMore, "has_more"},
+                             {kWhenMorePage, "more_page"},
+                             {kWhenIsFirst, "is_first"},
+                             {kWhenIsSecond, "is_second"},
+                             {kWhenIsThird, "is_third"},
+                             {kWhenIsFourth, "is_fourth"},
+                             {kWhenIsFifth, "is_fifth"},
+                             {kWhenIsSixth, "is_sixth"},
+                             {kWhenIsSelect, "is_select"},
+                             {kWhenOkSy, "ok_sy"},
+                             {kWhenOkSys, "ok_sys"},
+                             {kWhenOkSyxs, "ok_syxs"},
+                             {kWhenOkSsy, "ok_ssy"},
+                             {kWhenOkSssy, "ok_sssy"},
+                             {kWhenOkSsss, "ok_ssss"},
+                             {kWhenOkFirst, "ok_first"},
+                             {kWhenOkSecond, "ok_second"},
+                             {kWhenOkThird, "ok_third"},
+                             {kWhenOkFourth, "ok_fourth"},
+                             {kWhenOkFifth, "ok_fifth"},
+                             {kWhenFourthDigit, "fourth_digit"},
+                             {kWhenComposing, "composing"},
+                             {kAlways, "always"},
+                             {kNever, NULL}};
 
 static KeyBindingCondition translate_condition(const string& str) {
   for (auto* d = condition_definitions; d->name; ++d) {
@@ -292,56 +290,56 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
   }
 
   if (ctx->MorePage() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenMorePage);
+    insert(kWhenMorePage);
   }
 
   if (ctx->IsFirst() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsFirst);
+    insert(kWhenIsFirst);
   }
 
   if (ctx->IsSecond() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSecond);
+    insert(kWhenIsSecond);
   }
 
   if (ctx->IsThird() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsThird);
+    insert(kWhenIsThird);
   }
 
   if (ctx->IsFourth() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsFourth);
+    insert(kWhenIsFourth);
   }
 
   if (ctx->IsFifth() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsFifth);
+    insert(kWhenIsFifth);
   }
   if (ctx->IsSixth() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenIsSixth);
+    insert(kWhenIsSixth);
   }
   if (ctx->IsSelect() && !ctx->get_option("ascii_mode")) {
     insert(kWhenIsSelect);
   }
-  
+
   if (ctx->OkSy() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkSy);
+    insert(kWhenOkSy);
   }
   if (ctx->OkSys() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkSys);
+    insert(kWhenOkSys);
   }
   if (ctx->OkSyxs() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkSyxs);
+    insert(kWhenOkSyxs);
   }
   if (ctx->OkSsy() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkSsy);
+    insert(kWhenOkSsy);
   }
   if (ctx->OkSssy() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkSssy);
+    insert(kWhenOkSssy);
   }
   if (ctx->OkSsss() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkSsss);
+    insert(kWhenOkSsss);
   }
 
   if (ctx->OkFirst() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkFirst);
+    insert(kWhenOkFirst);
   }
 
   if (ctx->OkSecond() && !ctx->get_option("ascii_mode")) {
@@ -349,19 +347,19 @@ KeyBindingConditions::KeyBindingConditions(Context* ctx) {
   }
 
   if (ctx->OkThird() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkThird);
+    insert(kWhenOkThird);
   }
 
   if (ctx->OkFourth() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkFourth);
+    insert(kWhenOkFourth);
   }
 
   if (ctx->OkFifth() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenOkFifth);
+    insert(kWhenOkFifth);
   }
 
   if (ctx->FourthDigit() && !ctx->get_option("ascii_mode")) {
-	  insert(kWhenFourthDigit);
+    insert(kWhenFourthDigit);
   }
 
   Composition& comp = ctx->composition();
@@ -411,9 +409,10 @@ void KeyBinder::LoadConfig() {
 bool KeyBinder::ReinterpretPagingKey(const KeyEvent& key_event) {
   if (key_event.release())
     return false;
-  if (boost::regex_match(engine_->schema()->schema_id(), boost::regex("^sbf[mxd]|sbjm|sbzr|sbxh|sbpy$")))
-	  return false;
-  bool ret = false; 
+  if (boost::regex_match(engine_->schema()->schema_id(),
+                         boost::regex("^sbf[mxd]|sbjm|sbzr|sbxh|sbpy$")))
+    return false;
+  bool ret = false;
   int ch = (key_event.modifier() == 0) ? key_event.keycode() : 0;
   // reinterpret period key followed by alphabetic keys
   // unless period/comma key has been used multiple times
@@ -425,13 +424,13 @@ bool KeyBinder::ReinterpretPagingKey(const KeyEvent& key_event) {
     Context* ctx = engine_->context();
     const string& input(ctx->input());
     if (!input.empty() && input[input.length() - 1] != '.' && !ctx->HasMore()) {
-      LOG(INFO) << "reinterpreted key: '" << last_key_
-                << "', successor: '" << (char)ch << "'";
+      LOG(INFO) << "reinterpreted key: '" << last_key_ << "', successor: '"
+                << (char)ch << "'";
       ctx->PushInput(last_key_);
       ret = true;
     }
   }
-  last_key_ = ch; 
+  last_key_ = ch;
   return ret;
 }
 

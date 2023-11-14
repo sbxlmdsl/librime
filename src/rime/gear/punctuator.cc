@@ -73,25 +73,26 @@ ProcessResult Punctuator::ProcessKeyEvent(const KeyEvent& key_event) {
   if (!use_space_ && ch == XK_space && ctx->IsComposing()) {
     return kNoop;
   }
-  
+
   string schema = engine_->schema()->schema_id();
-  bool is_sbxlm = boost::regex_match(schema, boost::regex("^sbf[mxd]|sbjm|sbzr|sbxh|sbpy$"));
+  bool is_sbxlm = boost::regex_match(
+      schema, boost::regex("^sbf[mxd]|sbjm|sbzr|sbxh|sbpy$"));
   if (is_sbxlm && ctx->HasMenu()) {
-	  ctx->ConfirmCurrentSelection();
-	  ctx->Commit();
+    ctx->ConfirmCurrentSelection();
+    ctx->Commit();
   }
 
   if (ch == '.' || ch == ':') {  // 3.14, 12:30
     const CommitHistory& history(ctx->commit_history());
     if (!history.empty()) {
       const CommitRecord& cr(history.back());
-      if (cr.type == "thru" &&
-          cr.text.length() == 1 && isdigit(cr.text[0]) && !ctx->HasMenu()) {
-		  return kRejected;
+      if (cr.type == "thru" && cr.text.length() == 1 && isdigit(cr.text[0]) &&
+          !ctx->HasMenu()) {
+        return kRejected;
       }
     }
   }
-  
+
   config_.LoadConfig(engine_);
   string punct_key(1, ch);
   auto punct_definition = config_.GetPunctDefinition(punct_key);

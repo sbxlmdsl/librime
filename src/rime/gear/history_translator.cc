@@ -43,12 +43,12 @@ an<Translation> HistoryTranslator::Query(const string& input,
   auto it = history.rbegin();
   int count = 0;
   for (; it != history.rend(); ++it) {
-    if (it->type == "thru") continue;
-    if (it->text.empty()) continue;
-    auto candidate = New<SimpleCandidate>(it->type,
-                                          segment.start,
-                                          segment.end,
-                                          it->text);
+    if (it->type == "thru")
+      continue;
+    if (it->text.empty())
+      continue;
+    auto candidate =
+        New<SimpleCandidate>(it->type, segment.start, segment.end, it->text);
     candidate->set_quality(initial_quality_);
     translation->Append(candidate);
     count++;

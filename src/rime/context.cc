@@ -20,8 +20,8 @@ bool Context::Commit() {
   // start over
   Clear();
   if (get_option("_is_buffered")) {
-	  set_option("is_buffered", false);
-	  set_option("_is_buffered", false);
+    set_option("is_buffered", false);
+    set_option("_is_buffered", false);
   }
   return true;
 }
@@ -61,18 +61,18 @@ bool Context::HasMore() const {
   if (composition_.empty())
     return false;
   auto seg = composition_.back();
-  if (seg.length >= 2 && seg.length <= 3
-	  && string("aeuio\\").find(input_[0]) == string::npos)
-	  return false;
+  if (seg.length >= 2 && seg.length <= 3 &&
+      string("aeuio\\").find(input_[0]) == string::npos)
+    return false;
   const auto& menu(seg.menu);
   return menu && menu->candidate_count() > 1;
 }
 
 bool Context::MorePage() const {
-	if (composition_.empty())
-		return false;
-	const auto& menu(composition_.back().menu);
-	return menu && menu->candidate_count() > 5;
+  if (composition_.empty())
+    return false;
+  const auto& menu(composition_.back().menu);
+  return menu && menu->candidate_count() > 5;
 }
 
 // for sbkz and sbfz
@@ -80,24 +80,24 @@ int Context::CountLength() const {
   if (composition_.empty())
     return 0;
   if (string("aeuio").find(input_[0]) != string::npos)
-	  return 0;
+    return 0;
   auto seg = composition_.back();
   int j = 0;
   for (int i = seg.start; i < caret_pos_; i++) {
-	if (j == 0) {
-		if (islower(input_[i]) && string("aeuio").find(input_[i]) == string::npos)
-			j++;
-		continue;
-	} else if (j == 1) {
+    if (j == 0) {
+      if (islower(input_[i]) && string("aeuio").find(input_[i]) == string::npos)
+        j++;
+      continue;
+    } else if (j == 1) {
       j++;
       continue;
     } else if (j >= 2) {
-		if (string("aeuio").find(input_[i]) == string::npos)
-			j = 1;
-		else
-			j++;
-		continue;
-	}
+      if (string("aeuio").find(input_[i]) == string::npos)
+        j = 1;
+      else
+        j++;
+      continue;
+    }
   }
   return j;
 }
@@ -109,29 +109,29 @@ int Context::CountLength2() const {
   auto seg = composition_.back();
   int j = 0;
   for (int i = seg.start; i < caret_pos_; i++) {
-	  if (j == 0) {
-		  if (islower(input_[i]) && string("aeuio").find(input_[i]) == string::npos)
-			  j++;
-		  continue;
-	  } else if (j >= 1) {
-		  if (string("aeuio").find(input_[i]) == string::npos)
-			  j = 1;
-		  else
-			  j++;
-		  continue;
-	  }
+    if (j == 0) {
+      if (islower(input_[i]) && string("aeuio").find(input_[i]) == string::npos)
+        j++;
+      continue;
+    } else if (j >= 1) {
+      if (string("aeuio").find(input_[i]) == string::npos)
+        j = 1;
+      else
+        j++;
+      continue;
+    }
   }
   return j;
 }
 
 bool Context::IsFirst() const {
-	if (composition_.empty())
-		return 0;
-	auto seg = composition_.back();
-	if (seg.length == 1 && islower(input_[caret_pos_ - 1]))
-		return 1;
-	else
-		return 0;
+  if (composition_.empty())
+    return 0;
+  auto seg = composition_.back();
+  if (seg.length == 1 && islower(input_[caret_pos_ - 1]))
+    return 1;
+  else
+    return 0;
 }
 
 bool Context::IsSecond() const {
@@ -158,190 +158,188 @@ bool Context::IsSelect() const {
   if (composition_.empty())
     return false;
   auto seg = composition_.back();
-  return IsFourth() || (IsSecond() && string("_aeuio").find(input_[caret_pos_-1]) != string::npos);
+  return IsFourth() ||
+         (IsSecond() &&
+          string("_aeuio").find(input_[caret_pos_ - 1]) != string::npos);
 }
 
 bool Context::OkSy() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
 
-	if (seg.length >= 2 && string("aeuio").find(input_[seg.start + 1]) != string::npos) {
-		if (seg.length == 2 && !get_option("popping") 
-			&& string("aeuio").find(input_[seg.start]) == string::npos) {
-			return false;
-		}
-		if (seg.length == 3 && string("aeuio").find(input_[seg.start + 2]) != string::npos) {
-			if (get_option("popping")
-				&& string("aeuio").find(input_[seg.start]) == string::npos)
-				return true;
-			return false;
-		}
-		else if (seg.length >= 4 && string("aeuio").find(input_[seg.start + 3]) == string::npos) {
-			//if (seg.length == 5 && string("aeuio").find(input_[seg.start + 4]) != string::npos)
-			//	return false;
-			//else if (seg.length >= 6 && string("aeuio").find(input_[seg.start + 5]) == string::npos) {
-			//	if (seg.length == 7 && string("aeuio").find(input_[seg.start + 6]) != string::npos)
-			//		return false;
-			//	else if (seg.length >= 8 && string("aeuio").find(input_[seg.start + 7]) == string::npos) {
-			//		if (seg.length == 9 && string("aeuio").find(input_[seg.start + 8]) != string::npos)
-			//			return false;
-			//		else if (seg.length >= 10 && string("aeuio").find(input_[seg.start + 9]) == string::npos) {
-			//			if (seg.length == 11 && string("aeuio").find(input_[seg.start + 10]) != string::npos)
-			//				return false;
-			//			else if (seg.length >= 10)
-			//				return false;
-			//		}
-			//	}
-			//}
-			return true;
-		}
-		else if (seg.length >= 4 && seg.length % 2 == 0 && seg.length < 9
-			&& string("aeuio").find(input_[seg.length - 1]) != string::npos) {
-			//if (string("aeuio").find(input_[seg.length - 2]) != string::npos)
-			//	return true;
-			//return false;
-			return true;
-		}
-		else if (seg.length == 9 && string("aeuio").find(input_[seg.length - 1]) == string::npos) {
-			return false;
-		}
-		else if (seg.length > 9) {
-			return false;
-		}
-		return true;
-	}
-	return false;
+  if (seg.length >= 2 &&
+      string("aeuio").find(input_[seg.start + 1]) != string::npos) {
+    if (seg.length == 2 && !get_option("popping") &&
+        string("aeuio").find(input_[seg.start]) == string::npos) {
+      return false;
+    }
+    if (seg.length == 3 &&
+        string("aeuio").find(input_[seg.start + 2]) != string::npos) {
+      if (get_option("popping") &&
+          string("aeuio").find(input_[seg.start]) == string::npos)
+        return true;
+      return false;
+    } else if (seg.length >= 4 &&
+               string("aeuio").find(input_[seg.start + 3]) == string::npos) {
+      // if (seg.length == 5 && string("aeuio").find(input_[seg.start + 4]) !=
+      // string::npos) 	return false; else if (seg.length >= 6 &&
+      // string("aeuio").find(input_[seg.start + 5]) == string::npos) { 	if
+      //(seg.length == 7 && string("aeuio").find(input_[seg.start + 6]) !=
+      //string::npos) 		return false; 	else if (seg.length >= 8 &&
+      //string("aeuio").find(input_[seg.start + 7]) == string::npos) { 		if
+      //(seg.length == 9 && string("aeuio").find(input_[seg.start + 8]) !=
+      //string::npos) 			return false; 		else if (seg.length >= 10 &&
+      //string("aeuio").find(input_[seg.start + 9]) == string::npos) { 			if
+      //(seg.length == 11 && string("aeuio").find(input_[seg.start + 10]) !=
+      //string::npos) 				return false; 			else if (seg.length >= 10) 				return false;
+      //		}
+      //	}
+      //}
+      return true;
+    } else if (seg.length >= 4 && seg.length % 2 == 0 && seg.length < 9 &&
+               string("aeuio").find(input_[seg.length - 1]) != string::npos) {
+      // if (string("aeuio").find(input_[seg.length - 2]) != string::npos)
+      //	return true;
+      // return false;
+      return true;
+    } else if (seg.length == 9 &&
+               string("aeuio").find(input_[seg.length - 1]) == string::npos) {
+      return false;
+    } else if (seg.length > 9) {
+      return false;
+    }
+    return true;
+  }
+  return false;
 }
 bool Context::OkSys() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 3
-		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		;
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
+  return seg.length == 3 &&
+         string("aeuio").find(input_[seg.start + 1]) != string::npos &&
+         string("aeuio").find(input_[seg.start + 2]) == string::npos;
 }
 bool Context::OkSyxs() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length >= 4 && seg.length <= 5
-		&& string("aeuio").find(input_[seg.start + 1]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) == string::npos
-		;
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
+  return seg.length >= 4 && seg.length <= 5 &&
+         string("aeuio").find(input_[seg.start + 1]) != string::npos &&
+         string("aeuio").find(input_[seg.start + 2]) != string::npos &&
+         string("aeuio").find(input_[seg.start + 3]) == string::npos;
 }
 bool Context::OkSsy() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length >= 3
-		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) != string::npos;
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
+  return seg.length >= 3 &&
+         string("aeuio").find(input_[seg.start + 1]) == string::npos &&
+         string("aeuio").find(input_[seg.start + 2]) != string::npos;
 }
 bool Context::OkSssy() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length >= 4 
-		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) != string::npos;
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
+  return seg.length >= 4 &&
+         string("aeuio").find(input_[seg.start + 1]) == string::npos &&
+         string("aeuio").find(input_[seg.start + 2]) == string::npos &&
+         string("aeuio").find(input_[seg.start + 3]) != string::npos;
 }
 bool Context::OkSsss() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return 
-		(seg.length == 4
-		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) == string::npos)
-		||
-		(seg.length >= 6
-		&& string("aeuio").find(input_[seg.start + 1]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 3]) == string::npos
-		&& string("aeuio").find(input_[seg.start + 4]) != string::npos
-		&& string("aeuio").find(input_[seg.start + 5]) != string::npos)
-		;
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
+  return (seg.length == 4 &&
+          string("aeuio").find(input_[seg.start + 1]) == string::npos &&
+          string("aeuio").find(input_[seg.start + 2]) == string::npos &&
+          string("aeuio").find(input_[seg.start + 3]) == string::npos) ||
+         (seg.length >= 6 &&
+          string("aeuio").find(input_[seg.start + 1]) == string::npos &&
+          string("aeuio").find(input_[seg.start + 2]) == string::npos &&
+          string("aeuio").find(input_[seg.start + 3]) == string::npos &&
+          string("aeuio").find(input_[seg.start + 4]) != string::npos &&
+          string("aeuio").find(input_[seg.start + 5]) != string::npos);
 }
 
 bool Context::OkFirst() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return islower(input_[seg.start]) && seg.length == 1 && string("qwrtsdfgzxcvbyphjklnm").find(input_[seg.start]) != string::npos;
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
+  return islower(input_[seg.start]) && seg.length == 1 &&
+         string("qwrtsdfgzxcvbyphjklnm").find(input_[seg.start]) !=
+             string::npos;
 }
 
 bool Context::OkSecond() const {
   if (composition_.empty())
     return false;
   if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-	  return false;
+    return false;
   auto seg = composition_.back();
-  return islower(input_[seg.start]) && seg.length == 2 
-	  && string("qwrtsdfgzxcvbyphjklnm").find(input_[seg.start+1]) != string::npos;
+  return islower(input_[seg.start]) && seg.length == 2 &&
+         string("qwrtsdfgzxcvbyphjklnm").find(input_[seg.start + 1]) !=
+             string::npos;
 }
 
 bool Context::OkThird() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return islower(input_[seg.start]) && seg.length == 3 
-		&& islower(input_[seg.start+2]);
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
+  return islower(input_[seg.start]) && seg.length == 3 &&
+         islower(input_[seg.start + 2]);
 }
 
 bool Context::OkFourth() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return islower(input_[seg.start]) && seg.length == 4
-		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		&& (islower(input_[3]) 
-			|| string("1234567890").find(input_[seg.start + 3]) != string::npos
-			&& get_option("is_enhanced"));
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
+  return islower(input_[seg.start]) && seg.length == 4 &&
+         string("aeuio").find(input_[seg.start + 2]) == string::npos &&
+         (islower(input_[3]) ||
+          string("1234567890").find(input_[seg.start + 3]) != string::npos &&
+              get_option("is_enhanced"));
 }
 
 bool Context::OkFifth() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return islower(input_[seg.start]) && seg.length == 5
-		&& string("aeuio").find(input_[seg.start + 2]) == string::npos
-		&& islower(input_[seg.start + 3]);
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
+  return islower(input_[seg.start]) && seg.length == 5 &&
+         string("aeuio").find(input_[seg.start + 2]) == string::npos &&
+         islower(input_[seg.start + 3]);
 }
 
 bool Context::FourthDigit() const {
-	if (composition_.empty())
-		return false;
-	if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
-		return false;
-	auto seg = composition_.back();
-	return seg.length == 4 && get_option("is_enhanced")
-		&& string("1234567890").find(input_[seg.length - 1]) != string::npos
-		&& string("aeuio").find(input_[seg.start]) == string::npos;
+  if (composition_.empty())
+    return false;
+  if (input_.length() > 0 && string("aeuio").find(input_[0]) != string::npos)
+    return false;
+  auto seg = composition_.back();
+  return seg.length == 4 && get_option("is_enhanced") &&
+         string("1234567890").find(input_[seg.length - 1]) != string::npos &&
+         string("aeuio").find(input_[seg.start]) == string::npos;
 }
 
 an<Candidate> Context::GetSelectedCandidate() const {
@@ -550,12 +548,12 @@ void Context::set_option(const string& name, bool value) {
   option_update_notifier_(this, name);
 
   if (name == "is_buffered") {
-	  if (value)
-		options_["_auto_commit"] = false;
-	  else
-		options_["_auto_commit"] = true;
+    if (value)
+      options_["_auto_commit"] = false;
+    else
+      options_["_auto_commit"] = true;
 
-	  option_update_notifier_(this, "_auto_commit");
+    option_update_notifier_(this, "_auto_commit");
   }
 }
 

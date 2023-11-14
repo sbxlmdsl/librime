@@ -113,44 +113,45 @@ bool Editor::CommitScriptText(Context* ctx) {
 
 bool Editor::CommitRawInput(Context* ctx) {
   ctx->ClearNonConfirmedComposition();
-  //ctx->Commit();
-	engine_->sink()(ctx->input());
-	ctx->Clear();
-	return true;
+  // ctx->Commit();
+  engine_->sink()(ctx->input());
+  ctx->Clear();
+  return true;
 }
 
 bool Editor::CommitRawInput2(Context* ctx) {
-	string schema = engine_->schema()->schema_id();
-	if (boost::regex_match(schema, boost::regex("^sbpy|sbjm|sbzr|sbxh|sbf[mxd]$"))) {
-		ctx->ClearNonConfirmedComposition();
-		string s(ctx->input());
-		if (s.length() > 0 && isalpha(s[0])) {
-			s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
-			ctx->set_input(s);
-		}
-		engine_->sink()(s);
-	} else 
-		engine_->sink()(ctx->GetScriptText());
-	ctx->Clear();
-	return true;
+  string schema = engine_->schema()->schema_id();
+  if (boost::regex_match(schema,
+                         boost::regex("^sbpy|sbjm|sbzr|sbxh|sbf[mxd]$"))) {
+    ctx->ClearNonConfirmedComposition();
+    string s(ctx->input());
+    if (s.length() > 0 && isalpha(s[0])) {
+      s[0] = islower(s[0]) ? toupper(s[0]) : tolower(s[0]);
+      ctx->set_input(s);
+    }
+    engine_->sink()(s);
+  } else
+    engine_->sink()(ctx->GetScriptText());
+  ctx->Clear();
+  return true;
 }
 
 bool Editor::CommitRawInput3(Context* ctx) {
-	string schema = engine_->schema()->schema_id();
-	if (boost::regex_match(schema, boost::regex("^sbpy|sbjm|sbzr|sbxh|sbf[mxd]$"))) {
-		ctx->ClearNonConfirmedComposition();
-		string s(ctx->input());
-		if (s.length() > 0 && isalpha(s[0])) {
-			for (int i = 0; i < s.length(); i++)
-				s[i] = toupper(s[i]);
-			ctx->set_input(s);
-		}
-		engine_->sink()(s);
-	}
-	else
-		engine_->sink()(ctx->GetScriptText());
-	ctx->Clear();
-	return true;
+  string schema = engine_->schema()->schema_id();
+  if (boost::regex_match(schema,
+                         boost::regex("^sbpy|sbjm|sbzr|sbxh|sbf[mxd]$"))) {
+    ctx->ClearNonConfirmedComposition();
+    string s(ctx->input());
+    if (s.length() > 0 && isalpha(s[0])) {
+      for (int i = 0; i < s.length(); i++)
+        s[i] = toupper(s[i]);
+      ctx->set_input(s);
+    }
+    engine_->sink()(s);
+  } else
+    engine_->sink()(ctx->GetScriptText());
+  ctx->Clear();
+  return true;
 }
 
 bool Editor::CommitComposition(Context* ctx) {
@@ -160,10 +161,10 @@ bool Editor::CommitComposition(Context* ctx) {
 }
 
 bool Editor::RevertLastEdit(Context* ctx) {
-	if (ctx->get_option("is_buffered")) {
-		BackToPreviousInput(ctx);
-		return true;
-	}
+  if (ctx->get_option("is_buffered")) {
+    BackToPreviousInput(ctx);
+    return true;
+  }
   // different behavior in regard to previous operation type
   ctx->ReopenPreviousSelection() ||
       (ctx->PopInput() && ctx->ReopenPreviousSegment());
@@ -200,26 +201,29 @@ bool Editor::BackToPreviousSyllable(Context* ctx) {
 }
 
 bool Editor::DeleteCandidate(Context* ctx) {
-	string schema = engine_->schema()->schema_id();
-	Composition comp = ctx->composition();
-	size_t comfirmed_pos = comp.GetConfirmedPosition();
-	size_t len = ctx->input().length() - comfirmed_pos;
+  string schema = engine_->schema()->schema_id();
+  Composition comp = ctx->composition();
+  size_t comfirmed_pos = comp.GetConfirmedPosition();
+  size_t len = ctx->input().length() - comfirmed_pos;
 
-	if (boost::regex_match(schema, boost::regex("^sbjm|sbzr|sbxh|sbf[mxd]$"))) {
-		size_t len = ctx->input().length();
-		if (len >= 1 && string("aeuio").find(ctx->input()[comfirmed_pos + 0]) != string::npos)
-			return true; 
-		if (len <= 2) 
-			return true;
-		if (len >= 2 && string("aeuio").find(ctx->input()[comfirmed_pos + 1]) != string::npos
-			&& boost::regex_match(schema, boost::regex("^sbjm$"))) 
-			return true;
-		if (len >= 3 && string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos
-			&& boost::regex_match(schema, boost::regex("^sbzr|sbxh|sbf[mxd]$")))
-			return true;
-	}
-	ctx->DeleteCurrentSelection();
-	return true;
+  if (boost::regex_match(schema, boost::regex("^sbjm|sbzr|sbxh|sbf[mxd]$"))) {
+    size_t len = ctx->input().length();
+    if (len >= 1 &&
+        string("aeuio").find(ctx->input()[comfirmed_pos + 0]) != string::npos)
+      return true;
+    if (len <= 2)
+      return true;
+    if (len >= 2 &&
+        string("aeuio").find(ctx->input()[comfirmed_pos + 1]) != string::npos &&
+        boost::regex_match(schema, boost::regex("^sbjm$")))
+      return true;
+    if (len >= 3 &&
+        string("aeuio").find(ctx->input()[comfirmed_pos + 2]) != string::npos &&
+        boost::regex_match(schema, boost::regex("^sbzr|sbxh|sbf[mxd]$")))
+      return true;
+  }
+  ctx->DeleteCurrentSelection();
+  return true;
 }
 
 bool Editor::DeleteChar(Context* ctx) {
@@ -263,8 +267,8 @@ ExpressEditor::ExpressEditor(const Ticket& ticket) : Editor(ticket, true) {
   keymap.Bind({XK_space, 0}, &Editor::Confirm);
   keymap.Bind({XK_BackSpace, 0}, &Editor::RevertLastEdit);  //
   keymap.Bind({XK_BackSpace, kControlMask}, &Editor::BackToPreviousSyllable);
-  keymap.Bind({XK_Return, 0}, &Editor::CommitRawInput);  //
-  keymap.Bind({XK_Return, kShiftMask }, &Editor::CommitRawInput2);  //
+  keymap.Bind({XK_Return, 0}, &Editor::CommitRawInput);              //
+  keymap.Bind({XK_Return, kShiftMask}, &Editor::CommitRawInput2);    //
   keymap.Bind({XK_Return, kControlMask}, &Editor::CommitRawInput3);  //
   keymap.Bind({XK_Return, kControlMask | kShiftMask}, &Editor::CommitComment);
   keymap.Bind({XK_Delete, 0}, &Editor::DeleteChar);
