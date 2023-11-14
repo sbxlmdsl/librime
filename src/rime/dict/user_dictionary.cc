@@ -238,8 +238,9 @@ void UserDictionary::DfsLookup(const SyllableGraph& syll_graph,
                << ", num_spellings: " << spelling.second.size();
     state->code.push_back(spelling.first);
     BOOST_SCOPE_EXIT((&state)) { state->code.pop_back(); }
-    BOOST_SCOPE_EXIT_END if (!TranslateCodeToString(state->code,
-                                                    &prefix)) continue;
+    BOOST_SCOPE_EXIT_END
+    if (!TranslateCodeToString(state->code, &prefix))
+      continue;
     for (size_t i = 0; i < spelling.second.size(); ++i) {
       auto props = spelling.second[i];
       if (i > 0 && props->type >= kAbbreviation)
