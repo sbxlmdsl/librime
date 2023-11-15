@@ -326,19 +326,6 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
             std::strcpy(context->menu.select_keys,
                         sbxlm_select_keys.c_str());  // fallback to sbxlm
           }
-          std::strcpy(context->menu.select_keys, select_keys.c_str());
-        }
-        Config* config = schema->config();
-        an<ConfigList> select_labels =
-            config->GetList("menu/alternative_select_labels");
-        if (select_labels && (size_t)page_size <= select_labels->size()) {
-          context->select_labels = new char*[page_size];
-          for (size_t i = 0; i < (size_t)page_size; ++i) {
-            an<ConfigValue> value = select_labels->GetValueAt(i);
-            string label = value->str();
-            context->select_labels[i] = new char[label.length() + 1];
-            std::strcpy(context->select_labels[i], label.c_str());
-          }
         }
       }
     }

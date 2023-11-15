@@ -88,7 +88,9 @@ void EntryCollector::Collect(const string& dict_file) {
       continue;
     }
     // read a dict entry
-    auto row = strings::split(line, "\t");
+    vector<string> row;
+    boost::algorithm::split(row, line,
+                            boost::algorithm::is_any_of("\t"));
     int num_columns = static_cast<int>(row.size());
     if (num_columns <= text_column || row[text_column].empty()) {
       LOG(WARNING) << "Missing entry text at #" << num_entries << ".";
