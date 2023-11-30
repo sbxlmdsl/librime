@@ -326,6 +326,30 @@ RIME_API Bool RimeGetContext(RimeSessionId session_id, RimeContext* context) {
             std::strcpy(context->menu.select_keys,
                         sbxlm_select_keys.c_str());  // fallback to sbxlm
           }
+          Config* config = schema->config();
+          an<ConfigList> select_labels =
+              config->GetList("menu/alternative_select_labels");
+          string labels[] = {"6 ", "7 ", "8 ", "9 ", "0 "};
+          if (select_labels && (size_t)page_size <= select_labels->size()) {
+            context->select_labels = new char*[page_size];
+            for (size_t i = 0; i < (size_t)page_size; ++i) {
+              an<ConfigValue> value = select_labels->GetValueAt(i);
+              string label = value->str();
+              context->select_labels[i] = new char[label.length() + 1];
+              if (!select_keys.compare(sbxlm_select_keys) &&
+                  ctx->input().length() > 1 &&
+                  string("uo").find(c1) != string::npos &&
+                  string("aeuio").find(ctx->input()[1]) == string::npos) {
+                std::strcpy(context->select_labels[i], label.c_str());
+              } else if (!select_keys.compare(sbxlm_select_keys) &&
+                         (!ctx->HasMore() ||
+                          (string("aeuio").find(c1) != string::npos ||
+                           islower(c1) && ctx->input().length() <= 3)))
+                std::strcpy(context->select_labels[i], " ");  // hack for sbxlm
+              else
+                std::strcpy(context->select_labels[i], label.c_str());
+            }
+          }
         }
       }
     }
