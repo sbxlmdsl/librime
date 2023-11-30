@@ -160,7 +160,7 @@ bool Context::IsSelect() const {
   auto seg = composition_.back();
   return IsFourth() ||
          (IsSecond() &&
-          string("_aeuio").find(input_[caret_pos_ - 1]) != string::npos);
+          string("aeuio").find(input_[caret_pos_ - 1]) != string::npos);
 }
 
 bool Context::OkSy() const {
